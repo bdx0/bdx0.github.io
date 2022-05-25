@@ -44,7 +44,7 @@ targets:
 targets/%: targets
 	([ -d $@ ] && echo $@ exist) || mkdir $@
 	@echo Done $@ !!
-	
+
 app_%:
 	@([ -f $(shell which $(subst app_,,$@) || echo not) ] && echo Program \'$(subst app_,,$@)\' installed) || (echo Install program \'$(subst app_,,$@)\' to your system && exit 1)
 	@echo Done $@ !!!
@@ -62,15 +62,15 @@ create: git_create tool src
 .PHONY: git-create
 git-create:
 	git init
-	git config --global user.name "Duong Bao Duy"
+	git config --global user.name "Dương Bảo Duy"
 	git config --global user.email "baoduy.duong0206@gmail.com"
 	for branch in $(shell git remote); do \
 		case "$branch" in \
 			"origin" ) git remote remove origin; \
 			"octopress" ) git remote remove octopress; \
-		esac \ 	
+		esac \
 	done
-	git remote add origin https://github.com/duongbaoduy/duongbaoduy.github.io.git
+	git remote add origin https://github.com/0dbd/0dbd.github.io.git
 	@echo Done $@ : $^ !!
 
 .PHONY: build
@@ -96,12 +96,12 @@ git-pub:
 gitcb_%:
 	git branch $(subst gitcb_,,$@)
 	@echo Done $@ !!
-	
+
 .PHONY: gitdb_%
 gitdb_%:
 	git brand -d $(subst gitdb_,,$@)
 	@echo Done $@ !!
-	
+
 .PHONY: gitk
 gitk:
 	gitk.cmd --all
@@ -117,4 +117,3 @@ gitk:
 #         print "@f\n";
 # second expand
 # http://make.mad-scientist.net/secondary-expansion/
-
