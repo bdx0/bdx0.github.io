@@ -10,6 +10,8 @@ const nextConfig = {
     pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
     images: {
         unoptimized: true,
+        dangerouslyAllowSVG: true,
+        contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
     reactStrictMode: true,
 };
