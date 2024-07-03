@@ -80,9 +80,11 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: |
+          pwd
+          ls -la .
           ${{ steps.detect-package-manager.outputs.runner }} next build
           cat next.config.mjs
-          ls -lf out/
+          ls -l out/
       - name: nojekyll
         run: touch ./out/.nojekyll
       - name: Upload artifact

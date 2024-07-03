@@ -1,6 +1,7 @@
 import Image from "next/image";
-import NextSVG from "../../public/next.svg";
-import VercelSVG from "../../public/vercel.svg";
+import NextSVG from "../../public/next.svg?url";
+import VercelSVG from "../../public/vercel.svg?url";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
