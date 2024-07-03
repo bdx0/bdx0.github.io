@@ -9,7 +9,7 @@ const nextConfig = {
     distDir: "out", // change the output directory `out` -> `out`
     pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
     images: {
-        // unoptimized: true,
+        unoptimized: true,
         // dangerouslyAllowSVG: true,
         // contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
