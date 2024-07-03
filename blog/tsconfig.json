@@ -26,6 +26,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.svg",
     ".next/types/**/*.ts",
     "out/types/**/*.ts"
   ],
