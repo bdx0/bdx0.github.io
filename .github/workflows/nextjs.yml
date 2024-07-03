@@ -30,7 +30,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: blog
+        working-directory: ./blog
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -88,7 +88,7 @@ jobs:
   deploy:
     defaults:
       run:
-        working-directory: blog
+        working-directory: ./blog
 
     environment:
       name: github-pages
