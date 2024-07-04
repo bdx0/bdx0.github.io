@@ -18,7 +18,7 @@
 
 html,
 body {
-  @apply w-full h-full bg-white text-black overflow-hidden;
+  @apply flex w-full h-full bg-black text-white overflow-hidden;
   /* color: rgb(var(--foreground-rgb));
    background: linear-gradient(
       to bottom,
@@ -27,15 +27,25 @@ body {
     )
     rgb(var(--background-start-rgb)); */
 }
+
 nav {
-  @apply min-w-full flex flex-row bg-blue-500;
+  @apply min-w-full flex items-center bg-stone-600;
 }
+
 main {
-  @apply bg-white text-black;
+  @apply flex bg-neutral-500 text-white p-4 w-screen h-full;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .logo {
+    @apply w-12 h-12 m-4 bg-white;
+  }
+
+  .text-page-title {
+    @apply m-4 text-3xl;
   }
 }

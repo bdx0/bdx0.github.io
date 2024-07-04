@@ -1,15 +1,27 @@
-import VercelSVG from "@/svgs/vercel.svg";
-import SearchBar from "./ui/SearchBar";
+import CodingIcon from "@/svgs/coding.svg?url";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function RootLayout({ children }: React.PropsWithChildren<{}>) {
+  const menu = [
+    { name: "bdx0", path: "/about" },
+    { name: "notes", path: "./blog" },
+    { name: "projects", path: "./projects" },
+  ];
   return (
     <>
-      <nav>
-        <VercelSVG className="w-20 h-20 text-white m-4"></VercelSVG>
-        <div className="w-full m-8 flex justify-end">
-          <div className="w-[30%]">
-            <SearchBar></SearchBar>
-          </div>
+      <nav className="">
+        <Link href="/" className="mx-4 my-2">
+          <Image src={CodingIcon} className="logo" alt="logo"></Image>
+        </Link>
+        <div className="flex px-8">
+          {menu.map((menu) => {
+            return (
+              <Link href={menu.path} key={menu.path}>
+                <div className="m-4 text-xl">{menu.name}</div>
+              </Link>
+            );
+          })}
         </div>
       </nav>
       <main>{children}</main>

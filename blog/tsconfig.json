@@ -31,6 +31,7 @@
     "**/*.svg",
     ".next/types/**/*.ts",
     "out/types/**/*.ts",
+    "src/pages/__error.tsx"
   ],
   "exclude": ["node_modules"]
 }
