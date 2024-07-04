@@ -18,7 +18,7 @@
         "name": "next"
       }
     ],
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -31,7 +31,6 @@
     "**/*.svg",
     ".next/types/**/*.ts",
     "out/types/**/*.ts",
-    "src/app2/(root)/page.tsx"
   ],
   "exclude": ["node_modules"]
 }
