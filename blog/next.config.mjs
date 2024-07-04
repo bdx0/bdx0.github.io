@@ -1,7 +1,11 @@
 import nextMDX from "@next/mdx";
 const withMDX = nextMDX({
-    extension: /\.mdx?$/,
-    options: {},
+    extension: /\.(md|mdx)?$/,
+    options: {
+        remarkPlugins: [],
+        rehypePlugins: [],
+        providerImportSource: '@mdx-js/react',
+    },
 });
 /** @type {import('next').NextConfig} */
 const nextConfig = {

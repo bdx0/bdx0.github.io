@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
+
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -17,6 +18,7 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -28,7 +30,8 @@
     "**/*.tsx",
     "**/*.svg",
     ".next/types/**/*.ts",
-    "out/types/**/*.ts"
+    "out/types/**/*.ts",
+    "src/app2/(root)/page.tsx"
   ],
   "exclude": ["node_modules"]
 }
