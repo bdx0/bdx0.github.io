@@ -1,9 +1,4 @@
-import {
-  type Container,
-  type ISourceOptions,
-  MoveDirection,
-  OutMode,
-} from "@tsparticles/engine";
+import { type Container, type ISourceOptions } from "@tsparticles/engine";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { useEffect, useMemo, useState } from "react";
 // import { loadAll } from "@tsparticles/all"; // if you are going to use `loadAll`, install the "@tsparticles/all" package too.
@@ -11,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSlim`, install the "@tsparticles/slim" package too.
 import { LoremIpsum } from "lorem-ipsum";
 // import { loadBasic } from "@tsparticles/basic"; // if you are going to use `loadBasic`, install the "@tsparticles/basic" package too.
+import particle_config from "@/public/data/particle_config.json";
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -48,90 +44,22 @@ const App = () => {
   };
 
   const options: ISourceOptions = useMemo(
-    () => ({
-      background: {
-        color: {
-          value: "#0d47a1",
-        },
-      },
-      fpsLimit: 10,
-      interactivity: {
-        events: {
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-          onHover: {
-            enable: true,
-            mode: "push",
-          },
-        },
-        modes: {
-          push: {
-            quantity: 4,
-          },
-          connect: {},
-          repulse: {
-            distance: 200,
-            duration: 0.4,
-          },
-        },
-      },
-      particles: {
-        color: {
-          value: "#ffffff",
-        },
-        links: {
-          color: "#ffffff",
-          distance: 200,
-          enable: true,
-          opacity: 0.2,
-          width: 2,
-        },
-        move: {
-          direction: MoveDirection.inside,
-          enable: true,
-          outModes: {
-            default: OutMode.bounce,
-          },
-          random: true,
-          speed: 0.3,
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-          },
-          value: 40,
-        },
-        opacity: {
-          value: 0.5,
-        },
-        shape: {
-          type: "circle",
-        },
-        size: {
-          value: { min: 1, max: 5 },
-        },
-      },
-      detectRetina: true,
-    }),
+    () => particle_config as ISourceOptions,
     []
   );
 
   if (init) {
     return (
-      <div className="p-4 flex h-screen w-screen ">
-        <div className="flex w-100 h-100">
+      <div className="p-4 flex flex-col">
+        <div className="flex ">
           <Particles
-            className="z-[-1] w-full h-full p-4"
+            className="z-[-1]"
             id="tsparticles"
             particlesLoaded={particlesLoaded}
             options={options}
           />
         </div>
-
-        <div className="flex flex-col overscroll-y-contain overflow-auto text-white">
+        <div className="flex flex-col text-white p-10">
           <div className="text-2xl text-white mb-10">${title}</div>
           {content.split("\n").map((para, i) => (
             <p key={`${title}-${i}`}>${para}</p>
