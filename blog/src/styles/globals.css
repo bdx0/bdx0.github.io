@@ -18,7 +18,7 @@
 
 html,
 body {
-  @apply flex w-full h-full bg-black text-white overflow-hidden;
+  @apply flex w-full h-full bg-transparent text-white overflow-hidden;
   /* color: rgb(var(--foreground-rgb));
    background: linear-gradient(
       to bottom,
@@ -29,11 +29,15 @@ body {
 }
 
 nav {
-  @apply min-w-full flex items-center bg-stone-600;
+  @apply min-w-full flex items-center bg-transparent;
 }
 
 main {
-  @apply flex bg-neutral-500 text-white p-4 w-screen h-full;
+  @apply flex text-white p-4 w-screen h-full;
+}
+
+p {
+  @apply mb-4;
 }
 
 @layer utilities {
@@ -42,7 +46,9 @@ main {
   }
 
   .logo {
-    @apply w-12 h-12 m-4 bg-white;
+    @apply w-auto h-10 ml-4 stroke-white stroke-2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .text-page-title {

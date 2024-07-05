@@ -1,5 +1,4 @@
-import CodingIcon from "@/svgs/coding.svg?url";
-import Image from "next/image";
+import CodingIcon from "@/svgs/coding.svg";
 import Link from "next/link";
 
 export default function RootLayout({ children }: React.PropsWithChildren<{}>) {
@@ -12,9 +11,9 @@ export default function RootLayout({ children }: React.PropsWithChildren<{}>) {
     <>
       <nav className="">
         <Link href="/" className="mx-4 my-2">
-          <Image src={CodingIcon} className="logo" alt="logo"></Image>
+          <CodingIcon className="logo "></CodingIcon>
         </Link>
-        <div className="flex px-8">
+        <div className="flex pr-8">
           {menu.map((menu) => {
             return (
               <Link href={menu.path} key={menu.path}>
