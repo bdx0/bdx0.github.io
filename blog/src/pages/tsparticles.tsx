@@ -133,8 +133,8 @@ const App = () => {
 
         <div className="flex flex-col overscroll-y-contain overflow-auto text-white">
           <div className="text-2xl text-white mb-10">${title}</div>
-          {content.split("\n").map((para) => (
-            <p>${para}</p>
+          {content.split("\n").map((para, i) => (
+            <p key={`${title}-${i}`}>${para}</p>
           ))}
         </div>
       </div>
