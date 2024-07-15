@@ -1,13 +1,20 @@
 import RootLayout from "@/components/RootLayout";
 import "@/styles/globals.css";
+import { Viewport } from "next";
 import type { AppProps } from "next/app";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "black",
+};
+
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RootLayout>
       <Component {...pageProps} />
     </RootLayout>
   );
 }
-
-export default MyApp;
