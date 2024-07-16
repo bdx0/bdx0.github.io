@@ -1,0 +1,39 @@
+{
+  "readmeUrl": "https://raw.githubusercontent.com/kuyesu/kuyesu/master/README.md",
+  "title": "Kuyeso Rogers",
+  "name": "Kuyeso Rogers",
+  "ascii": "Kuyeso Rogers",
+  "social": {
+    "github": "github",
+    "linkedin": "linkedin"
+  },
+  "email": "kuyesu22@gmail.com",
+  "ps1_hostname": "kuyesu",
+  "ps1_username": "goodman",
+  "repo": "https://github.com/kuyesu/terminal-in-nextjs",
+  "resume_url": "",
+  "donate_urls": {
+    "paypal": "",
+    "patreon": ""
+  },
+  "colors": {
+    "light": {
+      "background": "#FBF1C9",
+      "foreground": "#3C3836",
+      "yellow": "#D79921",
+      "green": "#98971A",
+      "gray": "#7C6F64",
+      "blue": "#458588",
+      "red": "#CA2124"
+    },
+    "dark": {
+      "background": "#2E3440",
+      "foreground": "#E5E9F0",
+      "yellow": "#5E81AC",
+      "green": "#A3BE8C",
+      "gray": "#88C0D0",
+      "blue": "#EBCB8B",
+      "red": "#BF616A"
+    }
+  }
+}

@@ -17,7 +17,10 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.5.0",
     "@types/mdx": "^2.0.13",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
     "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
     "lorem-ipsum": "^2.0.8",
     "next": "14.2.4",
     "react": "^18",
@@ -27,6 +30,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@types/lodash": "^4.17.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -34,6 +38,6 @@
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5.5.3"
   }
 }

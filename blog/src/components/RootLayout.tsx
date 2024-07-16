@@ -1,5 +1,6 @@
 import CodingIcon from "@/svgs/coding.svg";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import BackgroundLayout from "./ui/BackgroundLayer";
 
 export default function RootLayout({ children }: React.PropsWithChildren<{}>) {
@@ -8,6 +9,10 @@ export default function RootLayout({ children }: React.PropsWithChildren<{}>) {
     { name: "notes", path: "./blog" },
     { name: "projects", path: "./projects" },
   ];
+  const router = useRouter();
+  if (router.pathname === "/terminal" || router.pathname === "/xterm") {
+    return <div>{children}</div>;
+  }
   return (
     <div>
       <BackgroundLayout>
