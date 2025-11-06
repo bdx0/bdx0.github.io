@@ -14,7 +14,7 @@ export default function BlogPage() {
               {post.title}
             </Link>
             <p className="text-gray-600">{post.description}</p>
-            <p className="text-sm text-gray-500">{post.date}</p>
+            <p className="text-sm text-gray-500">{new Date(post.date).toDateString()}</p>
           </li>
         ))}
       </ul>
