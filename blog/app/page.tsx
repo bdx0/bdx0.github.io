@@ -1,37 +1,66 @@
-import { getAllContent } from "@/lib/markdown";
-import Link from "next/link";
+import HUDTitle from '@/components/HUDTitle';
+import Panel from '@/components/Panel';
+import InteractiveLink from '@/components/InteractiveLink';
 
-export default function HomePage() {
-  const posts = getAllContent("blog");
+// Since this is a server component, we can directly import and use the function
+import { getAllContent } from "@/lib/markdown";
+
+async function getPosts() {
+  // Directly call the function instead of using fetch
+  try {
+    const posts = getAllContent("blog");
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    throw new Error('Failed to fetch posts');
+  }
+}
+
+export default async function HomePage() {
+  const posts = await getPosts();
 
   return (
-    <div className="py-8">
-      <h1 className="text-5xl font-bold mb-8 text-blue-400">Posts</h1>{" "}
-      {/* Using standard Tailwind blue */}
-      <ul className="space-y-10">
+    <div className="py-4" style={{ paddingTop: '16px', paddingBottom: '16px' }}>
+      <HUDTitle level={1} className="text-center" style={{ marginBottom: '16px' }}>Blog Posts</HUDTitle>
+      
+      <div className="space-y-3" style={{ rowGap: '12px' }}>
         {posts.map((post: any) => (
-          <li
+          <Panel
             key={post.slug}
-            className="p-6 border border-gray-700 rounded-lg shadow-lg hover:shadow-blue-500 transition-shadow duration-300 bg-gray-800/50 backdrop-blur-sm"
+            className="border cursor-pointer"
+            style={{
+              borderColor: 'rgba(255,255,255, 0.04)',
+            }}
+            enableHoverEffect={true}
           >
-            {" "}
-            {/* Standard dark theme styling */}
-            <Link
+            <InteractiveLink
               href={`/${post.slug}`}
-              className="text-3xl font-bold text-blue-400 hover:text-green-400 block mb-2 transition-colors duration-200"
+              className="hud-panel-title block mb-2"
+              style={{
+                marginBottom: '8px',
+              }}
             >
-              {" "}
-              {/* Standard blue/green for title */}
               {post.title}
-            </Link>
-            <p className="text-gray-300 text-lg mb-4">{post.description}</p>{" "}
-            {/* Standard light text */}
-            <p className="text-gray-500 text-sm">
-              {new Date(post.date).toDateString()}
-            </p>
-          </li>
+            </InteractiveLink>
+            <p className="hud-body mb-2" style={{ color: '#C7CED6', marginBottom: '8px' }}>{post.description}</p>
+            <div className="flex justify-between items-center">
+              <span className="text-xs uppercase" style={{ color: '#9AA0A6' }}>
+                {new Date(post.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </span>
+              <span
+                className="text-xs px-2 py-1 rounded hud-label"
+                style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
+              >
+                {post.tags?.[0] || 'Article'}
+              </span>
+            </div>
+          </Panel>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

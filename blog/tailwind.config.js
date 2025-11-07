@@ -10,22 +10,67 @@ const config = {
   theme: {
     extend: {
       colors: {
-        'cyber-bg': '#0a0a1a', // Very dark blue/purple background
-        'cyber-text': '#e0e0e0', // Light gray text
-        'neon-blue': '#00f0ff', // Bright neon blue
-        'neon-green': '#00ff99', // Bright neon green
-        'neon-purple': '#a020f0', // A touch of neon purple
+        // Cyberpunk HUD Color Palette
+        'bg-900': '#06060A', // Primary background: very dark, near-black
+        'panel-bg': 'rgba(10,12,16,0.8)', // Panel background
+        'ui-line': '#2B2E34', // UI lines
+        
+        // Neon accents
+        'neon-cyan': '#00E6FF', // Primary accent: selected states, highlights
+        'neon-magenta': '#FF2D6A', // Secondary accent: negative/alert states
+        'neon-green': '#7CFF6B', // Support accent
+        'neon-yellow': '#FFD34B', // Support accent
+        'neon-orange': '#FF8C42', // Support accent
+        
+        // Neutral text
+        'muted-gray': '#9AA0A6',
+        'neutral-body': '#C7CED6', // Body text
+        'neutral-strong': '#E8EEF2', // Strong labels
+        'accent-primary': '#A6FFF4',
+        'danger': '#FF4D6D',
       },
       fontFamily: {
-        sans: ['Montserrat', 'sans-serif'],
-        serif: ['Lora', 'serif'],
-        mono: ['Fira Code', 'monospace'],
+        display: ['Orbitron', 'Rajdhani', 'sans-serif'], // Condensed geometric for headings
+        mono: ['Roboto Mono', 'Space Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'], // Monospaced for stats/numbers
+        body: ['Inter', 'IBM Plex Sans', 'system-ui', 'sans-serif'], // Neutral sans for readability
+        sans: ['Inter', 'system-ui', 'sans-serif'], // Default sans-serif
       },
-      // Add subtle glow effect for hover states if possible with Tailwind
+      spacing: {
+        '1u': '4px', // Base spacing unit
+        '2u': '8px',
+        '3u': '12px',
+        '4u': '16px',
+        '6u': '24px',
+        '8u': '32px',
+        '12u': '48px',
+      },
       boxShadow: {
+        'neon-xs': '0 2px 6px rgba(0,230,255,0.06)',
+        'neon-sm': '0 8px 28px rgba(0,230,255,0.08)',
+        'neon-lg': '0 0 18px rgba(0,230,255,0.18), 0 0 36px rgba(255,45,106,0.06)',
         'neon-blue-glow': '0 0 10px #00f0ff, 0 0 20px #00f0ff',
         'neon-green-glow': '0 0 10px #00ff99, 0 0 20px #00ff99',
       },
+      borderRadius: {
+        'hud-sm': '4px', // Small cards
+        'hud-md': '6px', // Buttons/chips
+        'hud-lg': '8px', // Larger elements
+        'hud-pill': '9999px', // Rounded badges/avatars
+      },
+      keyframes: {
+        'scan': { 
+          '0%': { transform: 'translateY(-100%)' }, 
+          '100%': { transform: 'translateY(100%)' } 
+        },
+        'neon-flicker': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.92' }
+        }
+      },
+      animation: {
+        'scan-anim': 'scan 1.8s linear infinite',
+        'neon-flicker': 'neon-flicker 2s ease-in-out infinite'
+      }
     },
   },
   plugins: [

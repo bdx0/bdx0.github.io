@@ -58,31 +58,41 @@ export default function Navbar() {
   if (!mounted) return null;
 
   return (
-    <nav className="bg-gray-100 dark:bg-gray-800 p-4 shadow-md">
+    <nav 
+      className="border-b p-4"
+      style={{
+        backgroundColor: 'rgba(10,12,16,0.8)',
+        borderColor: 'rgba(255,255,255, 0.04)',
+      }}
+    >
       <div className="container mx-auto flex justify-between items-center">
         {/* Left side: Logo */}
         <div className="flex items-center">
-          <Link href="/" className="text-gray-800 dark:text-white text-2xl font-bold">
+          <Link href="/" className="text-2xl font-bold" style={{ color: '#00E6FF' }}>
             BDX0
           </Link>
         </div>
 
-        {/* Right side: Menu items, Search, and Theme Toggle */}
-        <div className="flex items-center space-x-4">
+        {/* Right side: Menu items and Theme Toggle */}
+        <div className="flex items-center space-x-6">
           {navLinks.map((link) => {
             if (link.sublinks) {
               return (
                 <div key={link.href} className="relative" ref={dropdownRef}>
                   <button
                     onClick={toggleAboutDropdown}
-                    className="text-gray-800 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 text-lg font-semibold focus:outline-none"
+                    className="text-[#C7CED6] text-lg font-semibold focus:outline-none relative group"
+                    style={{ transition: 'color 0.2s ease' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#00E6FF')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '#C7CED6')}
                     aria-haspopup="true"
                     aria-expanded={isAboutDropdownOpen}
                   >
                     {link.label}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300" style={{ backgroundColor: '#00E6FF' }}></span>
                   </button>
                   {isAboutDropdownOpen && (
-                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="absolute left-0 mt-2 w-48 rounded-sm shadow-lg z-50" style={{ backgroundColor: 'rgba(10,12,16,0.95)', border: '1px solid rgba(255,255,255, 0.04)' }}>
                       <div
                         className="py-1"
                         role="menu"
@@ -93,7 +103,18 @@ export default function Navbar() {
                           <Link
                             key={sublink.href}
                             href={sublink.href}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="block px-4 py-2 text-sm text-[#C7CED6]"
+                            style={{ 
+                              transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'rgba(0,230,255,0.1)';
+                              e.currentTarget.style.color = '#00E6FF';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = '';
+                              e.currentTarget.style.color = '#C7CED6';
+                            }}
                             role="menuitem"
                             onClick={() => setIsAboutDropdownOpen(false)} // Close dropdown on link click
                           >
@@ -110,38 +131,27 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-800 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 text-lg font-semibold"
+                className="text-[#C7CED6] text-lg font-semibold relative group"
+                style={{ transition: 'color 0.2s ease' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#00E6FF')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#C7CED6')}
               >
                 {link.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300" style={{ backgroundColor: '#00E6FF' }}></span>
               </Link>
             );
           })}
 
-          {/* Search Button */}
-          <button className="text-gray-800 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
-          </button>
-
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="text-gray-800 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
+            className="focus:outline-none"
+            style={{ color: '#C7CED6', transition: 'color 0.2s ease' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#00E6FF')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#C7CED6')}
             aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
           >
-            {theme === "dark" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+            {theme === "dark" ? <Sun className="w-5 h-5" style={{color: '#C7CED6'}} /> : <Moon className="w-5 h-5" style={{color: '#C7CED6'}} />}
           </button>
         </div>
       </div>

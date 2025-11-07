@@ -4,8 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "My Personal Blog",
-  description: "Welcome to my blog",
+  title: "BDX0 Cyberpunk Blog",
+  description: "A cyberpunk-themed personal blog",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -23,26 +23,26 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Montserrat:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
-        {/* Consider adding a cyberpunk-themed favicon if available */}
       </head>
-      <body className="font-sans antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <body className="font-sans antialiased bg-bg-900 text-neutral-body min-h-screen flex flex-col">
         <Providers>
-          {" "}
-          {/* Use sans font by default */}
-          <Navbar /> {/* Integrate the Navbar component here */}
-          <main className="max-w-4xl mx-auto p-4 md:p-8">
-            {" "}
-            {/* More padding on medium screens and up */}
+          <Navbar />
+          <main className="flex-grow max-w-6xl mx-auto w-full" style={{ padding: '16px' }}>
             {children}
           </main>
-          {/* Optional: Footer with cyberpunk elements */}
-          <footer className="mt-16 py-8 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700/50">
+          <footer 
+            className="text-center text-sm border-t"
+            style={{ 
+              padding: '16px 0',
+              color: '#9AA0A6',
+              borderColor: 'rgba(255,255,255, 0.04)' 
+            }}
+          >
             <p>
-              &copy; {new Date().getFullYear()} My Personal Blog. Powered by
-              Cyberpunk.
+              &copy; {new Date().getFullYear()} BDX0 Cyberpunk Blog. All systems operational.
             </p>
           </footer>
         </Providers>

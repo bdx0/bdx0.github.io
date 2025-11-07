@@ -1,52 +1,67 @@
 @import "tailwindcss";
+
+:root {
+  /* Cyberpunk HUD CSS Variables */
+  --bg-900: #06060A;
+  --panel-bg: rgba(10,12,16,0.85);
+  --neon-cyan: #00E6FF;
+  --neon-magenta: #FF2D6A;
+  --neon-green: #7CFF6B;
+  --neon-yellow: #FFD34B;
+  --neon-orange: #FF8C42;
+  --muted: #9AA0A6;
+  --strong: #E8EEF2;
+  --ui-line: #2B2E34;
+  --danger: #FF4D6D;
+  --accent-primary: #A6FFF4;
+}
+
 @variant dark (&:where(.dark, .dark *));
 
-a {
-  @apply text-blue-600 hover:text-blue-800;
+/* Custom class definitions */
+.neon-cyan-glow {
+  box-shadow: 0 0 10px #00E6FF, 0 0 20px rgba(0,230,255,0.4);
 }
 
-body.dark a {
-  @apply text-blue-400 hover:text-green-400;
+.hover\:neon-cyan-glow:hover {
+  box-shadow: 0 0 10px #00E6FF, 0 0 20px rgba(0,230,255,0.4) !important;
 }
 
-.prose {
-  @apply text-gray-800;
+.hover\:text-neon-magenta:hover {
+  color: #FF2D6A !important;
 }
 
-body.dark .prose {
-  @apply text-gray-100;
+/* Animation utilities */
+.scan-line {
+  animation: scan 1.8s linear infinite;
 }
 
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
-  @apply text-gray-900;
+.neon-flicker {
+  animation: neon-flicker 2s ease-in-out infinite;
 }
 
-body.dark .prose h1,
-body.dark .prose h2,
-body.dark .prose h3,
-body.dark .prose h4,
-body.dark .prose h5,
-body.dark .prose h6 {
-  @apply text-blue-400;
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
 }
 
-.prose a {
-  @apply text-blue-600;
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.92; }
 }
 
-body.dark .prose a {
-  @apply text-blue-400;
-}
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .scan-line,
+  .neon-flicker {
+    animation: none;
+  }
 
-.prose code {
-  @apply bg-gray-200 text-gray-800;
-}
-
-body.dark .prose code {
-  @apply bg-gray-800 text-gray-200;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
