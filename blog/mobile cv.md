@@ -1,17 +1,11 @@
 ---
 name: Dương Bảo Duy
 introduction: I am a software engineer
-email: baoduy.duong0206@@gmail.com
-github: "[[https://github.com/bdx0|bdx0]]"
-website: "[[https://bdx0.io.vn]]"
+email: baoduy.duong0206@gmail.com
+github: https://github.com/bdx0
+website: https://bdx0.io.vn
 ---
-# mobile cv
-
-# template-en
-
->  <span>&emsp;</span> <span class="icon">&#xe7ca;</span> `baoduy.duong0206@gmail.com` <span>&emsp;</span> <span class="icon">&#xe600;</span> [bdx0](https://github.com/bdx0)
-
-<img alt="avatar" src="https://avatars.githubusercontent.com/u/583231?v=4">
+# Resume
 
 ## <span>&#xe80c;</span> Education
 
@@ -79,12 +73,7 @@ Developed a web application using Octo.js that integrates with the GitHub API to
 - Implemented features such as octopus-themed data visualizations and achievements to gamify the experience and encourage continuous improvement in open-source contributions.
 - Leveraged GitHub Actions for automated testing and deployment.
 
-## <span>&#xecfa;</span> Skills
 
-- Proficient in multiple programming languages, including Octolang, OctoScript, and more, with a strong grasp of object-oriented and functional programming paradigms.
-- Excellent communication and collaboration skills, both with octopuses and fellow cats.
-- Solid understanding of software development principles, data structures, and algorithms, with a focus on writing clean, efficient, and maintainable code.
-- Extensive experience with Git version control, including strategies such as GitFlow and GitHub Flow.
 
 ## BIO
 
