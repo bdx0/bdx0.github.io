@@ -1,29 +1,52 @@
 @import "tailwindcss";
-
-body {
-  @apply bg-cyber-bg text-cyber-text font-sans; /* Using cyberpunk colors */
-}
+@variant dark (&:where(.dark, .dark *));
 
 a {
-  @apply text-neon-blue hover:text-neon-green hover:shadow-neon-blue-glow transition-colors duration-200; /* Neon colors and glow effect */
+  @apply text-blue-600 hover:text-blue-800;
 }
 
-/* Ensure prose styles are dark-friendly */
+body.dark a {
+  @apply text-blue-400 hover:text-green-400;
+}
+
 .prose {
-  color: #e0e0e0; /* cyber-text */
+  @apply text-gray-800;
 }
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  color: #00f0ff; /* neon-blue for headings */
+
+body.dark .prose {
+  @apply text-gray-100;
 }
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  @apply text-gray-900;
+}
+
+body.dark .prose h1,
+body.dark .prose h2,
+body.dark .prose h3,
+body.dark .prose h4,
+body.dark .prose h5,
+body.dark .prose h6 {
+  @apply text-blue-400;
+}
+
 .prose a {
-  color: #00ff99; /* neon-green for links within prose */
+  @apply text-blue-600;
 }
+
+body.dark .prose a {
+  @apply text-blue-400;
+}
+
 .prose code {
-  font-family: 'Fira Code', monospace; /* Use monospaced font for code */
-  background-color: rgba(0, 240, 255, 0.1); /* Subtle neon blue background for code */
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
+  @apply bg-gray-200 text-gray-800;
 }
-.prose pre code {
-  background-color: transparent; /* No background for code blocks within pre */
+
+body.dark .prose code {
+  @apply bg-gray-800 text-gray-200;
 }

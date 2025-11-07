@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
+  important: true,
+  darkMode: "class",
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',

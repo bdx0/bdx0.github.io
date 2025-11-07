@@ -19,7 +19,7 @@ RUN cd blog && npm install
 # We are assuming the version is compatible with the current tailwindcss version.
 # RUN cd blog && npm install lightningcss-linux-arm64-gnu@latest
 
-# CMD ["cd", "blog", "&&", "npm", "run", "dev"]
+CMD ["sh", "-c", "cd blog && npm run dev"]
 
 # # Stage 2: Builder
 # FROM node:20-slim AS builder
