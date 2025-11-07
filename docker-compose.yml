@@ -17,14 +17,14 @@ services:
         - path: ./docker-compose.yml
           action: rebuild
         - path: ./blog
-          target: /app
+          target: /app/blog
           action: sync
           ignore:
             - node_modules
             - .next
         - path: ./content
-          target: /content
+          target: /app/content
           action: sync
     command: ["sh", "-c", "ls && cd blog && npm run dev"]
-    volumes:
-      - .:/app
+    # volumes:
+    #   - .:/app
