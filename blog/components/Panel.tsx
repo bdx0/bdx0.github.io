@@ -10,6 +10,7 @@ interface PanelProps {
   variant?: 'default' | 'glow' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   enableHoverEffect?: boolean;
+  style?: React.CSSProperties;
 }
 
 const Panel: React.FC<PanelProps> = ({ 
@@ -18,7 +19,8 @@ const Panel: React.FC<PanelProps> = ({
   title, 
   variant = 'default', 
   size = 'md',
-  enableHoverEffect = false
+  enableHoverEffect = false,
+  style
 }) => {
   const getStyle = () => {
     const baseStyle = {
@@ -58,7 +60,7 @@ const Panel: React.FC<PanelProps> = ({
         sizeStyle = { padding: '16px' };
     }
     
-    return { ...baseStyle, ...variantStyle, ...sizeStyle };
+    return { ...baseStyle, ...variantStyle, ...sizeStyle, ...style };
   };
 
   const panelClass = enableHoverEffect 

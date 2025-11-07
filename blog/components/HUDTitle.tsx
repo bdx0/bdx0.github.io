@@ -7,12 +7,14 @@ interface HUDTitleProps {
   children: React.ReactNode;
   className?: string;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
+  style?: React.CSSProperties;
 }
 
 const HUDTitle: React.FC<HUDTitleProps> = ({ 
   children, 
   className = '', 
-  level = 1 
+  level = 1, 
+  style 
 }) => {
   const TitleComponent = `h${level}` as keyof JSX.IntrinsicElements;
 
@@ -22,9 +24,10 @@ const HUDTitle: React.FC<HUDTitleProps> = ({
       fontWeight: '600',
     };
 
+    let levelStyle = {};
     if (level === 1) {
-      return { 
-        ...baseStyle, 
+      levelStyle = {
+        ...baseStyle,
         fontSize: '48px',
         lineHeight: '56px',
         letterSpacing: '0.02em',
@@ -32,18 +35,23 @@ const HUDTitle: React.FC<HUDTitleProps> = ({
         color: '#00E6FF',
       };
     } else if (level === 2) {
-      return { 
-        ...baseStyle, 
+      levelStyle = {
+        ...baseStyle,
         fontSize: '18px',
         fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
         color: '#00E6FF',
       };
     } else {
-      return { 
-        ...baseStyle, 
+      levelStyle = {
+        ...baseStyle,
         fontSize: '1.125rem',
       };
     }
+
+    return {
+      ...levelStyle,
+      ...style,
+    };
   };
 
   return (
