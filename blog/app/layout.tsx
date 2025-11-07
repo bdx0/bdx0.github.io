@@ -21,11 +21,11 @@ export default function RootLayout({
         {/* Consider adding a cyberpunk-themed favicon if available */}
       </head>
       <body className="font-sans antialiased"> {/* Use sans font by default */}
-        <header className="p-4 border-b border-gray-700/50 bg-cyber-bg/80 backdrop-blur-sm"> {/* Darker, slightly transparent header with blur */}
+        <header className="p-4 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm"> {/* Darker, slightly transparent header with blur */}
           <nav className="max-w-4xl mx-auto flex justify-between items-center"> {/* Use justify-between for spacing */}
-            <Link href="/" className="text-xl font-bold text-neon-blue hover:text-neon-green">Blog</Link> {/* Neon title */}
+            <Link href="/" className="text-xl font-bold text-blue-400 hover:text-green-400">Blog</Link> {/* Standard blue/green */}
             <div className="flex gap-6"> {/* Spacing for nav links */}
-              <Link href="/about" className="text-cyber-text hover:text-neon-green transition-colors duration-200">About</Link>
+              <Link href="/about" className="text-gray-200 hover:text-green-400 transition-colors duration-200">About</Link>
             </div>
           </nav>
         </header>

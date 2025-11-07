@@ -17,9 +17,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
   return (
     <article className="py-8">
-      <h1 className="text-5xl font-bold mb-4 text-neon-blue">{post.frontmatter.title}</h1> {/* Neon blue heading */}
+      <h1 className="text-5xl font-bold mb-4 text-blue-400">{post.frontmatter.title}</h1> {/* Standard Tailwind blue heading */}
       <p className="text-gray-500 text-sm mb-8">{new Date(post.frontmatter.date).toDateString()}</p>
-      <div className="prose prose-invert max-w-none"> {/* prose-invert for dark theme, max-w-none to let layout control width */}
+      <div className="prose max-w-none"> {/* prose for markdown content, max-w-none to let layout control width */}
         <MDXRemote source={post.content} />
       </div>
     </article>
