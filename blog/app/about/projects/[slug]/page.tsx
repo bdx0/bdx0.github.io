@@ -1,4 +1,4 @@
-import { getAllContent, getContentBySlug } from '../../../lib/markdown';
+import { getAllContent, getContentBySlug } from '../../../../lib/markdown';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 
 export async function generateStaticParams() {

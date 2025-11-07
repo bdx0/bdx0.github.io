@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "My Personal Blog",
@@ -25,19 +14,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
-      >
-        <header className="bg-gray-800 text-white p-4">
-          <nav className="container mx-auto flex gap-4">
-            <Link href="/" className="hover:underline">Home</Link>
-            <Link href="/about" className="hover:underline">About</Link>
-            <Link href="/resume" className="hover:underline">Resume</Link>
-            <Link href="/blog" className="hover:underline">Blog</Link>
-            <Link href="/projects" className="hover:underline">Projects</Link>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+        {/* Consider adding a cyberpunk-themed favicon if available */}
+      </head>
+      <body className="font-sans antialiased"> {/* Use sans font by default */}
+        <header className="p-4 border-b border-gray-700/50 bg-cyber-bg/80 backdrop-blur-sm"> {/* Darker, slightly transparent header with blur */}
+          <nav className="max-w-4xl mx-auto flex justify-between items-center"> {/* Use justify-between for spacing */}
+            <Link href="/" className="text-xl font-bold text-neon-blue hover:text-neon-green">Blog</Link> {/* Neon title */}
+            <div className="flex gap-6"> {/* Spacing for nav links */}
+              <Link href="/about" className="text-cyber-text hover:text-neon-green transition-colors duration-200">About</Link>
+            </div>
           </nav>
         </header>
-        <main className="container mx-auto p-4">{children}</main>
+        <main className="max-w-4xl mx-auto p-4 md:p-8"> {/* More padding on medium screens and up */}
+          {children}
+        </main>
+        {/* Optional: Footer with cyberpunk elements */}
+        <footer className="mt-16 py-8 text-center text-gray-600 text-sm border-t border-gray-700/50">
+          <p>&copy; {new Date().getFullYear()} My Personal Blog. Powered by Cyberpunk.</p>
+        </footer>
       </body>
     </html>
   );
