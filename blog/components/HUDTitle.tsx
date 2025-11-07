@@ -16,7 +16,7 @@ const HUDTitle: React.FC<HUDTitleProps> = ({
   level = 1, 
   style 
 }) => {
-  const TitleComponent = `h${level}` as keyof JSX.IntrinsicElements;
+  const TitleComponent = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
   const getStyle = () => {
     const baseStyle = {
