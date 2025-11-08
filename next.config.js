@@ -12,7 +12,10 @@ const withMDX = createMDX({
 const nextConfig = {
   // Comment out output: 'export' for development (add back for static export)
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  transpilePackages: ['next-mdx-remote']
+  transpilePackages: ['next-mdx-remote'],
+  experimental: {
+    turbopack: false, // Explicitly disable Turbopack
+  },
 }
 
 module.exports = withMDX(nextConfig)

@@ -32,8 +32,8 @@ const config = {
       fontFamily: {
         display: ['var(--font-orbitron)', 'Rajdhani', 'sans-serif'], // Condensed geometric for headings
         mono: ['var(--font-roboto-mono)', 'Space Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'], // Monospaced for stats/numbers
-        body: ['var(--font-inter)', 'IBM Plex Sans', 'system-ui', 'sans-serif'], // Neutral sans for readability
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'], // Default sans-serif
+        body: ['var(--font-manrope)', 'var(--font-inter)', 'IBM Plex Sans', 'system-ui', 'sans-serif'], // Manrope for body text, with Vietnamese support
+        sans: ['var(--font-manrope)', 'var(--font-inter)', 'system-ui', 'sans-serif'], // Default sans-serif, with Vietnamese support
       },
       spacing: {
         '1u': '4px', // Base spacing unit

@@ -16,6 +16,7 @@ const navLinks: NavLink[] = [
   { href: "/", label: "Blog" },
   { href: "/projects", label: "Projects" },
   { href: "/resume", label: "Resume" }, // Link to the new resume page
+  { href: "/design-system", label: "Design System" },
 ];
 
 export default function Navbar() {
