@@ -20,9 +20,7 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <article className="py-8">
-      <h1 className="text-5xl font-bold mb-4 text-blue-400">
-        {post.frontmatter.title}
-      </h1>{" "}
+
       <p className="text-gray-500 text-sm mb-8">
         {new Date(post.frontmatter.date).toDateString()}
       </p>

@@ -21,7 +21,7 @@ export default async function HomePage() {
 
   return (
     <div className="py-4" style={{ paddingTop: '16px', paddingBottom: '16px' }}>
-      <HUDTitle level={1} className="text-center" style={{ marginBottom: '16px' }}>Blog Posts</HUDTitle>
+      <HUDTitle level={2} className="text-center" style={{ marginBottom: '16px' }}>Blog Posts</HUDTitle>
       
       <div className="space-y-3" style={{ rowGap: '12px' }}>
         {posts.map((post: any) => (

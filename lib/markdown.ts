@@ -1,7 +1,8 @@
 import fs from 'fs';
-import path from 'path';
 import matter from 'gray-matter';
+import path from 'path';
 
+console.log(`current path: ${process.cwd()}`)
 const contentDirectory = path.join(process.cwd(), '../content');
 
 export function getAllContent(directory: string) {
@@ -48,24 +49,24 @@ export async function getContentBySlug(directory: string, slug: string) {
 }
 
 export async function getPageContent(pageName: string) {
-    // Try .mdx first, then .md
-    const mdxPath = path.join(contentDirectory, 'pages', `${pageName}.mdx`);
-    const mdPath = path.join(contentDirectory, 'pages', `${pageName}.md`);
+  // Try .mdx first, then .md
+  const mdxPath = path.join(contentDirectory, 'pages', `${pageName}.mdx`);
+  const mdPath = path.join(contentDirectory, 'pages', `${pageName}.md`);
 
-    let fullPath: string;
-    if (fs.existsSync(mdxPath)) {
-        fullPath = mdxPath;
-    } else if (fs.existsSync(mdPath)) {
-        fullPath = mdPath;
-    } else {
-        return null;
-    }
+  let fullPath: string;
+  if (fs.existsSync(mdxPath)) {
+    fullPath = mdxPath;
+  } else if (fs.existsSync(mdPath)) {
+    fullPath = mdPath;
+  } else {
+    return null;
+  }
 
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const { data, content } = matter(fileContents);
 
-    return {
-        frontmatter: data,
-        content,
-    };
+  return {
+    frontmatter: data,
+    content,
+  };
 }

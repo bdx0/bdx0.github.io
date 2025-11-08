@@ -1,7 +1,26 @@
 import Navbar from "@/components/Navbar"; // Import the new Navbar component using relative path
 import type { Metadata } from "next";
+import { Inter, Orbitron, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-orbitron",
+});
+
+const roboto_mono = Roboto_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roboto-mono",
+});
 
 export const metadata: Metadata = {
   title: "BDX0 Cyberpunk Blog",
@@ -14,19 +33,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${orbitron.variable} ${roboto_mono.variable} dark`}
+    >
+      <head />
       <body className="font-sans antialiased bg-bg-900 text-neutral-body min-h-screen flex flex-col">
         <Providers>
           <Navbar />
@@ -43,6 +55,11 @@ export default function RootLayout({
           >
             <p>
               &copy; {new Date().getFullYear()} BDX0 Cyberpunk Blog. All systems operational.
+            </p>
+            <p>
+              <a href="mailto:contact@bdx0.com?subject=Accessibility Issue Report" className="text-neon-cyan hover:text-neon-magenta">
+                Report an accessibility issue
+              </a>
             </p>
           </footer>
         </Providers>

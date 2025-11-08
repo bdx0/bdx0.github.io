@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -25,18 +25,20 @@
     "rehype-highlight": "^7.0.2",
     "rehype-pretty-code": "^0.14.1",
     "rehype-prism-plus": "^2.0.1",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "@types/node": "^20",
+    "typescript": "^5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.13",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "tailwindcss": "^4.1.17",
+    "@types/node": "^20",
     "typescript": "^5"
   }
 }

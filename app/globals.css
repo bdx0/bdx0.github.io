@@ -12,7 +12,7 @@
   --neon-orange: #FF8C42;
   --muted: #9AA0A6; /* Muted text */
   --strong: #FFFFFF; /* Updated to pure white for better contrast */
-  --ui-line: #2B2E34; /* UI lines */
+  --ui-line: #444954; /* UI lines */
   --danger: #FF4D6D;
   --accent-primary: #A6FFF4;
 }
@@ -87,7 +87,7 @@
 }
 
 .prose :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *))::marker {
-  color: var(--ui-line);
+  color: #FFFFFF; /* Updated to pure white for better contrast */
 }
 
 .prose :where(blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {

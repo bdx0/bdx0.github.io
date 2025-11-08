@@ -2,7 +2,7 @@ services:
   blog:
     build:
       context: .
-      dockerfile: ./blog/Dockerfile
+      dockerfile: ./Dockerfile
     image: dev
     ports:
       - "4000:3000"
@@ -10,21 +10,20 @@ services:
       - NODE_ENV=development
     develop:
       watch:
-        - path: ./blog/package.json
+        - path: ./package.json
           action: rebuild
-        - path: ./blog/Dockerfile
+        - path: ./Dockerfile
           action: rebuild
         - path: ./docker-compose.yml
           action: rebuild
-        - path: ./blog
-          target: /app/blog
+        - path: ./
+          target: /app/
           action: sync
           ignore:
             - node_modules
             - .next
-        - path: ./content
-          target: /app/content
-          action: sync
-    command: ["sh", "-c", "ls && cd blog && npm run dev"]
+            - Dockerfile
+            - docker-compose.yml
+    command: ["npm", "run", "dev"]
     # volumes:
     #   - .:/app

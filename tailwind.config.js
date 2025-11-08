@@ -30,10 +30,10 @@ const config = {
         'danger': '#FF4D6D',
       },
       fontFamily: {
-        display: ['Orbitron', 'Rajdhani', 'sans-serif'], // Condensed geometric for headings
-        mono: ['Roboto Mono', 'Space Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'], // Monospaced for stats/numbers
-        body: ['Inter', 'IBM Plex Sans', 'system-ui', 'sans-serif'], // Neutral sans for readability
-        sans: ['Inter', 'system-ui', 'sans-serif'], // Default sans-serif
+        display: ['var(--font-orbitron)', 'Rajdhani', 'sans-serif'], // Condensed geometric for headings
+        mono: ['var(--font-roboto-mono)', 'Space Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'], // Monospaced for stats/numbers
+        body: ['var(--font-inter)', 'IBM Plex Sans', 'system-ui', 'sans-serif'], // Neutral sans for readability
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'], // Default sans-serif
       },
       spacing: {
         '1u': '4px', // Base spacing unit
