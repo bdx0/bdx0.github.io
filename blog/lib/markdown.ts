@@ -24,10 +24,19 @@ export function getAllContent(directory: string) {
 }
 
 export async function getContentBySlug(directory: string, slug: string) {
-  const fullPath = path.join(contentDirectory, directory, `${slug}.md`);
-  if (!fs.existsSync(fullPath)) {
+  // Try .mdx first, then .md
+  const mdxPath = path.join(contentDirectory, directory, `${slug}.mdx`);
+  const mdPath = path.join(contentDirectory, directory, `${slug}.md`);
+
+  let fullPath: string;
+  if (fs.existsSync(mdxPath)) {
+    fullPath = mdxPath;
+  } else if (fs.existsSync(mdPath)) {
+    fullPath = mdPath;
+  } else {
     return null;
   }
+
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
 
@@ -39,10 +48,19 @@ export async function getContentBySlug(directory: string, slug: string) {
 }
 
 export async function getPageContent(pageName: string) {
-    const fullPath = path.join(contentDirectory, 'pages', `${pageName}.md`);
-    if (!fs.existsSync(fullPath)) {
+    // Try .mdx first, then .md
+    const mdxPath = path.join(contentDirectory, 'pages', `${pageName}.mdx`);
+    const mdPath = path.join(contentDirectory, 'pages', `${pageName}.md`);
+
+    let fullPath: string;
+    if (fs.existsSync(mdxPath)) {
+        fullPath = mdxPath;
+    } else if (fs.existsSync(mdPath)) {
+        fullPath = mdPath;
+    } else {
         return null;
     }
+
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
