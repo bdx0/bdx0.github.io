@@ -27,7 +27,5 @@
 ## Notes
 - This plan will be updated regularly to reflect ongoing development.
 - **[2025-11-08] Verified fix for low contrast for unordered list markers in Markdown content.
-- **[2025-11-08] Merged .gitignore_1 into .gitignore and removed .gitignore_1.**
-- **[2025-11-08] Merged README_1.md into README.md and removed README_1.md.**
 
 **

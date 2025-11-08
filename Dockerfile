@@ -1,8 +1,6 @@
 # Stage 1: Dependencies
 FROM node:20-slim AS dev
 
-ENV NODE_ENV production
-
 # Set working directory
 WORKDIR /app
 
@@ -14,5 +12,7 @@ COPY . .
 # Install dependencies.
 RUN npm install
 RUN npm run build
+
+ENV NODE_ENV production
 
 CMD ["npm", "run", "dev"]

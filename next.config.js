@@ -12,6 +12,7 @@ const withMDX = createMDX({
 const nextConfig = {
   // Comment out output: 'export' for development (add back for static export)
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  transpilePackages: ['next-mdx-remote']
 }
 
 module.exports = withMDX(nextConfig)

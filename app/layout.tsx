@@ -42,22 +42,29 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-bg-900 text-neutral-body min-h-screen flex flex-col">
         <Providers>
           <Navbar />
-          <main className="flex-grow max-w-6xl mx-auto w-full" style={{ padding: '16px' }}>
+          <main
+            className="flex-grow max-w-6xl mx-auto w-full"
+            style={{ padding: "16px" }}
+          >
             {children}
           </main>
-          <footer 
+          <footer
             className="text-center text-sm border-t"
-            style={{ 
-              padding: '16px 0',
-              color: '#9AA0A6',
-              borderColor: 'rgba(255,255,255, 0.04)' 
+            style={{
+              padding: "16px 0",
+              color: "#9AA0A6",
+              borderColor: "rgba(255,255,255, 0.04)",
             }}
           >
             <p>
-              &copy; {new Date().getFullYear()} BDX0 Cyberpunk Blog. All systems operational.
+              &copy; {new Date().getFullYear()} BDX0 Cyberpunk Blog. All systems
+              operational.
             </p>
             <p>
-              <a href="mailto:contact@bdx0.com?subject=Accessibility Issue Report" className="text-neon-cyan hover:text-neon-magenta">
+              <a
+                href="mailto:baoduy.duong0206@gmail.com?subject=Accessibility Issue Report"
+                className="text-neon-cyan hover:text-neon-magenta"
+              >
                 Report an accessibility issue
               </a>
             </p>

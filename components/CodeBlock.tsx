@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // Using a cyberpunk/dark theme for syntax highlighting
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
@@ -35,14 +35,15 @@ const CodeBlock = ({ children, className }: CodeBlockProps) => {
 
   // Helper function to extract text content from React elements
   const getTextContent = (element: React.ReactElement): string => {
-    if (typeof element.props.children === 'string') {
-      return element.props.children;
-    } else if (Array.isArray(element.props.children)) {
-      return element.props.children.map(child =>
-        typeof child === 'string' ? child : getTextContent(child)
+    const props = element.props as { children?: React.ReactNode };
+    if (typeof props.children === 'string') {
+      return props.children;
+    } else if (Array.isArray(props.children)) {
+      return props.children.map(child =>
+        typeof child === 'string' ? child : getTextContent(child as React.ReactElement)
       ).join('');
-    } else if (React.isValidElement(element.props.children)) {
-      return getTextContent(element.props.children);
+    } else if (React.isValidElement(props.children)) {
+      return getTextContent(props.children);
     }
     return '';
   };

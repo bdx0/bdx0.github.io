@@ -1,13 +1,22 @@
 ---
 title: Resume
-description: This is the resume page.
+description: My professional resume detailing experience, education, and skills.
 ---
 
-# Resume
+# DƯƠNG BẢO DUY
+
+**I am a software engineer**
+
+baoduy.duong0206@gmail.com | github:bdx0 | bdx0.io.vn
 
 ## BIO
-
 I am a software engineer with 9 years of expertise in optimizing application performance and driving innovative solutions. I want bridging the gap between technology and human interaction. I will make the software more simpler, more better.
+
+## EDUCATION
+**Ho Chi Minh University of Science**
+Bachelor in Mathematics & Computer Science; GPA: 7/10
+Ho Chi Minh, Vietnam
+09/2007 - 04/2013
 
 ## SKILLS SUMMARY
 
@@ -34,6 +43,11 @@ Python, JavaScript, TypeScript, C/C++, Java, Objective-C, Dart, Go
 - English (Working Proficiency)
 
 ## Work Experience
+
+### Freelance Fullstack Developer
+**Home** | 12/2022 - Present
+- Designed and deployed a home lab using QEMU, libvirt, and Kubernetes to support fullstack application development and deployment. Built a tested APIs and web apps in isolated VMs and containers, hosted self-developed services on a local NAS, and integrated IoT components to simulate real-world backend scenarios.                                                                                       │
+- Gained hands-on experience with DevOps workflows, Linux server environments, and self-hosted developer tools.
 
 ### Freelance AI Researcher
 **Home** | 12/2022 - Present

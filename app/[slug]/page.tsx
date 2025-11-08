@@ -1,5 +1,6 @@
 import { getAllContent, getContentBySlug } from "@/lib/markdown";
-import { MDXRemote as OriginalMDXRemote } from "next-mdx-remote/rsc";
+import { useMDXComponents } from "@/mdx-components"; // Import useMDXComponents
+import { MDXRemote } from "next-mdx-remote/rsc";
 
 export async function generateStaticParams() {
   const posts = getAllContent("blog");
@@ -7,6 +8,7 @@ export async function generateStaticParams() {
     slug: post.slug,
   }));
 }
+const components = useMDXComponents({}); // Spread existing components from useMDXComponents
 
 const PostPage = async ({ params }: { params: { slug: string } }) => {
   const resolvedParams = await params;
@@ -17,15 +19,18 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
   if (!post) {
     return <div>Post not found</div>;
   }
+  const scope = {
+    frontmatter: post?.frontmatter,
+  };
 
   return (
     <article className="py-8">
-
-      <p className="text-gray-500 text-sm mb-8">
-        {new Date(post.frontmatter.date).toDateString()}
-      </p>
       <div className="prose max-w-none">
-        <OriginalMDXRemote source={post.content} />
+        <MDXRemote
+          source={post?.content}
+          components={components}
+          options={{ scope: scope }}
+        />
       </div>
     </article>
   );
