@@ -67,12 +67,15 @@ const colors = [
 export default function RenderColorPalette() {
   return (
     <div className="mb-12">
-      <h3 className="text-2xl font-semibold mb-4">Color Palette</h3>
+      <h3 className="text-2xl font-semibold mb-4">1. Màu sắc (Color Tokens)</h3>
+      <p className="mb-4">
+        Bảng màu được thiết kế để tạo ra trải nghiệm cyberpunk có độ tương phản cao, sống động. Các token màu này sẽ được sử dụng để ghi đè bảng màu mặc định của Material Design, áp dụng cho các yếu tố như nền, văn bản, trạng thái và điểm nhấn.
+      </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {colors.map((color) => (
           <div
             key={color.name}
-            className="p-4 border border-gray-700 rounded-lg"
+            className="p-4 bg-panel-bg border border-ui-line rounded-lg"
           >
             <div
               className="w-full h-20 rounded-md mb-2"
@@ -84,6 +87,9 @@ export default function RenderColorPalette() {
           </div>
         ))}
       </div>
+      <p className="text-sm text-gray-500 mt-4">
+        **Lưu ý:** Các điểm nhấn neon nên được sử dụng tiết kiệm để duy trì tác động và tránh gây rối mắt. Đảm bảo tỷ lệ tương phản tối thiểu 4.5:1 cho tất cả văn bản dễ đọc trên nền tối. Các yếu tố neon trang trí có thể có độ tương phản thấp hơn.
+      </p>
     </div>
   );
 }

@@ -12,7 +12,6 @@ import RenderOpacityAndTransparency from "./RenderOpacityAndTransparency";
 import RenderAccessibilityNotes from "./RenderAccessibilityNotes";
 import RenderAssetsAndIconography from "./RenderAssetsAndIconography";
 import RenderTailwindUsage from "./RenderTailwindUsage";
-import RenderExampleComponents from "./RenderExampleComponents";
 import RenderPatternsAndExamples from "./RenderPatternsAndExamples";
 import RenderResponsiveLayout from "./RenderResponsiveLayout";
 import RenderImplementationChecklist from "./RenderImplementationChecklist";
@@ -23,78 +22,75 @@ import ExpandableSection from "./ExpandableSection"; // Import the new component
 export default function DesignSystemPage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">Design System - Font Showcase</h1>
+      <h1 className="text-4xl font-bold mb-8">Cyberpunk HUD — Hướng dẫn Design Tokens mở rộng cho Material Design</h1>
       <p className="mb-4">
-        This page showcases various fonts, with a focus on their rendering for
-        academic, technical, and Vietnamese content.
+        Trang này trình bày các design token và nguyên tắc phong cách để tùy chỉnh (theme) Material Design theo hướng thẩm mỹ techno/cyberpunk, đảm bảo tính nhất quán và duy trì tính thẩm mỹ riêng biệt trên tất cả các yếu tố UI.
       </p>
-      <h2 className="text-3xl font-bold mb-6">Design Tokens</h2>
+      <h2 className="text-3xl font-bold mb-6">Các Danh mục Design Tokens</h2>
 
-      <ExpandableSection title="Color Palette">
+      <ExpandableSection title="1. Màu sắc (Color Tokens)">
         <RenderColorPalette />
       </ExpandableSection>
 
-      <ExpandableSection title="Typography">
+      <ExpandableSection title="2. Typography Tokens (Kiểu chữ)">
         <RenderTypography />
       </ExpandableSection>
 
-      <ExpandableSection title="Spacing System">
+      <ExpandableSection title="3. Spacing Tokens (Hệ thống khoảng cách)">
         <RenderSpacingSystem />
       </ExpandableSection>
 
-      <ExpandableSection title="Component Styles">
-        <RenderComponentStyles />
-      </ExpandableSection>
-
-      <ExpandableSection title="Shadows & Elevation">
+      <ExpandableSection title="4. Elevation & Shadow Tokens (Bóng đổ & Độ cao)">
         <RenderShadowsAndElevation />
       </ExpandableSection>
 
-      <ExpandableSection title="Animations & Transitions">
-        <RenderAnimationsAndTransitions />
-      </ExpandableSection>
-
-      <ExpandableSection title="Border Radius">
+      <ExpandableSection title="5. Border Radius Tokens (Bo góc)">
         <RenderBorderRadius />
       </ExpandableSection>
 
-      <ExpandableSection title="Opacity & Transparency">
+      <ExpandableSection title="6. Opacity & Transparency Tokens (Độ mờ & Độ trong suốt)">
         <RenderOpacityAndTransparency />
       </ExpandableSection>
 
-      <ExpandableSection title="Accessibility Notes">
-        <RenderAccessibilityNotes />
+      <ExpandableSection title="7. Animation & Transition Tokens (Hoạt ảnh & Chuyển tiếp)">
+        <RenderAnimationsAndTransitions />
       </ExpandableSection>
 
-      <ExpandableSection title="Assets & Iconography">
+      <ExpandableSection title="8. Assets & Iconography Tokens (Tài sản & Iconography)">
         <RenderAssetsAndIconography />
       </ExpandableSection>
 
-      <ExpandableSection title="Common Tailwind CSS Usage">
+      <h2 className="text-3xl font-bold mb-6 mt-12">Nguyên tắc Phong cách và Triển khai</h2>
+
+      <ExpandableSection title="Phong cách thành phần (Theming Material Design Components)">
+        <RenderComponentStyles />
+      </ExpandableSection>
+
+      <ExpandableSection title="Sử dụng Tailwind CSS phổ biến trong dự án">
         <RenderTailwindUsage />
       </ExpandableSection>
 
-      <ExpandableSection title="Example Component Reference Design Code (React + Tailwind)">
-        <RenderExampleComponents />
-      </ExpandableSection>
-
-      <ExpandableSection title="Patterns & Examples">
+      <ExpandableSection title="Các mẫu & Ví dụ (áp dụng cho Material Design Components)">
         <RenderPatternsAndExamples />
       </ExpandableSection>
 
-      <ExpandableSection title="Responsive & Layout Considerations">
+      <ExpandableSection title="Cân nhắc về bố cục & phản hồi (Responsive & Layout Considerations)">
         <RenderResponsiveLayout />
       </ExpandableSection>
 
-      <ExpandableSection title="Implementation Checklist">
+      <ExpandableSection title="Ghi chú về khả năng tiếp cận (Accessibility Notes)">
+        <RenderAccessibilityNotes />
+      </ExpandableSection>
+
+      <ExpandableSection title="Danh sách kiểm tra triển khai (Implementation Checklist)">
         <RenderImplementationChecklist />
       </ExpandableSection>
 
-      <ExpandableSection title="Appendix — CSS Variable Starter (from globals.css)">
+      <ExpandableSection title="Phụ lục — CSS Variable Starter (từ globals.css)">
         <RenderCssVariableStarter />
       </ExpandableSection>
 
-      <ExpandableSection title="Fonts Style">
+      <ExpandableSection title="Trình bày Font (Font Showcase)">
         <RenderFontsStyle />
       </ExpandableSection>
 

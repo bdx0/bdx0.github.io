@@ -1,106 +1,100 @@
-# Cyberpunk HUD — Detailed Style Guide
+# Cyberpunk HUD — Hướng dẫn Design Tokens mở rộng cho Material Design
 
-> Comprehensive style system and Tailwind-ready tokens inspired by the provided Cyberpunk HUD screenshot.
-
----
-
-## Overview
-
-This style guide documents the visual language, design tokens, components, and usage patterns for a futuristic, cyberpunk heads-up display (HUD). The UI is characterized by high-contrast elements, vibrant neon accents set against a very dark, textured background. The layout emphasizes symmetry, grid-aligned panels, and a central anatomical figure. Key visual priorities include:
-
-*   **High Information Density:** Efficiently presents complex data with clear visual hierarchy.
-*   **Neon Accent Colors:** Utilized sparingly for interactive affordances, status indicators, and critical highlights.
-*   **Condensed Display Typography:** Employs thin, geometric, and technical fonts to evoke a sci-fi aesthetic for headings and prominent UI elements.
-*   **Micro-interactions:** Incorporates subtle animations like scan lines, neon glows, and flicker effects to enhance the futuristic feel and provide visual feedback.
-*   **Modular Components:** Features adaptable cards and inventory grids for organizing information and interactive items.
-
-This guide serves as a foundational resource for developing new components, defining design tokens, configuring Tailwind CSS, and implementing consistent UI elements across the project.
+> Tài liệu này định nghĩa các design token và nguyên tắc phong cách để tùy chỉnh (theme) Material Design theo hướng thẩm mỹ techno/cyberpunk. Nó cung cấp một hệ thống phong cách toàn diện và các token sẵn sàng cho Tailwind, giúp mở rộng Material Design với vẻ ngoài độc đáo của Cyberpunk HUD.
 
 ---
 
-## Design Tokens
+## Tổng quan về Design Tokens
 
-### Color Palette
+Design tokens là các giá trị nhỏ nhất, nguyên tử của hệ thống thiết kế của bạn. Chúng là những quyết định thiết kế được lưu trữ dưới dạng dữ liệu, thay vì được mã hóa cứng (hard-coded) trong các thành phần UI. Trong ngữ cảnh này, các design token sẽ được sử dụng để ghi đè các giá trị mặc định của Material Design, mang lại phong cách Cyberpunk HUD.
 
-The color palette is designed to create a high-contrast, immersive cyberpunk experience.
+Tài liệu này sẽ trình bày các danh mục design token chính, cách chúng được định nghĩa và cách chúng được áp dụng để tạo ra giao diện người dùng nhất quán và có thương hiệu.
 
-| Token Name      | Value                 | Description                                     | Usage                                                              |
+---
+
+## Các Danh mục Design Tokens
+
+### 1. Màu sắc (Color Tokens)
+
+Bảng màu được thiết kế để tạo ra trải nghiệm cyberpunk có độ tương phản cao, sống động. Các token màu này sẽ được sử dụng để ghi đè bảng màu mặc định của Material Design, áp dụng cho các yếu tố như nền, văn bản, trạng thái và điểm nhấn.
+
+| Token Name      | Value                 | Description                                     | Usage (trong ngữ cảnh Material Design)                               |
 | :-------------- | :-------------------- | :---------------------------------------------- | :----------------------------------------------------------------- |
-| `--bg-900`      | `#06060A`             | Primary background: very dark, near-black       | Main application background                                        |
-| `--panel-bg`    | `rgba(10,12,16,0.8)`  | Panel background: semi-transparent dark         | Background for UI panels, cards, and modular sections              |
-| `--ui-line`     | `#2B2E34`             | UI lines: subtle dark gray                      | Borders, dividers, subtle separators                               |
-| `--neon-cyan`   | `#00E6FF`             | Primary accent: vibrant cyan                    | Selected states, active elements, highlights, battery/RAM meters   |
-| `--neon-magenta`| `#FF2D6A`             | Secondary accent: vibrant magenta               | Negative/alert states, warnings, decorative labels                 |
-| `--neon-green`  | `#7CFF6B`             | Support accent: bright green                    | Success indicators, positive feedback                              |
-| `--neon-yellow` | `#FFD34B`             | Support accent: bright yellow                   | Caution, informational alerts                                      |
-| `--neon-orange` | `#FF8C42`             | Support accent: bright orange                   | Secondary highlights, alternative alerts                           |
-| `--muted-gray`  | `#9AA0A6`             | Muted text: soft gray                           | Secondary text, disabled states, less important information        |
-| `--neutral-body`| `#C7CED6`             | Body text: light gray                           | Standard readable text for paragraphs and descriptions             |
-| `--neutral-strong`| `#E8EEF2`           | Strong labels: off-white                        | Important labels, primary headings, high-emphasis text             |
-| `--accent-primary`| `#A6FFF4`           | Primary accent: light cyan                      | Code highlights, subtle interactive elements                       |
-| `--danger`      | `#FF4D6D`             | Danger: bright red                              | Error messages, critical warnings                                  |
+| `--bg-900`      | `#06060A`             | Nền chính: rất tối, gần như đen                 | Nền ứng dụng chính, thay thế màu nền mặc định của Material Design. |
+| `--panel-bg`    | `rgba(10,12,16,0.8)`  | Nền panel: tối bán trong suốt                   | Nền cho các panel, thẻ và các phần mô-đun của Material Design.    |
+| `--ui-line`     | `#2B2E34`             | Đường UI: xám tối tinh tế                       | Đường viền, đường phân chia, các đường phân cách tinh tế trong Material Design. |
+| `--neon-cyan`   | `#00E6FF`             | Màu nhấn chính: xanh cyan rực rỡ                | Trạng thái được chọn, các yếu tố hoạt động, điểm nhấn, thanh tiến trình trong Material Design. |
+| `--neon-magenta`| `#FF2D6A`             | Màu nhấn phụ: hồng magenta rực rỡ               | Trạng thái tiêu cực/cảnh báo, lỗi, nhãn trang trí trong Material Design. |
+| `--neon-green`  | `#7CFF6B`             | Màu hỗ trợ: xanh lá cây sáng                    | Chỉ báo thành công, phản hồi tích cực trong Material Design.      |
+| `--neon-yellow` | `#FFD34B`             | Màu hỗ trợ: vàng sáng                           | Cảnh báo, thông báo thông tin trong Material Design.              |
+| `--neon-orange` | `#FF8C42`             | Màu hỗ trợ: cam sáng                            | Điểm nhấn phụ, cảnh báo thay thế trong Material Design.           |
+| `--muted-gray`  | `#9AA0A6`             | Văn bản mờ: xám mềm                             | Văn bản phụ, trạng thái bị vô hiệu hóa, thông tin ít quan trọng trong Material Design. |
+| `--neutral-body`| `#C7CED6`             | Văn bản chính: xám nhạt                         | Văn bản đọc tiêu chuẩn cho đoạn văn và mô tả trong Material Design. |
+| `--neutral-strong`| `#E8EEF2`           | Nhãn mạnh: trắng ngà                             | Nhãn quan trọng, tiêu đề chính, văn bản nhấn mạnh cao trong Material Design. |
+| `--accent-primary`| `#A6FFF4`           | Màu nhấn chính: xanh cyan nhạt                  | Điểm nhấn code, các yếu tố tương tác tinh tế trong Material Design. |
+| `--danger`      | `#FF4D6D`             | Nguy hiểm: đỏ tươi                              | Thông báo lỗi, cảnh báo nghiêm trọng trong Material Design.       |
 
-**Notes:** Neon accents should be used sparingly to maintain their impact and avoid visual clutter. Ensure a minimum contrast ratio of 4.5:1 for all readable text on dark backgrounds. Decorative neon elements may have lower contrast.
-
----
-
-## Typography
-
-The typography system combines condensed, technical display fonts for headings and prominent UI elements with monospaced or narrow sans-serif fonts for data, code, and annotations. All fonts are carefully selected for their cyberpunk aesthetic and Vietnamese language support.
-
-**Font Families Used:**
-
-*   **`--font-space-grotesk`**: Modern sans-serif with a geometric and slightly condensed feel. Used for general display and headings.
-*   **`--font-chakra-petch`**: Geometric sans-serif with a square design and tapered corners, giving a futuristic and clean look. Used for display and UI elements.
-*   **`--font-genos`**: Modern display typeface with a futuristic, industrial, and technical aesthetic, characterized by sharp, angular, and geometrically constructed characters. Used for display.
-*   **`--font-tektur`**: Display sans-serif with a blocky, industrial, and geometric design, featuring octagonal outlines. Used for display.
-*   **`--font-space-mono`**: Monospaced typeface with geometric and grotesque influences. Ideal for code, data, and terminal-like displays.
-*   **`--font-jetbrains-mono`**: Monospaced font designed for developers, featuring programming ligatures. Used for code examples and technical text.
-*   **`JetBrainsMonoNL`**: Self-hosted monospaced font, a variant of JetBrains Mono without programming ligatures, explicitly configured with `font-feature-settings: "zero" 1;` for a slashed zero. Used for code and data where ligatures are undesirable.
-*   **`--font-hasklig`**: Self-hosted monospaced font that adds programming ligatures. Used for code examples where ligatures enhance readability.
-*   **`--font-source-code-pro`**: Monospaced font designed by Adobe for coding environments, emphasizing readability. Used for code and technical text.
-*   **`--font-roboto-mono`**: Monospaced font optimized for screen readability. Used for code, data, and numerical displays.
-*   **`--font-kanit`**: Contemporary and futuristic humanist sans-serif with geometric curves. Offers full Vietnamese support. Used for display and headings.
-*   **`--font-be-vietnam-pro`**: Neo Grotesk style, explicitly designed with refined Vietnamese letterforms and diacritics for optimal readability. Versatile for body and UI text.
-*   **`--font-exo-2`**: Geometric sans-serif typeface with a technological and futuristic feel. Supports Vietnamese. Used for display and body text.
-*   **`--font-unica-one`**: Condensed unicase sans-serif style, suitable for headlines and short texts. Supports Vietnamese.
-*   **`--font-teko`**: Tall, condensed design, suitable for modern editorial layouts or UI design. Supports Vietnamese.
-*   **`--font-rajdhani`**: Features modularized letterforms with a squared and condensed appearance, technical and futuristic. Supports Vietnamese.
-*   **`--font-michroma`**: Modern reinterpretation of the rounded-square sans genre, evoking a 1960s futuristic feel. Supports Vietnamese.
-
-**Font Weights:**
-The project primarily uses `400` (Regular), `600` (SemiBold), and `700` (Bold) weights to maintain a clean, legible, and impactful aesthetic. Specific fonts may include additional weights as defined in their `next/font/google` configuration.
-
-**Font Sizes & Line Heights (Tailwind CSS Utility Classes):**
-The project leverages Tailwind CSS's responsive font size scale.
-
-*   `text-sm`: 14px (e.g., for notes, small labels)
-*   `text-base`: 16px (default body text)
-*   `text-lg`: 18px (e.g., code examples)
-*   `text-xl`: 20px (e.g., subheadings)
-*   `text-2xl`: 24px (e.g., larger body text, Vietnamese examples)
-*   `text-3xl`: 30px (e.g., section titles)
-*   `text-4xl`: 36px (e.g., main headings)
-*   `text-5xl`: 48px (e.g., prominent display text)
-
-Line heights are typically managed by Tailwind's default `leading-normal` or `leading-relaxed` utilities, or explicitly set where precise control is needed (e.g., `line-height: 1.75` for prose).
-
-**Font Usage and Pairing:**
-*   **Headings (`h1`, `h2`, `h3`, `h4`):** Primarily use `font-display` (which includes `Rajdhani`, `Teko`, `Exo`, `Unica One`, `Kanit`, `Michroma`, `Space Grotesk`, `Orbitron`) for a condensed, geometric, and impactful look.
-*   **Body Text (`p`, `span`):** Uses `font-sans` (which includes `Exo 2`, `Be Vietnam Pro`, `Space Grotesk`, `Chakra Petch`, `Genos`, `Tektur`, `Manrope`, `Inter`) for readability at various sizes, with strong Vietnamese support.
-*   **Monospaced Text (`code`, `pre`):** Uses `font-mono` (which includes `JetBrains Mono`, `Hasklig`, `JetBrainsMonoNL`, `Source Code Pro`, `Space Mono`, `Roboto Mono`) for code examples, numerical data, and terminal-like output, ensuring character alignment.
-
-**Font Features:**
-*   `font-feature-settings: "zero" 1;`: Explicitly applied to monospaced fonts like `JetBrainsMonoNL` to ensure a slashed zero, distinguishing it from the letter 'O'.
+**Lưu ý:** Các điểm nhấn neon nên được sử dụng tiết kiệm để duy trì tác động và tránh gây rối mắt. Đảm bảo tỷ lệ tương phản tối thiểu 4.5:1 cho tất cả văn bản dễ đọc trên nền tối. Các yếu tố neon trang trí có thể có độ tương phản thấp hơn.
 
 ---
 
-## Spacing System
+### 2. Typography Tokens (Kiểu chữ)
 
-The project employs a modular spacing system based on a base unit of **4px**. This ensures consistent and harmonious spacing throughout the UI.
+Hệ thống typography kết hợp các font hiển thị cô đọng, kỹ thuật cho tiêu đề và các yếu tố UI nổi bật với các font monospaced hoặc sans-serif hẹp cho dữ liệu, code và chú thích. Tất cả các font được lựa chọn cẩn thận vì tính thẩm mỹ cyberpunk và hỗ trợ tiếng Việt. Các token typography này sẽ được sử dụng để ghi đè font mặc định của Material Design.
 
-*   **Base Unit:** `1u = 4px`
-*   **Scale:**
+**Các họ font được sử dụng:**
+
+*   **`--font-space-grotesk`**: Sans-serif hiện đại với cảm giác hình học và hơi cô đọng. Dùng cho hiển thị chung và tiêu đề.
+*   **`--font-chakra-petch`**: Sans-serif hình học với thiết kế vuông và các góc vát, mang lại vẻ ngoài tương lai và sạch sẽ. Dùng cho hiển thị và các yếu tố UI.
+*   **`--font-genos`**: Kiểu chữ hiển thị hiện đại với tính thẩm mỹ tương lai, công nghiệp và kỹ thuật, đặc trưng bởi các ký tự sắc nét, góc cạnh và được xây dựng hình học. Dùng cho hiển thị.
+*   **`--font-tektur`**: Sans-serif hiển thị với thiết kế khối, công nghiệp và hình học, có đường viền hình bát giác. Dùng cho hiển thị.
+*   **`--font-space-mono`**: Kiểu chữ monospaced với ảnh hưởng hình học và grotesque. Lý tưởng cho code, dữ liệu và hiển thị giống terminal.
+*   **`--font-jetbrains-mono`**: Font monospaced được thiết kế cho các nhà phát triển, có các ligatures lập trình. Dùng cho ví dụ code và văn bản kỹ thuật.
+*   **`JetBrainsMonoNL`**: Font monospaced tự host, một biến thể của JetBrains Mono không có ligatures lập trình, được cấu hình rõ ràng với `font-feature-settings: "zero" 1;` cho số không có gạch chéo. Dùng cho code và dữ liệu khi không muốn có ligatures.
+*   **`--font-hasklig`**: Font monospaced tự host có thêm ligatures lập trình. Dùng cho ví dụ code khi ligatures tăng cường khả năng đọc.
+*   **`--font-source-code-pro`**: Font monospaced được Adobe thiết kế cho môi trường lập trình, nhấn mạnh khả năng đọc. Dùng cho code và văn bản kỹ thuật.
+*   **`--font-roboto-mono`**: Font monospaced được tối ưu hóa cho khả năng đọc trên màn hình. Dùng cho code, dữ liệu và hiển thị số.
+*   **`--font-kanit`**: Sans-serif humanist đương đại và tương lai với các đường cong hình học. Hỗ trợ đầy đủ tiếng Việt. Dùng cho hiển thị và tiêu đề.
+*   **`--font-be-vietnam-pro`**: Phong cách Neo Grotesk, được thiết kế rõ ràng với các hình dạng chữ cái tiếng Việt tinh tế và dấu phụ để tối ưu khả năng đọc. Đa năng cho văn bản chính và UI.
+*   **`--font-exo-2`**: Kiểu chữ sans-serif hình học với cảm giác công nghệ và tương lai. Hỗ trợ tiếng Việt. Dùng cho hiển thị và văn bản chính.
+*   **`--font-unica-one`**: Phong cách sans-serif unicase cô đọng, phù hợp cho tiêu đề và các đoạn văn bản ngắn. Hỗ trợ tiếng Việt.
+*   **`--font-teko`**: Thiết kế cao, cô đọng, phù hợp cho bố cục biên tập hiện đại hoặc thiết kế UI. Hỗ trợ tiếng Việt.
+*   **`--font-rajdhani`**: Có các hình dạng chữ cái mô-đun hóa với vẻ ngoài vuông vắn và cô đọng, kỹ thuật và tương lai. Hỗ trợ tiếng Việt.
+*   **`--font-michroma`**: Phiên bản hiện đại của thể loại sans vuông tròn, gợi lên cảm giác tương lai của những năm 1960. Hỗ trợ tiếng Việt.
+
+**Trọng lượng font (Font Weights):**
+Dự án chủ yếu sử dụng các trọng lượng `400` (Regular), `600` (SemiBold) và `700` (Bold) để duy trì tính thẩm mỹ sạch sẽ, dễ đọc và có tác động. Các font cụ thể có thể bao gồm các trọng lượng bổ sung như được định nghĩa trong cấu hình `next/font/google` của chúng.
+
+**Kích thước font và chiều cao dòng (Font Sizes & Line Heights - Tailwind CSS Utility Classes):**
+Dự án tận dụng thang kích thước font phản hồi của Tailwind CSS.
+
+*   `text-sm`: 14px (ví dụ: cho ghi chú, nhãn nhỏ)
+*   `text-base`: 16px (văn bản chính mặc định)
+*   `text-lg`: 18px (ví dụ: ví dụ code)
+*   `text-xl`: 20px (ví dụ: tiêu đề phụ)
+*   `text-2xl`: 24px (ví dụ: văn bản chính lớn hơn, ví dụ tiếng Việt)
+*   `text-3xl`: 30px (ví dụ: tiêu đề phần)
+*   `text-4xl`: 36px (ví dụ: tiêu đề chính)
+*   `text-5xl`: 48px (ví dụ: văn bản hiển thị nổi bật)
+
+Chiều cao dòng thường được quản lý bởi các tiện ích `leading-normal` hoặc `leading-relaxed` mặc định của Tailwind, hoặc được đặt rõ ràng khi cần kiểm soát chính xác (ví dụ: `line-height: 1.75` cho văn xuôi).
+
+**Sử dụng và ghép nối font (Font Usage and Pairing):**
+*   **Tiêu đề (`h1`, `h2`, `h3`, `h4`):** Chủ yếu sử dụng `font-display` (bao gồm `Rajdhani`, `Teko`, `Exo`, `Unica One`, `Kanit`, `Michroma`, `Space Grotesk`, `Orbitron`) cho vẻ ngoài cô đọng, hình học và có tác động.
+*   **Văn bản chính (`p`, `span`):** Sử dụng `font-sans` (bao gồm `Exo 2`, `Be Vietnam Pro`, `Space Grotesk`, `Chakra Petch`, `Genos`, `Tektur`, `Manrope`, `Inter`) để dễ đọc ở các kích thước khác nhau, với hỗ trợ tiếng Việt mạnh mẽ.
+*   **Văn bản monospaced (`code`, `pre`):** Sử dụng `font-mono` (bao gồm `JetBrains Mono`, `Hasklig`, `JetBrainsMonoNL`, `Source Code Pro`, `Space Mono`, `Roboto Mono`) cho ví dụ code, dữ liệu số và đầu ra giống terminal, đảm bảo căn chỉnh ký tự.
+
+**Tính năng font (Font Features):**
+*   `font-feature-settings: "zero" 1;`: Được áp dụng rõ ràng cho các font monospaced như `JetBrainsMonoNL` để đảm bảo số không có gạch chéo, phân biệt nó với chữ 'O'.
+
+---
+
+### 3. Spacing Tokens (Hệ thống khoảng cách)
+
+Hệ thống khoảng cách mô-đun dựa trên đơn vị cơ bản **4px**. Điều này đảm bảo khoảng cách nhất quán và hài hòa trong toàn bộ UI. Các token khoảng cách này có thể được sử dụng để tùy chỉnh hệ thống khoảng cách của Material Design.
+
+*   **Đơn vị cơ bản:** `1u = 4px`
+*   **Thang đo:**
     *   `xxs`: `4px` (`1u`)
     *   `xs`: `8px` (`2u`)
     *   `sm`: `12px` (`3u`)
@@ -109,79 +103,64 @@ The project employs a modular spacing system based on a base unit of **4px**. Th
     *   `xl`: `32px` (`8u`)
     *   `xxl`: `48px` (`12u`)
 
-**Grid & Layout:**
-*   **Larger Layouts:** Utilizes a 12-column grid with gutters of `16px` (`4u`). The maximum container width is typically `1280px` to `1600px`.
-*   **Panel Grids:** Inner panels and item cards within the HUD use a compact grid system, often with `72px` to `96px` square items and `8px` gaps.
+**Lưới & Bố cục:**
+*   **Bố cục lớn hơn:** Sử dụng lưới 12 cột với khoảng cách giữa các cột là `16px` (`4u`). Chiều rộng container tối đa thường là `1280px` đến `1600px`.
+*   **Lưới panel:** Các panel bên trong và thẻ mục trong HUD sử dụng hệ thống lưới nhỏ gọn, thường với các mục vuông `72px` đến `96px` và khoảng cách `8px`.
 
 ---
 
-## Component Styles
+### 4. Elevation & Shadow Tokens (Bóng đổ & Độ cao)
 
-### Panels / Cards
+Thiết kế HUD nhấn mạnh độ cao dựa trên *hiệu ứng phát sáng* thay vì bóng đổ truyền thống, tạo ra hiệu ứng tương lai và siêu thực. Các token bóng đổ này sẽ thay thế hoặc bổ sung cho hệ thống bóng đổ của Material Design.
 
-*   **Background:** `var(--panel-bg)` (semi-transparent dark) to allow subtle background textures to show through.
-*   **Borders:** `1px` inner stroke or thin neon hairline for section separators, using `var(--ui-line)` or neon accent colors.
-*   **Padding:** `md` (`16px`) for general panel content. Tighter panels may use `8px` to `12px`.
-*   **Corners:** Small `border-radius` of `4px` (`--hud-sm`) for informational cards. Some accent chips may use `6px` to `8px` (`--hud-md`) or `9999px` (`--hud-pill`) for fully rounded shapes.
-
-### Inventory Grid
-
-*   **Item Tiles:** Fixed `72px` to `96px` square dimensions.
-*   **Item Border:** `1px` neon-tinted outline (`ring-2 ring-neon-cyan/60`) when selected, otherwise a subtle desaturated stroke (`border border-[rgba(255,255,255,0.04)]`).
-*   **Icon:** Centered within the tile, scaled to `48%` to `64%` of the tile size.
-*   **Quantity Badge:** Small rounded pill (`rounded-full`) positioned at the top-right, with `11px` text.
-
-### Tooltip / Details Panel
-
-*   **Width:** `320px` to `420px`, adaptable based on content.
-*   **Background:** Fully opaque dark panel (`bg-[#0a0a0b]`) with `8px` to `12px` padding.
-*   **Callout Accent:** A `4px` vertical neon stripe on the left or top edge, using `var(--neon-cyan)`.
-*   **Divider:** `1px` subtle texture line or glow effect.
-
-### Buttons / Tabs
-
-*   **Buttons:** Flat design with a neon outline and a subtle glow effect on hover.
-*   **Primary CTA:** Filled with `var(--neon-cyan)` background, using dark text or light text depending on contrast for readability.
-
-### Icons & Glyphs
-
-*   **Style:** Utilizes square, low-detail glyphs.
-*   **Stroke:** Prefers line icons with `1.5px` to `2px` stroke width.
-*   **Accents:** Small neon fills are used for status indicators.
-*   **Format:** SVG is preferred for crisp vector icons. Inline SVG allows for easy color overrides.
-
----
-
-## Shadows & Elevation
-
-The HUD design emphasizes *glow-based* elevation rather than traditional drop shadows, creating a futuristic and ethereal effect.
-
-**Shadow Tokens (CSS `box-shadow` examples):**
+**Shadow Tokens (ví dụ `box-shadow` CSS):**
 
 *   `--glow-xs`: `0 2px 6px rgba(0,230,255,0.06)`
 *   `--glow-sm`: `0 8px 28px rgba(0,230,255,0.08)`
-*   `--glow-neon`: `0 0 18px rgba(0,230,255,0.18), 0 0 36px rgba(255,45,106,0.06)` (combines cyan and magenta glows)
+*   `--glow-neon`: `0 0 18px rgba(0,230,255,0.18), 0 0 36px rgba(255,45,106,0.06)` (kết hợp phát sáng cyan và magenta)
 *   `--neon-blue-glow`: `0 0 10px #00f0ff, 0 0 20px #00f0ff`
 *   `--neon-green-glow`: `0 0 10px #00ff99, 0 0 20px #00ff99`
 
-**Usage Rules:**
-*   **Inner Glow:** Used for embedded displays or elements that appear recessed.
-*   **Outer Glow:** Applied to active or highlighted cards and interactive elements.
-*   **Avoid Heavy Shadows:** Keep shadows soft, subtle, and tinted with accent colors.
+**Quy tắc sử dụng:**
+*   **Phát sáng bên trong:** Dùng cho các màn hình nhúng hoặc các yếu tố trông như bị lõm vào.
+*   **Phát sáng bên ngoài:** Áp dụng cho các thẻ hoạt động hoặc được làm nổi bật và các yếu tố tương tác.
+*   **Tránh bóng đổ nặng:** Giữ bóng đổ mềm mại, tinh tế và có màu sắc của các màu nhấn.
 
 ---
 
-## Animations & Transitions
+### 5. Border Radius Tokens (Bo góc)
 
-Motion in the HUD is minimal, purposeful, and designed to enhance the futuristic experience without being distracting.
+Các token bo góc này sẽ được sử dụng để ghi đè các giá trị mặc định của Material Design.
 
-*   **Hover Transitions:** `120ms` to `180ms` with a `cubic-bezier(0.2, 0.8, 0.2, 1)` easing function for smooth, responsive feedback.
-*   **Selection/Activation:** `150ms` to `220ms` transitions involving glow scaling and opacity changes.
-*   **Scan Effect:** A subtle vertical scan line shimmer, typically `1.2s` to `2s` looped, using a low-opacity gradient translate.
-*   **Flicker Effect:** Small, brief opacity jitter (`0.06s` to `0.12s`) to simulate a CRT-like neon flicker.
-*   **Micro-movement:** Slow parallax effects on background elements or central models (`6s` to `12s` ease) for subtle depth.
+*   **Thẻ nhỏ:** `4px` (`--hud-sm`)
+*   **Nút / Chip:** `6px` đến `8px` (`--hud-md`)
+*   **Badge / Avatar tròn:** `9999px` (`--hud-pill`) cho hình dạng tròn hoàn toàn, giống viên thuốc.
+*   **Panel đặc biệt:** `2px` hoặc các góc sắc nét cho các yếu tố kỹ thuật hoặc HUD trung tâm cụ thể.
 
-**Example Keyframes (CSS):**
+---
+
+### 6. Opacity & Transparency Tokens (Độ mờ & Độ trong suốt)
+
+Độ mờ và độ trong suốt rất quan trọng để phân lớp thông tin và tạo chiều sâu trong HUD. Các token này có thể được sử dụng để tùy chỉnh các giá trị mặc định của Material Design.
+
+*   **Lớp phủ nền:** `0.75` đến `0.85` để làm mờ tinh tế nội dung phía sau các yếu tố hoạt động.
+*   **Bề mặt panel:** `0.85` đến `0.95` để đảm bảo khả năng đọc nội dung trong khi vẫn duy trì hiệu ứng bán trong suốt.
+*   **Các yếu tố bị vô hiệu hóa/mờ:** `0.36` đến `0.48` để chỉ ra trực quan rằng không thể tương tác.
+*   **Phát sáng khi di chuột/hoạt động:** Sử dụng pha trộn cộng thêm và giá trị alpha cao hơn (`0.12` đến `0.25`) cho hiệu ứng phát sáng.
+
+---
+
+### 7. Animation & Transition Tokens (Hoạt ảnh & Chuyển tiếp)
+
+Chuyển động trong HUD là tối thiểu, có mục đích và được thiết kế để tăng cường trải nghiệm tương lai mà không gây mất tập trung. Các token hoạt ảnh này có thể được áp dụng để tùy chỉnh các hoạt ảnh mặc định của Material Design.
+
+*   **Chuyển tiếp di chuột:** `120ms` đến `180ms` với hàm easing `cubic-bezier(0.2, 0.8, 0.2, 1)` cho phản hồi mượt mà, nhạy bén.
+*   **Chọn/Kích hoạt:** Chuyển tiếp `150ms` đến `220ms` liên quan đến việc thay đổi tỷ lệ phát sáng và độ mờ.
+*   **Hiệu ứng quét:** Hiệu ứng nhấp nháy scan line dọc tinh tế, thường lặp lại `1.2s` đến `2s`, sử dụng gradient mờ có độ mờ thấp.
+*   **Hiệu ứng nhấp nháy:** Rung động độ mờ nhỏ, ngắn (`0.06s` đến `0.12s`) để mô phỏng hiệu ứng nhấp nháy neon giống CRT.
+*   **Chuyển động vi mô:** Hiệu ứng thị sai chậm trên các yếu tố nền hoặc các mô hình trung tâm (`6s` đến `12s` ease) để tạo chiều sâu tinh tế.
+
+**Ví dụ Keyframes (CSS):**
 
 ```css
 @keyframes neon-flicker {
@@ -194,54 +173,80 @@ Motion in the HUD is minimal, purposeful, and designed to enhance the futuristic
 }
 ```
 
-**Accessibility:** Always respect `prefers-reduced-motion` to disable non-essential animations for users who prefer less motion.
+**Khả năng tiếp cận:** Luôn tôn trọng `prefers-reduced-motion` để tắt các hoạt ảnh không cần thiết cho người dùng không muốn nhiều chuyển động.
 
 ---
 
-## Border Radius
+### 8. Assets & Iconography Tokens (Tài sản & Iconography)
 
-*   **Small Cards:** `4px` (`--hud-sm`)
-*   **Buttons / Chips:** `6px` to `8px` (`--hud-md`)
-*   **Rounded Badges / Avatars:** `9999px` (`--hud-pill`) for a fully rounded, pill-like shape.
-*   **Special Panels:** `2px` or sharp corners for specific technical or central HUD elements.
+Các token này áp dụng cho việc thay thế hoặc bổ sung các icon mặc định của Material Design.
 
----
-
-## Opacity & Transparency
-
-Opacity and transparency are crucial for layering information and creating depth in the HUD.
-
-*   **Background Overlay:** `0.75` to `0.85` for subtle dimming of content behind active elements.
-*   **Panel Surface:** `0.85` to `0.95` to ensure readability of content while maintaining a semi-transparent effect.
-*   **Disabled/Ghost Elements:** `0.36` to `0.48` to visually indicate non-interactiveness.
-*   **Hover/Active Glows:** Uses additive blending and higher alpha values (`0.12` to `0.25`) for a luminous effect.
+*   **Icon hệ thống:** Được thiết kế trên lưới `32px` hoặc `48px`. Xuất ở độ phân giải `1x`, `2x` và `3x` cho các mật độ hiển thị khác nhau.
+*   **Định dạng:** SVG được ưu tiên cho các icon vector sắc nét, có thể mở rộng.
+*   **Đường nét:** Icon thường có độ rộng đường nét `1.5px` đến `2px`.
+*   **Màu sắc:** Các vùng điền neon nhỏ được sử dụng cho các chỉ báo trạng thái. SVG nội tuyến cho phép ghi đè màu động thông qua CSS.
+*   **Định dạng Sprite:** Chấp nhận được cho các icon nhỏ, nhưng SVG nội tuyến được ưu tiên để kiểm soát và linh hoạt hơn.
 
 ---
 
-## Accessibility Notes
+### Tích hợp với các Hệ thống Thiết kế Bên ngoài (Integrating with External Design Systems)
 
-*   **Contrast:** Maintain a minimum contrast ratio of 4.5:1 for all body text to ensure readability. Neon accents are primarily decorative and should not be the sole indicator of essential information.
-*   **Focus States:** Provide clear and distinct keyboard focus states using outlines and non-color cues to assist users navigating with keyboards.
-*   **Reduced Motion:** Respect the `prefers-reduced-motion` media query to disable non-essential animations and transitions for users with motion sensitivities.
-*   **ARIA Labels:** Utilize appropriate ARIA attributes for complex interactive components to convey their purpose and state to assistive technologies.
+Khi tích hợp các thành phần hoặc thư viện từ các hệ thống thiết kế bên ngoài (ví dụ: Material UI, Ant Design) vào dự án Cyberpunk HUD, điều quan trọng là phải duy trì tính thẩm mỹ và nhất quán của thương hiệu. Các nguyên tắc sau đây sẽ hướng dẫn quá trình này:
 
----
-
-## Assets & Iconography
-
-*   **System Icons:** Designed on a `32px` or `48px` grid. Exported at `1x`, `2x`, and `3x` resolutions for various display densities.
-*   **Format:** SVG is preferred for crisp, scalable vector icons.
-*   **Stroke:** Icons typically feature `1.5px` to `2px` stroke widths.
-*   **Color:** Small neon fills are used for status indicators. Inline SVG allows for dynamic color overrides via CSS.
-*   **Sprite Formats:** Acceptable for micro icons, but inline SVG is preferred for greater control and flexibility.
+1.  **Ưu tiên Design Tokens:** Luôn cố gắng ghi đè các giá trị mặc định của hệ thống bên ngoài bằng các design token đã xác định của chúng ta (màu sắc, typography, spacing, v.v.). Sử dụng các biến CSS hoặc cấu hình Tailwind CSS để áp dụng các token này.
+2.  **Tùy chỉnh thành phần:** Đối với các thành phần phức tạp hơn, hãy sử dụng các API tùy chỉnh của hệ thống bên ngoài (ví dụ: `sx` prop trong Material UI, `theme` prop trong Ant Design) để áp dụng các kiểu dáng Cyberpunk HUD. Tập trung vào việc điều chỉnh màu sắc, bo góc, bóng đổ và typography.
+3.  **Tạo Wrapper Components:** Nếu việc tùy chỉnh trực tiếp trở nên quá phức tạp hoặc không thể, hãy tạo các "wrapper components" (thành phần bao bọc) của riêng chúng ta. Các wrapper này sẽ gói gọn thành phần bên ngoài và áp dụng các kiểu dáng cần thiết để phù hợp với hệ thống thiết kế của chúng ta.
+4.  **Kiểm tra khả năng tương thích:** Đảm bảo rằng các thành phần bên ngoài được tích hợp vẫn hoạt động tốt với các nguyên tắc về khả năng tiếp cận và phản hồi của chúng ta.
+5.  **Sử dụng có chọn lọc:** Chỉ tích hợp các thành phần bên ngoài khi chúng cung cấp chức năng độc đáo hoặc giải quyết một vấn thể cụ thể mà không thể dễ dàng đạt được bằng các thành phần nội bộ. Tránh tích hợp toàn bộ thư viện nếu chỉ cần một vài thành phần.
 
 ---
 
-## Common Tailwind CSS Usage in Project
+## Nguyên tắc Phong cách và Triển khai
 
-This section outlines how the defined design tokens are translated into practical Tailwind CSS utility classes for consistent application.
+### Phong cách thành phần (Theming Material Design Components)
 
-**Tailwind Configuration Extensions (from `tailwind.config.js`):**
+Phần này mô tả cách áp dụng phong cách Cyberpunk HUD vào các thành phần Material Design.
+
+#### Panels / Cards (Thẻ Material Design)
+
+*   **Nền:** Sử dụng `var(--panel-bg)` (tối bán trong suốt) để cho phép các kết cấu nền tinh tế hiển thị qua.
+*   **Đường viền:** `1px` đường viền bên trong hoặc đường viền neon mỏng cho các đường phân cách phần, sử dụng `var(--ui-line)` hoặc màu nhấn neon.
+*   **Padding:** `md` (`16px`) cho nội dung panel chung. Các panel chặt chẽ hơn có thể sử dụng `8px` đến `12px`.
+*   **Bo góc:** `border-radius` nhỏ `4px` (`--hud-sm`) cho các thẻ thông tin. Một số chip nhấn có thể sử dụng `6px` đến `8px` (`--hud-md`) hoặc `9999px` (`--hud-pill`) cho các hình dạng tròn hoàn toàn.
+
+#### Inventory Grid (Lưới các mục)
+
+*   **Ô mục:** Kích thước vuông cố định `72px` đến `96px`.
+*   **Đường viền mục:** `1px` đường viền màu neon (`ring-2 ring-neon-cyan/60`) khi được chọn, nếu không thì là một đường viền mờ nhạt tinh tế (`border border-[rgba(255,255,255,0.04)]`).
+*   **Icon:** Căn giữa trong ô, được chia tỷ lệ từ `48%` đến `64%` kích thước ô.
+*   **Badge số lượng:** Hình viên thuốc tròn nhỏ (`rounded-full`) được đặt ở trên cùng bên phải, với văn bản `11px`.
+
+#### Tooltip / Details Panel (Tooltip Material Design)
+
+*   **Chiều rộng:** `320px` đến `420px`, có thể điều chỉnh dựa trên nội dung.
+*   **Nền:** Panel tối hoàn toàn mờ (`bg-[#0a0a0b]`) với padding `8px` đến `12px`.
+*   **Điểm nhấn Callout:** Một sọc neon dọc `4px` ở cạnh trái hoặc trên cùng, sử dụng `var(--neon-cyan)`.
+*   **Đường phân chia:** `1px` đường kết cấu tinh tế hoặc hiệu ứng phát sáng.
+
+#### Buttons / Tabs (Nút và Tab Material Design)
+
+*   **Nút:** Thiết kế phẳng với đường viền neon và hiệu ứng phát sáng tinh tế khi di chuột qua.
+*   **CTA chính:** Được điền bằng nền `var(--neon-cyan)`, sử dụng văn bản tối hoặc văn bản sáng tùy thuộc vào độ tương phản để dễ đọc.
+
+#### Icons & Glyphs (Icon Material Design)
+
+*   **Phong cách:** Sử dụng các glyphs vuông, chi tiết thấp.
+*   **Đường nét:** Ưu tiên các icon đường nét với độ rộng đường nét `1.5px` đến `2px`.
+*   **Điểm nhấn:** Các vùng điền neon nhỏ được sử dụng cho các chỉ báo trạng thái.
+*   **Định dạng:** SVG được ưu tiên cho các icon vector sắc nét. SVG nội tuyến cho phép ghi đè màu động thông qua CSS.
+
+---
+
+### Sử dụng Tailwind CSS phổ biến trong dự án
+
+Phần này phác thảo cách các design token được định nghĩa được chuyển đổi thành các lớp tiện ích Tailwind CSS thực tế để áp dụng nhất quán, đặc biệt khi tùy chỉnh các thành phần Material Design.
+
+**Mở rộng cấu hình Tailwind (từ `tailwind.config.js`):**
 
 ```javascript
 module.exports = {
@@ -299,7 +304,7 @@ module.exports = {
 }
 ```
 
-**Utility Class Examples:**
+**Ví dụ về lớp tiện ích:**
 
 *   **Panel:** `bg-panel-bg p-4u rounded-hud-sm border border-ui-line`
 *   **Selected Item:** `ring-2 ring-neon-cyan/60 shadow-neon-sm`
@@ -310,117 +315,54 @@ module.exports = {
 
 ---
 
-## Tích hợp với các Hệ thống Thiết kế Bên ngoài (ví dụ: Material Design)
+### Các mẫu & Ví dụ (áp dụng cho Material Design Components)
 
-Mặc dù hệ thống thiết kế Cyberpunk HUD này có bộ design token và nguyên tắc thẩm mỹ riêng, nhưng hoàn toàn có thể sử dụng các hệ thống thiết kế bên ngoài như Material Design làm nền tảng cấu trúc và tương tác, sau đó áp dụng phong cách Cyberpunk lên trên. Cách tiếp cận này cho phép tận dụng các thành phần UI mạnh mẽ, đã được kiểm chứng và các nguyên tắc UX của Material Design, đồng thời vẫn giữ được vẻ ngoài độc đáo của Cyberpunk.
+Phần này mô tả các mẫu tương tác và ví dụ có thể được áp dụng khi tùy chỉnh các thành phần Material Design.
 
-**Cách tiếp cận:**
-
-1.  **Material Design làm nền tảng cấu trúc:** Sử dụng các thành phần UI (như nút, thẻ, thanh điều hướng, trường nhập liệu) và các mẫu tương tác của Material Design. Điều này cung cấp một cơ sở vững chắc về chức năng và khả năng tiếp cận.
-2.  **Cyberpunk làm lớp phủ thẩm mỹ (Theming):** Áp dụng các design token và nguyên tắc từ hướng dẫn này để "theme" lại các thành phần Material Design:
-    *   **Màu sắc:** Ghi đè bảng màu mặc định của Material Design bằng các màu neon rực rỡ (`--neon-cyan`, `--neon-magenta`, v.v.) trên nền tối (`--bg-900`, `--panel-bg`).
-    *   **Typography:** Thay thế font chữ mặc định bằng các font kỹ thuật, monospaced hoặc condensed sans-serif đã định nghĩa (`--font-space-grotesk`, `--font-jetbrains-mono`, v.v.).
-    *   **Độ cao và bóng đổ:** Thay thế bóng đổ truyền thống của Material Design bằng các hiệu ứng phát sáng neon (`--glow-neon`, `--neon-blue-glow`).
-    *   **Bo góc:** Điều chỉnh `border-radius` của các thành phần Material Design để phù hợp với các giá trị sắc nét hơn (`--hud-sm`, `--hud-md`).
-    *   **Hoạt ảnh:** Tùy chỉnh các hoạt ảnh để thêm vào các hiệu ứng scan line, flicker hoặc các chuyển động vi mô đặc trưng của Cyberpunk.
-    *   **Iconography:** Sử dụng bộ icon tùy chỉnh mang phong cách Cyberpunk thay vì Material Icons.
-
-**Thách thức và Lưu ý:**
-
-*   **Tùy chỉnh sâu rộng:** Material Design có tính "có ý kiến" cao. Việc thay đổi hoàn toàn giao diện của nó đòi hỏi sự tùy chỉnh sâu rộng, thường thông qua các tính năng theming của thư viện Material UI (ví dụ: `createTheme` trong MUI) hoặc ghi đè CSS.
-*   **Duy trì tính nhất quán:** Cần đảm bảo rằng phong cách Cyberpunk được áp dụng nhất quán trên tất cả các thành phần Material Design mà không làm hỏng chức năng hoặc khả năng tiếp cận của chúng.
-*   **Cân bằng thẩm mỹ:** Việc cân bằng giữa sự rõ ràng, dễ sử dụng của Material Design và vẻ ngoài độc đáo, đôi khi phức tạp của Cyberpunk là một thách thức.
-
-Cách tiếp cận này cho phép bạn hưởng lợi từ sự ổn định và tính năng của một hệ thống thiết kế lớn, đồng thời vẫn tạo ra một trải nghiệm người dùng độc đáo và hấp dẫn theo phong cách Cyberpunk.
+*   **Luồng chi tiết kho đồ:**
+    *   **Tương tác:** Di chuột qua mục lưới kích hoạt tooltip xem trước.
+    *   **Kích hoạt:** Nhấp vào một mục sẽ mở một panel chi tiết trượt từ bên phải, có hoạt ảnh quét tinh tế trên tiêu đề của nó.
+*   **Chỉ báo trạng thái:**
+    *   Kết hợp màu sắc, icon và nhãn để truyền đạt trạng thái (ví dụ: "EQUIPPED" bằng `neon-cyan` với icon tia chớp).
+*   **Phản hồi lỗi/cảnh báo:**
+    *   Sử dụng `neon-magenta` với hoạt ảnh rung hoặc nhấp nháy nhỏ, kèm theo giải thích tooltip ngắn gọn.
 
 ---
 
-## Example Component Reference Design Code (React + Tailwind)
+### Cân nhắc về bố cục & phản hồi (Responsive & Layout Considerations)
 
-### InventoryItem Component
+Các nguyên tắc này là chung và cần được áp dụng khi thiết kế bố cục với Material Design.
 
-```jsx
-// components/InventoryItem.jsx
-import React from 'react';
-
-export default function InventoryItem({ icon, name, qty, equipped }) {
-  return (
-    <div
-      className={`
-        w-[96px] h-[96px] p-2u rounded-hud-sm relative
-        bg-panel-bg border border-ui-line
-        ${equipped ? 'ring-2 ring-neon-cyan/70 shadow-neon-sm' : ''}
-      `}
-    >
-      <div className="absolute top-1u right-1u text-[11px] px-1u rounded-hud-pill bg-bg-900 text-neutral-body">
-        {qty}
-      </div>
-      <div className="flex items-center justify-center h-full">
-        <img src={icon} alt={name} className="max-w-[60%] max-h-[60%]" />
-      </div>
-      <div className="absolute left-2u bottom-1u text-xs text-neutral-body font-sans">
-        {name}
-      </div>
-    </div>
-  );
-}
-```
-
-### ItemTooltip Component
-
-```jsx
-// components/ItemTooltip.jsx
-import React from 'react';
-
-export default function ItemTooltip({ title, lines }) {
-  return (
-    <div className="w-80 bg-panel-bg p-4u rounded-hud-md shadow-neon-sm border border-ui-line">
-      <div className="text-lg font-display font-semibold text-neutral-strong mb-2u">
-        {title}
-      </div>
-      <div className="text-sm text-neutral-body space-y-1u">
-        {lines.map((l) => (
-          <div key={l}>{l}</div>
-        ))}
-      </div>
-    </div>
-  );
-}
-```
+*   **Màn hình hẹp:** Các panel bên cạnh nên thu gọn thành các ngăn kéo điều hướng. Hình ảnh giải phẫu trung tâm hoặc khu vực nội dung chính có thể chuyển sang vùng có thể cuộn.
+*   **Điều chỉnh thang loại:** Triển khai thang loại nhỏ hơn (ví dụ: giảm tất cả kích thước font một bước) để cải thiện khả năng đọc trên màn hình nhỏ gọn.
+*   **Thích ứng lưới:** Điều chỉnh kích thước ô lưới (ví dụ: thành các ô vuông `56px`) để phù hợp với các khung nhìn nhỏ hơn.
 
 ---
 
-## Patterns & Examples
+### Ghi chú về khả năng tiếp cận (Accessibility Notes)
 
-*   **Inventory Detail Flow:**
-    *   **Interaction:** Grid item hover triggers a preview tooltip.
-    *   **Activation:** Clicking an item opens a detailed panel sliding from the right, featuring a subtle scan animation on its header.
-*   **State Indicators:**
-    *   Combine color, icon, and label to convey status (e.g., "EQUIPPED" in `neon-cyan` with a bolt icon).
-*   **Error/Warning Feedback:**
-    *   Utilize `neon-magenta` with a small shake or flicker animation, accompanied by a brief tooltip explanation.
+Các nguyên tắc này là phổ quát và cần được duy trì khi tùy chỉnh Material Design.
 
----
-
-## Responsive & Layout Considerations
-
-*   **Narrow Screens:** Side panels should collapse into navigable drawers. The central anatomical figure or main content area may shift to a scrollable region.
-*   **Type Scale Adjustment:** Implement a smaller type scale (e.g., reduce all font sizes by one step) for improved readability on compact displays.
-*   **Grid Adaptation:** Adjust grid tile sizes (e.g., to `56px` squares) to fit smaller viewports.
+*   **Độ tương phản:** Duy trì tỷ lệ tương phản tối thiểu 4.5:1 cho tất cả văn bản chính để đảm bảo khả năng đọc. Các điểm nhấn neon chủ yếu mang tính trang trí và không nên là chỉ báo duy nhất cho thông tin thiết yếu.
+*   **Trạng thái focus:** Cung cấp các trạng thái focus bàn phím rõ ràng và khác biệt bằng cách sử dụng đường viền và các tín hiệu không màu để hỗ trợ người dùng điều hướng bằng bàn phím.
+*   **Giảm chuyển động:** Tôn trọng truy vấn phương tiện `prefers-reduced-motion` để tắt các hoạt ảnh và chuyển tiếp không cần thiết cho người dùng nhạy cảm với chuyển động.
+*   **Nhãn ARIA:** Sử dụng các thuộc tính ARIA thích hợp cho các thành phần tương tác phức tạp để truyền đạt mục đích và trạng thái của chúng cho các công nghệ hỗ trợ.
 
 ---
 
-## Implementation Checklist
+## Danh sách kiểm tra triển khai (Implementation Checklist)
 
-*   [x] Add color tokens to `:root` CSS variables in `globals.css`.
-*   [x] Extend Tailwind CSS configuration with custom color, font, spacing, shadow, and border-radius tokens.
-*   [ ] Build base components: `Panel`, `InventoryGrid`, `Tooltip`, `HUDTitle`.
-*   [x] Create motion tokens (keyframes) and ensure `prefers-reduced-motion` is respected.
-*   [ ] Conduct an accessibility audit: verify contrast ratios, keyboard navigation, and ARIA labels.
+Danh sách này được điều chỉnh để phản ánh việc tùy chỉnh Material Design.
+
+*   [x] Thêm các token màu vào biến CSS `:root` trong `globals.css`.
+*   [x] Mở rộng cấu hình Tailwind CSS với các token màu, font, khoảng cách, bóng đổ và bo góc tùy chỉnh.
+*   [ ] Xây dựng các thành phần cơ bản của Material Design và tùy chỉnh chúng: `Panel`, `InventoryGrid`, `Tooltip`, `HUDTitle`.
+*   [x] Tạo các token chuyển động (keyframes) và đảm bảo `prefers-reduced-motion` được tôn trọng.
+*   [ ] Thực hiện kiểm tra khả năng tiếp cận: xác minh tỷ lệ tương phản, điều hướng bàn phím và nhãn ARIA.
 
 ---
 
-## Appendix — CSS Variable Starter (from `globals.css`)
+## Phụ lục — CSS Variable Starter (từ `globals.css`)
 
 ```css
 :root{
@@ -469,4 +411,4 @@ export default function ItemTooltip({ title, lines }) {
 
 ---
 
-This detailed style guide provides a comprehensive overview of the Cyberpunk HUD's visual language, design tokens, and implementation patterns. It aims to ensure consistency and maintain the distinct aesthetic across all UI elements.
+Hướng dẫn phong cách chi tiết này cung cấp cái nhìn tổng quan toàn diện về ngôn ngữ hình ảnh, design token và các mẫu triển khai của Cyberpunk HUD, được điều chỉnh để tùy chỉnh Material Design. Nó nhằm mục đích đảm bảo tính nhất quán và duy trì tính thẩm mỹ riêng biệt trên tất cả các yếu tố UI.
