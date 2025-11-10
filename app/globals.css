@@ -4,8 +4,80 @@
 @import "tailwindcss";
 /* Note: Typography plugin is configured in tailwind.config.js and does not need a direct import in CSS */
 
+/* Hasklig Font */
+@font-face {
+  font-family: 'Hasklig';
+  src: url('/fonts/Hasklig-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('/fonts/Hasklig-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('/fonts/Hasklig-It.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('/fonts/Hasklig-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* JetBrains Mono NL Font */
+@font-face {
+  font-family: 'JetBrainsMonoNL';
+  src: url('/fonts/JetBrainsMonoNL-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: "zero" 1;
+}
+
+@font-face {
+  font-family: 'JetBrainsMonoNL';
+  src: url('/fonts/JetBrainsMonoNL-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: "zero" 1;
+}
+
+@font-face {
+  font-family: 'JetBrainsMonoNL';
+  src: url('/fonts/JetBrainsMonoNL-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  font-feature-settings: "zero" 1;
+}
+
+@font-face {
+  font-family: 'JetBrainsMonoNL';
+  src: url('/fonts/JetBrainsMonoNL-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: "zero" 1;
+}
+
 
 :root {
+  --font-roboto-mono: 'Roboto Mono', monospace;
+  --font-jetbrains-mono-nl: 'JetBrainsMonoNL', monospace;
   /* Cyberpunk HUD CSS Variables - Updated for better contrast */
   --bg-900: #06060A; /* Primary background: very dark, near-black */
   --panel-bg: rgba(10,12,16,0.85);

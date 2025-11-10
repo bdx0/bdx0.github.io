@@ -30,10 +30,10 @@ const config = {
         'danger': '#FF4D6D',
       },
       fontFamily: {
-        display: ['var(--font-orbitron)', 'Rajdhani', 'sans-serif'], // Condensed geometric for headings
-        mono: ['var(--font-roboto-mono)', 'Space Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'], // Monospaced for stats/numbers
+        display: ['var(--font-teko)', 'var(--font-exo)', 'var(--font-unica-one)', 'var(--font-kanit)', 'var(--font-space-grotesk)', 'sans-serif'], // Condensed geometric for headings
+        mono: ['var(--font-hasklig)', 'var(--font-jetbrains-mono-nl)', 'var(--font-source-code-pro)', 'var(--font-jetbrains-mono)', 'var(--font-space-mono)', 'var(--font-roboto-mono)', 'Space Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'], // Monospaced for stats/numbers
         body: ['var(--font-manrope)', 'var(--font-inter)', 'IBM Plex Sans', 'system-ui', 'sans-serif'], // Manrope for body text, with Vietnamese support
-        sans: ['var(--font-manrope)', 'var(--font-inter)', 'system-ui', 'sans-serif'], // Default sans-serif, with Vietnamese support
+        sans: ['var(--font-exo-2)', 'var(--font-be-vietnam-pro)', 'var(--font-space-grotesk)', 'var(--font-chakra-petch)', 'var(--font-genos)', 'var(--font-tektur)', 'var(--font-manrope)', 'var(--font-inter)', 'system-ui', 'sans-serif'], // Default sans-serif, with Vietnamese support
       },
       spacing: {
         '1u': '4px', // Base spacing unit
