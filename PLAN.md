@@ -36,6 +36,7 @@
 
 - **[2025-11-12] Made blog post tags clickable and created tag-specific pages.**
   - **Details:** Modified `app/[slug]/page.tsx` to wrap tags in `next/link` components, and created `app/tags/[tag]/page.tsx` to display filtered blog posts for each tag.
+  - **Fixes:** Resolved `TypeError` by ensuring `post.tags` is an array, explicitly decoded URL `tag` parameter, and fixed `ReferenceError` by using `decodedTag` for display. Ensured case-insensitive tag matching.
 
 
 ### Upcoming Tasks:
