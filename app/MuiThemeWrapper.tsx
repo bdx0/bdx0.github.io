@@ -3,12 +3,17 @@
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import { useTheme } from "next-themes"; // Import useTheme
-import React from "react"; // Import React
-import themes from "./theme"; // Import the themes object
+import { useTheme } from "next-themes";
+import React, { useEffect, useState } from "react";
+import themes from "./theme";
 
 export function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
-  const { theme: nextThemeNameAndMode } = useTheme(); // Get the current theme name and mode from next-themes
+  const { theme: nextThemeNameAndMode } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const muiTheme = React.useMemo(() => {
     const [themeName, mode] = nextThemeNameAndMode
@@ -20,9 +25,15 @@ export function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
       : themes.solarized("dark");
   }, [nextThemeNameAndMode]);
 
-  React.useEffect(() => {
-    document.body.style.backgroundColor = muiTheme.palette.background.default;
-  }, [muiTheme]);
+  useEffect(() => {
+    if (mounted) {
+      document.body.style.backgroundColor = muiTheme.palette.background.default;
+    }
+  }, [muiTheme, mounted]);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <AppRouterCacheProvider>

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { AppBar, Toolbar, Typography, Button, IconButton, Select, MenuItem } from '@mui/material';
-import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon } from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Select, MenuItem, Menu } from '@mui/material';
+import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Settings as SettingsIcon } from '@mui/icons-material';
 import { useTheme } from "next-themes";
 import themes from "@/app/theme"; // Import themes
 
@@ -23,8 +23,18 @@ const navLinks: NavLink[] = [
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   useEffect(() => setMounted(true), []);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   // Get available theme names
   const availableThemeNames = Object.keys(themes);
@@ -36,32 +46,53 @@ export default function Navbar() {
           {/* Left side: Logo */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link href="/" style={{ textDecoration: 'none' }}>
-              BDX0
+              <img src="/bdx0-logo.svg" alt="BDX0 Logo" style={{ height: '24px', verticalAlign: 'middle' }} />
             </Link>
           </Typography>
   
           {/* Right side: Menu items and Theme Selector */}
           <div className="flex items-center space-x-4">
             {navLinks.map((link) => (
-              <Button key={link.href} component={Link} href={link.href}>
+              <Button key={link.href} component={Link} href={link.href} color="inherit">
                 {link.label}
               </Button>
             ))}
   
-            {/* Theme Selector */}
-            <Select
-              value={theme}
-              onChange={(event) => setTheme(event.target.value as string)}
-              size="small"
+            {/* Theme Selector Anchor Menu */}
+            <IconButton
+              aria-label="theme settings"
+              aria-controls={open ? 'theme-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+              color="inherit"
+            >
+              <SettingsIcon />
+            </IconButton>
+            <Menu
+              id="theme-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'theme-settings-button',
+              }}
             >
               {availableThemeNames.map((themeName) => (
                 ['light', 'dark'].map((mode) => (
-                  <MenuItem key={`${themeName}-${mode}`} value={`${themeName}-${mode}`}>
+                  <MenuItem 
+                    key={`${themeName}-${mode}`} 
+                    onClick={() => {
+                      setTheme(`${themeName}-${mode}`);
+                      handleClose();
+                    }}
+                    selected={theme === `${themeName}-${mode}`}
+                  >
                     {`${themeName} ${mode}`}
                   </MenuItem>
                 ))
               ))}
-            </Select>
+            </Menu>
           </div>
         </Toolbar>
       </AppBar>

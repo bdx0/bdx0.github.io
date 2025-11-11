@@ -2,27 +2,29 @@
 
 import { createTheme } from '@mui/material/styles';
 
-// Solarized Theme
+// Solarized Theme (now Selenized by Ed Heltzel)
 const getSolarizedTheme = (mode: 'light' | 'dark') => createTheme({
   palette: {
     mode: mode,
     primary: {
-      main: '#268BD2', // Solarized Blue
+      main: mode === 'dark' ? '#4695f7' : '#006dce', // Selenized Blue
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#CB4B16', // Solarized Orange
+      main: mode === 'dark' ? '#fa5750' : '#cc1729', // Selenized Red
+      contrastText: '#FFFFFF',
     },
     background: {
-      default: mode === 'dark' ? '#002B36' : '#FDF6E3', // Solarized Base03 for dark, Base3 for light
-      paper: mode === 'dark' ? '#073642' : '#EEE8D5', // Solarized Base02 for dark, Base2 for light
+      default: mode === 'dark' ? '#103c48' : '#fbf3db', // Selenized background
+      paper: mode === 'dark' ? '#184956' : '#ece3cc', // Selenized black / base01
     },
     text: {
-      primary: mode === 'dark' ? '#839496' : '#586E75', // Solarized Base0 for dark, Base1 for light
-      secondary: mode === 'dark' ? '#586E75' : '#839496', // Solarized Base1 for dark, Base0 for light
+      primary: mode === 'dark' ? '#adbcbc' : '#53676d', // Selenized foreground / base05
+      secondary: mode === 'dark' ? '#72898f' : '#3a4d53', // Selenized white / base07
     },
   },
   typography: {
-    fontFamily: 'var(--font-jetbrains-mono), monospace',
+    fontFamily: '"JetBrains Mono"',
   },
 });
 
@@ -46,7 +48,7 @@ const getMaterialTheme = (mode: 'light' | 'dark') => createTheme({
     },
   },
   typography: {
-    fontFamily: 'Roboto, sans-serif', // Default Material Design font
+    fontFamily: '"JetBrains Mono"', // Default Material Design font
   },
 });
 

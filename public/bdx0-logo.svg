@@ -1,0 +1,49 @@
+<svg width="200" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cyber-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff00;stop-opacity:1" /> <!-- Neon Green -->
+      <stop offset="50%" style="stop-color:#ff00ff;stop-opacity:1" /> <!-- Neon Magenta -->
+      <stop offset="100%" style="stop-color:#00ffff;stop-opacity:1" /> <!-- Neon Cyan -->
+    </linearGradient>
+    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+    </style>
+  </defs>
+
+  <!-- Background Grid -->
+  <g opacity="0.3" stroke="url(#cyber-gradient)" stroke-width="0.5">
+    <path d="M0 10 L200 10" />
+    <path d="M0 20 L200 20" />
+    <path d="M0 30 L200 30" />
+    <path d="M0 40 L200 40" />
+    <path d="M20 0 L20 50" />
+    <path d="M40 0 L40 50" />
+    <path d="M60 0 L60 50" />
+    <path d="M80 0 L80 50" />
+    <path d="M100 0 L100 50" />
+    <path d="M120 0 L120 50" />
+    <path d="M140 0 L140 50" />
+    <path d="M160 0 L160 50" />
+    <path d="M180 0 L180 50" />
+  </g>
+
+  <!-- Glitched Text -->
+  <g style="filter:url(#neon-glow);">
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Audiowide', cursive" font-size="36" fill="#ffffff" style="mix-blend-mode: screen;">
+      BDX0
+    </text>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Audiowide', cursive" font-size="36" fill="url(#cyber-gradient)" style="transform: translate(2px, 2px); mix-blend-mode: screen; opacity: 0.7;" >
+      BDX0
+    </text>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Audiowide', cursive" font-size="36" fill="url(#cyber-gradient)" style="transform: translate(-2px, -2px); mix-blend-mode: screen; opacity: 0.7;">
+      BDX0
+    </text>
+  </g>
+</svg>
