@@ -2,10 +2,11 @@
 title: Giới thiệu về Kỹ sư Phần mềm (Software Engineer)
 description: Tìm hiểu về vai trò, trách nhiệm và con đường trở thành một Kỹ sư Phần mềm.
 publish_date: 2025-11-06
+tags:
+- Jobs
 ---
 
 # Giới thiệu về Kỹ sư Phần mềm (Software Engineer)
-<Date date={frontmatter.publish_date} />
 
 Kỹ sư Phần mềm (Software Engineer) là những chuyên gia thiết kế, phát triển, kiểm thử và bảo trì các hệ thống phần mềm. Họ đóng vai trò quan trọng trong việc biến ý tưởng thành các sản phẩm công nghệ hữu ích, từ ứng dụng di động, trang web, đến các hệ thống phức tạp trong doanh nghiệp và khoa học.
 

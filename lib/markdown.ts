@@ -16,7 +16,7 @@ export function getAllContent(directory: string) {
     const { data } = matter(fileContents);
 
     // Filter out specific files that are not individual projects
-    if (directory === 'projects' && (fileName === 'page.mdx' || fileName === 'du-an-a.md')) {
+    if (directory === 'projects' && (fileName === 'page.mdx')) {
       return null; // Skip this file
     }
 

@@ -12,8 +12,8 @@
         <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&amp;display=swap');
     </style>
   </defs>
 
@@ -36,14 +36,14 @@
 
   <!-- Glitched Text -->
   <g style="filter:url(#neon-glow);">
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Audiowide', cursive" font-size="36" fill="#ffffff" style="mix-blend-mode: screen;">
-      BDX0
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Tektur'" font-size="36" fill="#d6d6d6ff" style="mix-blend-mode: screen;">
+      bdx0
     </text>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Audiowide', cursive" font-size="36" fill="url(#cyber-gradient)" style="transform: translate(2px, 2px); mix-blend-mode: screen; opacity: 0.7;" >
-      BDX0
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Tektur'" font-size="36" fill="url(#cyber-gradient)" style="transform: translate(2px, 2px); mix-blend-mode: screen; opacity: 0.7;" >
+      bdx0
     </text>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Audiowide', cursive" font-size="36" fill="url(#cyber-gradient)" style="transform: translate(-2px, -2px); mix-blend-mode: screen; opacity: 0.7;">
-      BDX0
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Tektur'" font-size="36" fill="url(#cyber-gradient)" style="transform: translate(-2px, -2px); mix-blend-mode: screen; opacity: 0.7;">
+      bdx0
     </text>
   </g>
 </svg>

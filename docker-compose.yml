@@ -16,6 +16,8 @@ services:
           action: rebuild
         - path: ./docker-compose.yml
           action: rebuild
+        - path: ./public
+          action: rebuild
         - path: ./
           target: /app/
           action: sync

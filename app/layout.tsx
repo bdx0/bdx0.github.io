@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar"; // Import the new Navbar component using relative path
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Tektur } from "next/font/google";
 
 import { Providers } from "./providers";
 
@@ -10,10 +10,18 @@ const jetbrains_mono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
+const tektur = Tektur({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-tektur",
+});
+
 export const metadata: Metadata = {
   title: "BDX0 Material Design 3 Blog",
   description: "A Material Design 3 themed personal blog",
 };
+
+import Footer from "@/components/Footer"; // Import the new Footer component
 
 export default function RootLayout({
   children,
@@ -23,10 +31,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      className={`${jetbrains_mono.variable} ${tektur.variable}`}
       suppressHydrationWarning
+      style={{ minHeight: "100vh" }}
     >
       <head />
-      <body>
+      <body style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         <Providers>
           <Navbar />
           <main
@@ -34,21 +44,7 @@ export default function RootLayout({
           >
             {children}
           </main>
-          <footer
-            className="text-center text-sm border-t"
-          >
-            <p>
-              &copy; {new Date().getFullYear()} BDX0 Material Design 3 Blog. All systems
-              operational.
-            </p>
-            <p>
-              <a
-                href="mailto:baoduy.duong0206@gmail.com?subject=Accessibility Issue Report"
-              >
-                Report an accessibility issue
-              </a>
-            </p>
-          </footer>
+          <Footer />
         </Providers>
       </body>
     </html>
