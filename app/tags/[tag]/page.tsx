@@ -36,12 +36,12 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
       <Box>
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post: any) => (
-            <Box key={post.slug} sx={{ mb: 2 }}>
-              <Typography variant="h5" component="h2">
+            <Box key={post.slug} sx={{ mb: 1 }}>
+              <Typography variant="h6" component="h2">
                 <Link href={`/${post.slug}`}>{post.title}</Link>
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {post.description}
+                {post.publish_date}
               </Typography>
             </Box>
           ))
