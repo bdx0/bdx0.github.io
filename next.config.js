@@ -10,7 +10,7 @@ const withMDX = createMDX({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Comment out output: 'export' for development (add back for static export)
+  output: 'export',
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   transpilePackages: ['next-mdx-remote'],
   experimental: {
