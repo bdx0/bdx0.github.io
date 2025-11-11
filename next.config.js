@@ -14,7 +14,6 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   transpilePackages: ['next-mdx-remote'],
   experimental: {
-    turbopack: false, // Explicitly disable Turbopack
   },
 }
 

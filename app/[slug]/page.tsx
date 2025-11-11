@@ -10,6 +10,8 @@ export async function generateStaticParams() {
 }
 const components = useMDXComponents({}); // Spread existing components from useMDXComponents
 
+import { Container, Box } from '@mui/material';
+
 const PostPage = async ({ params }: { params: { slug: string } }) => {
   const resolvedParams = await params;
   console.log("Generating page for slug:", resolvedParams.slug);
@@ -24,15 +26,15 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
   };
 
   return (
-    <article className="py-8">
-      <div className="prose max-w-none">
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Box>
         <MDXRemote
           source={post?.content}
           components={components}
           options={{ scope: scope }}
         />
-      </div>
-    </article>
+      </Box>
+    </Container>
   );
 };
 

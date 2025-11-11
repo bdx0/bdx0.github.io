@@ -13,6 +13,8 @@ export async function generateStaticParams() {
 // Get the components from mdx-components.tsx
 const components = useMDXComponents({});
 
+import { Container, Box } from '@mui/material';
+
 // Page component for rendering a single project
 const ProjectPage = async ({ params }: { params: { slug: string } }) => {
   const resolvedParams = await params;
@@ -29,15 +31,15 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
   };
 
   return (
-    <article className="py-8">
-      <div className="prose max-w-none">
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Box>
         <MDXRemote
           source={project?.content}
           components={components}
           options={{ scope: scope }}
         />
-      </div>
-    </article>
+      </Box>
+    </Container>
   );
 };
 

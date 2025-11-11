@@ -1,4 +1,6 @@
-import Link from "next/link";
+import { Typography, Card, CardContent, Link as MuiLink } from '@mui/material';
+import NextLink from "next/link";
+import LinkBehavior from "@/components/LinkBehavior";
 import { getAllContent } from "@/lib/markdown";
 
 // Fetch all projects for the landing page
@@ -12,18 +14,24 @@ const ProjectsPage = async () => {
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-8">Projects</h1>
+      <Typography variant="h3" component="h1" gutterBottom>Projects</Typography>
       <div className="flex flex-col gap-4">
         {projects.map((project: any) => (
-          <Link
+          <MuiLink
             key={project.slug}
+            component={LinkBehavior}
             href={`/projects/${project.slug}`} // Link to the individual project page
-            className="block p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-            style={{ backgroundColor: 'rgba(10,12,16,0.8)', border: '1px solid rgba(255,255,255, 0.04)' }}
+            underline="none"
           >
-            <h2 className="text-2xl font-semibold mb-3" style={{ color: '#00E6FF' }}>{project.title}</h2>
-            <p className="text-[#C7CED6]">{project.description}</p>
-          </Link>
+            <Card sx={{ '&:hover': { boxShadow: 6 } }}>
+              <CardContent>
+                <Typography variant="h5" component="h2" gutterBottom color="primary">
+                  {project.title}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">{project.description}</Typography>
+              </CardContent>
+            </Card>
+          </MuiLink>
         ))}
       </div>
     </div>

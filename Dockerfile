@@ -11,6 +11,10 @@ COPY . .
 
 # Install dependencies.
 RUN npm install
+
+# Explicitly remove the legacy-design-system directory
+RUN rm -rf ./app/legacy-design-system
+
 RUN npm run build
 
 ENV NODE_ENV production

@@ -2,6 +2,8 @@ import { getResumeContent } from "@/lib/markdown";
 import { useMDXComponents } from "@/mdx-components";
 import { MDXRemote } from "next-mdx-remote/rsc";
 
+import { Container, Box } from '@mui/material';
+
 const ResumePage = async () => {
   const resumeData = await getResumeContent();
 
@@ -18,15 +20,15 @@ const ResumePage = async () => {
   const components = useMDXComponents({});
 
   return (
-    <article className="py-8">
-      <div className="prose max-w-none">
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Box>
         <MDXRemote
           source={resumeData?.content}
           components={components}
           // options={{ scope: scope }} // Uncomment if scope is needed
         />
-      </div>
-    </article>
+      </Box>
+    </Container>
   );
 };
 
