@@ -21,7 +21,7 @@ export default function Footer() {
     >
       <Container maxWidth="lg">
         <Grid container spacing={2} justifyContent="space-between">
-          <Grid item xs={12} sm={6} md={4} component="div">
+          <Box sx={{ xs: 12, sm: 6, md: 4 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               BDX0 Blog
             </Typography>
@@ -29,9 +29,9 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} BDX0 Material Design 3 Blog. All systems
               operational.
             </Typography>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} sm={6} md={4} component="div">
+          <Box sx={{ xs: 12, sm: 6, md: 4 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Quick Links
             </Typography>
@@ -44,9 +44,9 @@ export default function Footer() {
             <Link href="/resume" color="inherit" display="block" variant="body2">
               Resume
             </Link>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} sm={6} md={4} component="div">
+          <Box sx={{ xs: 12, sm: 6, md: 4 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Contact & Support
             </Typography>
