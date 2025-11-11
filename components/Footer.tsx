@@ -68,7 +68,7 @@ export default function Footer() {
                 <LinkedInIcon />
               </IconButton> */}
             </Typography>
-          </Grid>
+          </Box>
         </Grid>
       </Container>
     </Box>
