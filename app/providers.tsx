@@ -8,7 +8,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const themeNames = Object.keys(themes).flatMap(themeName => ['light', 'dark'].map(mode => `${themeName}-${mode}`));
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="solarized-dark" enableSystem storageKey="theme" themes={themeNames}>
+    <ThemeProvider attribute="class" defaultTheme="material-dark" enableSystem storageKey="theme" themes={themeNames}>
       <MuiThemeWrapper>
         {children}
       </MuiThemeWrapper>
