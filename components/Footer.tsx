@@ -21,7 +21,7 @@ export default function Footer() {
     >
       <Container maxWidth="lg">
         <Grid container spacing={2} justifyContent="space-between">
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4} component="div">
             <Typography variant="h6" color="text.primary" gutterBottom>
               BDX0 Blog
             </Typography>
@@ -31,7 +31,7 @@ export default function Footer() {
             </Typography>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4} component="div">
             <Typography variant="h6" color="text.primary" gutterBottom>
               Quick Links
             </Typography>
@@ -46,7 +46,7 @@ export default function Footer() {
             </Link>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4} component="div">
             <Typography variant="h6" color="text.primary" gutterBottom>
               Contact & Support
             </Typography>
