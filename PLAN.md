@@ -47,3 +47,15 @@
 - **[2025-11-08] Verified fix for low contrast for unordered list markers in Markdown content.
 
 **
+## DEV NOTES
+
+The user asked if it's possible to display post lists in a minimalist or compact size. I've demonstrated this by modifying the project listing page (app/projects/page.tsx) to make the project cards more compact and minimalist.
+
+Changes made to app/projects/page.tsx:
+- Reduced the gap between project cards from 'gap-4' to 'gap-2'.
+- Changed the Card component to use 'variant="outlined"' and a subtle hover effect ('borderColor: primary.main') instead of a box shadow.
+- Reduced padding within CardContent using 'sx={{ py: 1, px: 2 }}'.
+- Adjusted Typography variants for title (h5 to h6) and description (body1 to body2) for smaller text.
+
+This provides a concrete example of how to achieve a minimalist/compact display.
+
