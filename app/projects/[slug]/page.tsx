@@ -10,13 +10,11 @@ export async function generateStaticParams() {
   }));
 }
 
-// Get the components from mdx-components.tsx
-const components = useMDXComponents({});
-
 import { Container, Box } from '@mui/material';
 
 // Page component for rendering a single project
 const ProjectPage = async ({ params }: { params: { slug: string } }) => {
+  const components = useMDXComponents({});
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
   const project = await getContentBySlug("projects", slug); // Fetch project content

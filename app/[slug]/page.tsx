@@ -11,9 +11,9 @@ export async function generateStaticParams() {
     slug: post.slug,
   }));
 }
-const components = useMDXComponents({}); // Spread existing components from useMDXComponents
 
 const PostPage = async ({ params }: { params: { slug: string } }) => {
+  const components = useMDXComponents({}); // Spread existing components from useMDXComponents
   const resolvedParams = await params;
   console.log("Generating page for slug:", resolvedParams.slug);
   const slug = resolvedParams.slug;

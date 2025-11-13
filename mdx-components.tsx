@@ -17,17 +17,42 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ...components,
     Date: DateComponent,
     h1: ({ children, ...props }) => (
-      <Typography variant="h3" component="h1" gutterBottom {...props}>
+      <Typography
+        variant="h3"
+        component="h1"
+        gutterBottom
+        sx={{
+          marginBlockEnd: "0.5em",
+        }}
+        {...props}
+      >
         {children}
       </Typography>
     ),
     h2: ({ children, ...props }) => (
-      <Typography variant="h4" component="h2" gutterBottom {...props}>
+      <Typography
+        variant="h4"
+        component="h2"
+        sx={{
+          marginBlockStart: "1em",
+          marginBlockEnd: "0.5em",
+        }}
+        gutterBottom
+        {...props}
+      >
         {children}
       </Typography>
     ),
     h3: ({ children, ...props }) => (
-      <Typography variant="h5" component="h3" gutterBottom {...props}>
+      <Typography
+        variant="h5"
+        component="h3"
+        gutterBottom
+        sx={{
+          marginBlockEnd: "0.5em",
+        }}
+        {...props}
+      >
         {children}
       </Typography>
     ),
@@ -37,12 +62,20 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </Typography>
     ),
     p: ({ children, ...props }) => (
-      <Typography variant="body1" paragraph {...props}>
+      <Typography variant="body1" sx={{ lineHeight: 1.6 }} {...props}>
         {children}
       </Typography>
     ),
     ul: ({ children, ...props }) => (
-      <List sx={{ listStyleType: "disc", pl: 2 }} {...props}>
+      <List
+        sx={{
+          listStyleType: "disc",
+          pl: 2,
+          marginBlockEnd: "1em",
+          marginBlockStart: "0em",
+        }}
+        {...props}
+      >
         {children}
       </List>
     ),
@@ -52,7 +85,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </List>
     ),
     li: ({ children, ...props }) => (
-      <ListItem disablePadding sx={{ display: "list-item" }} {...props}>
+      <ListItem
+        disablePadding
+        sx={{ display: "list-item", lineHeight: 1.6 }}
+        {...props}
+      >
         <ListItemText primary={children} />
       </ListItem>
     ),
@@ -175,5 +212,3 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
   };
 }
-
-// Helper component to make React available for the type checking above
