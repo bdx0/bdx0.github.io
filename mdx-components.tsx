@@ -16,19 +16,21 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     Date: DateComponent,
-    h1: ({ children, ...props }) => (
-      <Typography
-        variant="h3"
-        component="h1"
-        gutterBottom
-        sx={{
-          marginBlockEnd: "0.5em",
-        }}
-        {...props}
-      >
-        {children}
-      </Typography>
-    ),
+    h1: ({ children, ...props }) => {
+      return (
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{
+            marginBlockEnd: "0.5em",
+          }}
+          {...props}
+        >
+          {children}
+        </Typography>
+      );
+    },
     h2: ({ children, ...props }) => (
       <Typography
         variant="h4"
@@ -62,7 +64,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </Typography>
     ),
     p: ({ children, ...props }) => (
-      <Typography variant="body1" sx={{ lineHeight: 1.6 }} {...props}>
+      <Typography variant="body1" component="div" sx={{ lineHeight: 1.6 }} {...props}>
         {children}
       </Typography>
     ),
@@ -170,6 +172,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </Link>
     ),
+    i: ({ children, ...props }) => {
+      return <i {...props}>{children}</i>;
+    },
     em: ({ children, ...props }) => (
       <Typography component="em" fontStyle="italic" {...props}>
         {children}

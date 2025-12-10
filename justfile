@@ -19,8 +19,14 @@ down:
 watch:
   just compose up --build --watch
 
-logs:
-  just compose logs --tail 200
+logs +N='200':
+  just compose logs --tail {{N}}
+
+build:
+  npm run build
+
+docker-build:
+  just compose build
 
 # Convenience recipe to restart the docker compose services
 # Usage: just restart
