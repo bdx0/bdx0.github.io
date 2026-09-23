@@ -37,7 +37,7 @@ jobs:
 
       - name: Commit generated model
         run: |
-          if git diff --quiet -- public/lab/ly-dragon/models/rong-thoi-ly-v2.glb; then
+          if [ -z "$(git status --porcelain -- public/lab/ly-dragon/models/rong-thoi-ly-v2.glb)" ]; then
             echo "Model is already up to date."
             exit 0
           fi
