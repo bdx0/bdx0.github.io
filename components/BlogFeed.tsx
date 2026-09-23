@@ -156,7 +156,7 @@ export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
           filteredPosts.map((post, index) => (
             <Box key={post.slug}>
               <Link
-                href={`/${post.slug}`}
+                href={`/blog/${post.slug}`}
                 style={{ color: "inherit", textDecoration: "none" }}
               >
                 <Box
