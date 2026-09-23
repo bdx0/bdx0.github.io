@@ -1,15 +1,17 @@
+import SearchRounded from "@mui/icons-material/SearchRounded";
 import {
   Box,
+  Button,
   Divider,
   List,
   ListItem,
-  Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import type { BlogNavItem, BlogTocItem } from "@/lib/blog";
+import { getBlogSections, type BlogNavItem, type BlogTocItem } from "@/lib/blog";
 
 type BlogDocsShellProps = {
   posts: BlogNavItem[];
@@ -24,6 +26,8 @@ export default function BlogDocsShell({
   toc = [],
   children,
 }: BlogDocsShellProps) {
+  const sections = getBlogSections(posts);
+
   const navigation = (
     <>
       <Link href="/writing" style={{ color: "inherit", textDecoration: "none" }}>
@@ -42,65 +46,118 @@ export default function BlogDocsShell({
         </Box>
       </Link>
 
-      <Typography
-        variant="caption"
-        color="text.disabled"
-        sx={{
-          display: "block",
-          px: 1.25,
-          pt: 2.25,
-          pb: 0.75,
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-        }}
-      >
-        Articles
-      </Typography>
+      {sections.map((section) => (
+        <Box key={section.id} sx={{ mt: 2 }}>
+          <Typography
+            variant="caption"
+            color="text.disabled"
+            sx={{
+              display: "block",
+              px: 1.25,
+              pb: 0.65,
+              fontWeight: 700,
+              letterSpacing: "0.055em",
+              textTransform: "uppercase",
+            }}
+          >
+            {section.title}
+          </Typography>
 
-      <List disablePadding>
-        {posts.map((post) => {
-          const selected = post.slug === currentSlug;
+          <List disablePadding>
+            {section.posts.map((post) => {
+              const selected = post.slug === currentSlug;
 
-          return (
-            <ListItem key={post.slug} disablePadding sx={{ mb: 0.25 }}>
-              <Link
-                href={`/writing/${post.slug}`}
-                style={{
-                  color: "inherit",
-                  textDecoration: "none",
-                  width: "100%",
-                }}
-              >
-                <Box
-                  sx={{
-                    px: 1.25,
-                    py: 0.9,
-                    borderRadius: 1.5,
-                    bgcolor: selected ? "action.selected" : "transparent",
-                    "&:hover": { bgcolor: "action.hover" },
-                  }}
-                >
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: selected ? 700 : 500,
-                      lineHeight: 1.35,
+              return (
+                <ListItem key={post.slug} disablePadding sx={{ mb: 0.25 }}>
+                  <Link
+                    href={`/writing/${post.slug}`}
+                    style={{
+                      color: "inherit",
+                      textDecoration: "none",
+                      width: "100%",
                     }}
                   >
-                    {post.title}
-                  </Typography>
-                </Box>
-              </Link>
-            </ListItem>
-          );
-        })}
-      </List>
+                    <Box
+                      sx={{
+                        px: 1.25,
+                        py: 0.85,
+                        borderRadius: 1.5,
+                        bgcolor: selected ? "action.selected" : "transparent",
+                        "&:hover": { bgcolor: "action.hover" },
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: selected ? 700 : 500,
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        {post.title}
+                      </Typography>
+                    </Box>
+                  </Link>
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
+      ))}
     </>
   );
 
   return (
     <Box>
+      <Box
+        component="header"
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 5,
+          mb: 3,
+          py: 1.5,
+          borderBottom: 1,
+          borderColor: "divider",
+          bgcolor: "background.default",
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <Box>
+            <Typography
+              variant="caption"
+              color="text.disabled"
+              sx={{
+                display: "block",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              BDX0 / Knowledge
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 750, lineHeight: 1.25 }}>
+              Blog
+            </Typography>
+          </Box>
+
+          <Button
+            component={Link}
+            href="/writing#blog-search"
+            size="small"
+            variant="outlined"
+            startIcon={<SearchRounded />}
+            sx={{ borderRadius: 2, textTransform: "none" }}
+          >
+            Search
+          </Button>
+        </Stack>
+      </Box>
+
       <Box
         component="details"
         sx={{
@@ -129,8 +186,8 @@ export default function BlogDocsShell({
           display: "grid",
           gridTemplateColumns: {
             xs: "minmax(0, 1fr)",
-            lg: "220px minmax(0, 1fr)",
-            xl: "220px minmax(0, 760px) 210px",
+            lg: "230px minmax(0, 1fr)",
+            xl: "230px minmax(0, 760px) 210px",
           },
           gap: { xs: 0, lg: 4, xl: 5 },
           alignItems: "start",
@@ -142,26 +199,12 @@ export default function BlogDocsShell({
           sx={{
             display: { xs: "none", lg: "block" },
             position: "sticky",
-            top: 24,
-            maxHeight: "calc(100vh - 48px)",
+            top: 92,
+            maxHeight: "calc(100vh - 116px)",
             overflowY: "auto",
             pr: 0.5,
           }}
         >
-          <Typography
-            variant="caption"
-            color="text.disabled"
-            sx={{
-              display: "block",
-              px: 1.25,
-              pb: 1,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
-            Blog
-          </Typography>
           {navigation}
         </Box>
 
@@ -174,8 +217,8 @@ export default function BlogDocsShell({
           sx={{
             display: { xs: "none", xl: toc.length ? "block" : "none" },
             position: "sticky",
-            top: 24,
-            maxHeight: "calc(100vh - 48px)",
+            top: 92,
+            maxHeight: "calc(100vh - 116px)",
             overflowY: "auto",
           }}
         >
