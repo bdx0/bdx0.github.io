@@ -39,26 +39,59 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Probe downloadable Buddha assets
+
+      - name: Probe 3dstl Buddha download endpoint
         shell: bash
         run: |
           set +e
+          PAGE="https://www.3dstl.io/printable-detail/The-Sitting-Buddha-Marcus-Aurelius-zYZRdO"
+          PREFIX='XstD+hYQQ8GlF3U4/1B1opLiyigCV+VFPpqh4F+UNehT54R3X0EaoRNB9YLesI6HDAdyzdQizkIC gfWoeuS7RQVJutpZ3w90VmmRm5Fl+cXEMKAr5iGaCkBOGSoQBGq5fowBVOXz5I83l1Vu2ARdaZ5Q VNkdZOmF'
+          BODY="${PREFIX}zYZRdO"
 
-          echo "=== Meshy CC0 GLB probe ==="
-          curl -L --retry 2 --connect-timeout 20 --max-time 90             -A "Mozilla/5.0"             "https://www.meshy.ai/3d-models/Meditating-Buddha-019e1584-6161-7796-9780-7bb0e1592449?download=glb"             -o /tmp/meshy-buddha.bin
-          echo "size=$(wc -c < /tmp/meshy-buddha.bin 2>/dev/null || echo 0)"
-          file /tmp/meshy-buddha.bin || true
-          echo -n "first16="
-          head -c 16 /tmp/meshy-buddha.bin 2>/dev/null | xxd -p || true
+          echo "=== Request prepared download URL from 3dstl ==="
+          curl -sS -L --retry 2 --connect-timeout 20 --max-time 90             -A "Mozilla/5.0"             -H "Accept: application/json, text/plain, */*"             -H "Content-Type: application/json"             -H "Origin: https://www.3dstl.io"             -H "Referer: ${PAGE}"             --data-binary "${BODY}"             "https://www.3dstl.io/project/file"             -o /tmp/3dstl-response.json
+
+          echo "response-size=$(wc -c < /tmp/3dstl-response.json 2>/dev/null || echo 0)"
+          echo -n "response-prefix="
+          head -c 500 /tmp/3dstl-response.json 2>/dev/null || true
           echo
 
-          echo "=== 3dstl CC BY original model probe ==="
-          curl -L --retry 2 --connect-timeout 20 --max-time 90             "https://jide-projects.obs.myhuaweicloud.com/V7Y5KPa9VZE3z/3403cc06-73cf-475b-80d7-53dd7588e2bc"             -o /tmp/3dstl-buddha.bin
-          echo "size=$(wc -c < /tmp/3dstl-buddha.bin 2>/dev/null || echo 0)"
-          file /tmp/3dstl-buddha.bin || true
-          echo -n "first84="
-          head -c 84 /tmp/3dstl-buddha.bin 2>/dev/null | xxd -p || true
-          echo
+          URL="$(python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path('/tmp/3dstl-response.json')
+try:
+    outer=json.loads(p.read_text())
+    inner=outer.get('data')
+    if isinstance(inner,str):
+        try:
+            inner=json.loads(inner)
+        except Exception:
+            pass
+    if isinstance(inner,dict):
+        url=inner.get('data') or inner.get('url') or ''
+    elif isinstance(inner,str):
+        url=inner
+    else:
+        url=''
+    print(url)
+except Exception:
+    print('')
+PY
+          )"
+
+          if [ -n "${URL}" ]; then
+            echo "prepared-url=yes"
+            curl -sS -L --retry 2 --connect-timeout 20 --max-time 120               -A "Mozilla/5.0"               "${URL}"               -o /tmp/3dstl-prepared-model.bin
+            echo "model-size=$(wc -c < /tmp/3dstl-prepared-model.bin 2>/dev/null || echo 0)"
+            file /tmp/3dstl-prepared-model.bin || true
+            echo -n "model-first84="
+            head -c 84 /tmp/3dstl-prepared-model.bin 2>/dev/null | xxd -p || true
+            echo
+          else
+            echo "prepared-url=no"
+          fi
+
       - name: Install dependencies
         run: npm install
       - name: Build with Next.js
