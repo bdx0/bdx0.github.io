@@ -41,15 +41,13 @@ export default async function PostPage({
         {Array.isArray(post.frontmatter.tags) && post.frontmatter.tags.length > 0 && (
           <Stack direction="row" spacing={0.75} sx={{ flexWrap: "wrap", gap: 0.75 }}>
             {post.frontmatter.tags.map((tag: string) => (
-              <Chip
+              <Link
                 key={tag}
-                component={Link}
                 href={`/tags/${encodeURIComponent(tag)}`}
-                label={tag}
-                size="small"
-                clickable
-                variant="outlined"
-              />
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                <Chip label={tag} size="small" clickable variant="outlined" />
+              </Link>
             ))}
           </Stack>
         )}
