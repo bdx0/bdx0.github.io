@@ -1,6 +1,6 @@
 ---
 title: "Position Embedding: Tầm quan trọng của vị trí trong mô hình ngôn ngữ hiện đại"
-date: 2025-11-15
+publish_date: 2025-11-15
 author: "BDX0"
 description: "Tìm hiểu về vị trí quan trọng của position embedding trong các mô hình neural hiện đại, đặc biệt là trong xử lý ngôn ngữ tự nhiên."
 tags: ["AI", "Deep Learning", "NLP", "Machine Learning", "Transformer"]
@@ -61,7 +61,7 @@ Position Embedding là một vector số được thêm vào token embedding đ�
 
 ### 3.1. Cách hoạt động cơ bản
 
-Trong mô hình ngôn ngữ, mỗi token đầu tiên được chuyển đổi thành một vector embedding (token embedding). Sau đó, position embedding tương ứng với vị trí của token trong chuỗi được thêm vào token embedding này.
+Trong mô hình ngôn ngữ, mỗi token đầu tiên được chuyển đổi thành một vector embedding (token embedding). Sau đó, position embedding tương ứng với vị trí của token được thêm vào token embedding này.
 
 ```
 Final Embedding = Token Embedding + Position Embedding
