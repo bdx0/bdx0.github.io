@@ -58,27 +58,25 @@ export default async function TagPage({
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post: any, index: number) => (
             <Box key={post.slug}>
-              <Box
-                component={Link}
-                href={`/${post.slug}`}
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr auto" },
-                  gap: 1.5,
-                  px: 2.5,
-                  py: 2,
-                  color: "inherit",
-                  textDecoration: "none",
-                  "&:hover": { bgcolor: "action.hover" },
-                }}
-              >
-                <Typography variant="subtitle1" sx={{ fontWeight: 650 }}>
-                  {post.title}
-                </Typography>
-                <Typography variant="caption" color="text.disabled">
-                  {post.publish_date}
-                </Typography>
-              </Box>
+              <Link href={`/${post.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "1fr", sm: "1fr auto" },
+                    gap: 1.5,
+                    px: 2.5,
+                    py: 2,
+                    "&:hover": { bgcolor: "action.hover" },
+                  }}
+                >
+                  <Typography variant="subtitle1" sx={{ fontWeight: 650 }}>
+                    {post.title}
+                  </Typography>
+                  <Typography variant="caption" color="text.disabled">
+                    {post.publish_date}
+                  </Typography>
+                </Box>
+              </Link>
               {index < filteredPosts.length - 1 && <Divider />}
             </Box>
           ))
