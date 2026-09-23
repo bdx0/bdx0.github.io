@@ -21,7 +21,7 @@ const workItems = [
     description: "Selected systems, experiments, apps, and infrastructure work.",
   },
   {
-    href: "/writing",
+    href: "/blog",
     title: "Blog",
     description: "Technical notes, research, and things worth keeping.",
   },
