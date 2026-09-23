@@ -1,7 +1,4 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages.
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
+# Build and deploy the statically exported Next.js site to GitHub Pages.
 name: Deploy Next.js site to Pages
 
 on:
@@ -24,48 +21,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
           cache-dependency-path: package-lock.json
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Probe 3dstl Buddha download endpoint
-        shell: bash
-        run: |
-          set +e
-          PAGE="https://www.3dstl.io/printable-detail/The-Sitting-Buddha-Marcus-Aurelius-zYZRdO"
-          PREFIX='XstD+hYQQ8GlF3U4/1B1opLiyigCV+VFPpqh4F+UNehT54R3X0EaoRNB9YLesI6HDAdyzdQizkIC gfWoeuS7RQVJutpZ3w90VmmRm5Fl+cXEMKAr5iGaCkBOGSoQBGq5fowBVOXz5I83l1Vu2ARdaZ5Q VNkdZOmF'
-          BODY="${PREFIX}zYZRdO"
-
-          echo "=== Request prepared download URL from 3dstl ==="
-          curl -sS -L --retry 2 --connect-timeout 20 --max-time 90             -A "Mozilla/5.0"             -H "Accept: application/json, text/plain, */*"             -H "Content-Type: application/json"             -H "Origin: https://www.3dstl.io"             -H "Referer: ${PAGE}"             --data-binary "${BODY}"             "https://www.3dstl.io/project/file"             -o /tmp/3dstl-response.json
-
-          echo "response-size=$(wc -c < /tmp/3dstl-response.json 2>/dev/null || echo 0)"
-          echo -n "response-prefix="
-          head -c 500 /tmp/3dstl-response.json 2>/dev/null || true
-          echo
-
-          URL="$(python3 -c 'import json; p="/tmp/3dstl-response.json"; outer=json.load(open(p)); inner=outer.get("data",""); inner=json.loads(inner) if isinstance(inner,str) and inner.lstrip().startswith(("{","[")) else inner; print((inner.get("data") or inner.get("url") or "") if isinstance(inner,dict) else (inner if isinstance(inner,str) else ""))' 2>/dev/null)"
-          if [ -n "${URL}" ]; then
-            echo "prepared-url=yes"
-            curl -sS -L --retry 2 --connect-timeout 20 --max-time 120               -A "Mozilla/5.0"               "${URL}"               -o /tmp/3dstl-prepared-model.bin
-            echo "model-size=$(wc -c < /tmp/3dstl-prepared-model.bin 2>/dev/null || echo 0)"
-            file /tmp/3dstl-prepared-model.bin || true
-            echo -n "model-first84="
-            head -c 84 /tmp/3dstl-prepared-model.bin 2>/dev/null | xxd -p || true
-            echo
-          else
-            echo "prepared-url=no"
-          fi
-
       - name: Install dependencies
         run: npm install
+
       - name: Build with Next.js
         run: npm run build
+
+      - name: Add self-hosted Gautama Buddha model
+        shell: bash
+        run: |
+          set -euo pipefail
+          MODEL_DIR="out/lab/buddha"
+          MODEL_FILE="${MODEL_DIR}/buddha.glb"
+          MODEL_URL="https://zenodo.org/api/records/21411042/files/40d93bdf1adff502187afac506be4b15_normalized-0.500.glb/content"
+
+          mkdir -p "${MODEL_DIR}"
+          curl -fL --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120             "${MODEL_URL}"             -o "${MODEL_FILE}"
+
+          echo "f938a7e1973767b1004931ec86a5e8e5  ${MODEL_FILE}" | md5sum -c -
+          test "$(head -c 4 "${MODEL_FILE}")" = "glTF"
+          echo "Buddha GLB ready: $(du -h "${MODEL_FILE}" | cut -f1)"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
