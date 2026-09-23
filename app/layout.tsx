@@ -1,10 +1,11 @@
-import Navbar from "@/components/Navbar"; // Import the new Navbar component using relative path
 import type { Metadata } from "next";
 import { JetBrains_Mono, Tektur } from "next/font/google";
 
+import AppShell from "@/components/AppShell";
+
 import { Providers } from "./providers";
 
-const jetbrains_mono = JetBrains_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jetbrains-mono",
@@ -17,11 +18,12 @@ const tektur = Tektur({
 });
 
 export const metadata: Metadata = {
-  title: "BDX0 Material Design 3 Blog",
-  description: "A Material Design 3 themed personal blog",
+  title: {
+    default: "BDX0",
+    template: "%s · BDX0",
+  },
+  description: "Personal workspace for notes, projects, and technical writing.",
 };
-
-import Footer from "@/components/Footer"; // Import the new Footer component
 
 export default function RootLayout({
   children,
@@ -31,22 +33,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jetbrains_mono.variable} ${tektur.variable}`}
+      className={`${jetbrainsMono.variable} ${tektur.variable}`}
       suppressHydrationWarning
-      style={{ minHeight: "100vh" }}
     >
       <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+        />
       </head>
-      <body style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <body style={{ margin: 0 }}>
         <Providers>
-          <Navbar />
-          <main
-            className="flex-grow max-w-6xl mx-auto w-full"
-          >
-            {children}
-          </main>
-          <Footer />
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>
