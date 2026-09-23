@@ -1,56 +1,93 @@
-import { getAllContent } from "@/lib/markdown";
-import { Box, Container, Typography } from "@mui/material";
 import Link from "next/link";
+import {
+  Box,
+  Chip,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 
-export async function generateStaticParams() {
+import { getAllContent } from "@/lib/markdown";
+
+export function generateStaticParams() {
   const posts = getAllContent("blog");
   const tags = new Set<string>();
+
   posts.forEach((post: any) => {
-    if (post.tags) {
+    if (Array.isArray(post.tags)) {
       post.tags.forEach((tag: string) => tags.add(tag));
     }
   });
-  return Array.from(tags).map((tag) => ({
-    tag: tag,
-  }));
+
+  return Array.from(tags).map((tag) => ({ tag }));
 }
 
-const TagPage = async ({ params }: { params: { tag: string } }) => {
-  const resolvedParams = await params;
-  const decodedTag = decodeURIComponent(resolvedParams.tag);
+export default async function TagPage({
+  params,
+}: {
+  params: Promise<{ tag: string }>;
+}) {
+  const { tag } = await params;
+  const decodedTag = decodeURIComponent(tag);
   const allPosts = getAllContent("blog");
   const filteredPosts = allPosts.filter((post: any) => {
-    if (!Array.isArray(post.tags)) {
-      return false;
-    }
-    const postTagsLower = post.tags.map((t: string) => t.toLowerCase());
-    const urlTagLower = decodedTag.toLowerCase();
-    return postTagsLower.includes(urlTagLower);
+    if (!Array.isArray(post.tags)) return false;
+    return post.tags.some(
+      (postTag: string) => postTag.toLowerCase() === decodedTag.toLowerCase(),
+    );
   });
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Posts tagged with &quot;{decodedTag}&quot;
-      </Typography>
-      <Box>
+    <Box>
+      <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 3 }}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
+          Tag
+        </Typography>
+        <Chip label={decodedTag} size="small" />
+      </Stack>
+
+      <Box
+        sx={{
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 3,
+          overflow: "hidden",
+          bgcolor: "background.paper",
+        }}
+      >
         {filteredPosts.length > 0 ? (
-          filteredPosts.map((post: any) => (
-            <Box key={post.slug} sx={{ mb: 1 }}>
-              <Typography variant="h6" component="h2">
-                <Link href={`/${post.slug}`}>{post.title}</Link>
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {post.publish_date}
-              </Typography>
+          filteredPosts.map((post: any, index: number) => (
+            <Box key={post.slug}>
+              <Box
+                component={Link}
+                href={`/${post.slug}`}
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "1fr auto" },
+                  gap: 1.5,
+                  px: 2.5,
+                  py: 2,
+                  color: "inherit",
+                  textDecoration: "none",
+                  "&:hover": { bgcolor: "action.hover" },
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 650 }}>
+                  {post.title}
+                </Typography>
+                <Typography variant="caption" color="text.disabled">
+                  {post.publish_date}
+                </Typography>
+              </Box>
+              {index < filteredPosts.length - 1 && <Divider />}
             </Box>
           ))
         ) : (
-          <Typography>No posts found for this tag.</Typography>
+          <Typography color="text.secondary" sx={{ p: 2.5 }}>
+            No posts found for this tag.
+          </Typography>
         )}
       </Box>
-    </Container>
+    </Box>
   );
-};
-
-export default TagPage;
+}
