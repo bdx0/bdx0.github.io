@@ -13,7 +13,7 @@
   .card{padding:12px 14px;border-radius:16px;max-width:520px;color:#4b3a27}
   .card b{font-family:Georgia,serif;font-size:20px}.card small{display:block;margin-top:4px;color:#776953}
   .tools{display:flex;gap:8px;padding:8px;border-radius:14px}
-  button{border:1px solid rgba(80,60,35,.14);background:#fffaf2;color:#59462d;padding:9px 11px;border-radius:10px;font-weight:700}
+  button,.back-link{border:1px solid rgba(80,60,35,.14);background:#fffaf2;color:#59462d;padding:9px 11px;border-radius:10px;font-weight:700;font:inherit;text-decoration:none;cursor:pointer}
   #loading,#errorBox{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:linear-gradient(#f4eee4,#e7dccb);color:#6a5639}
   #loading.hide{display:none}
   #errorBox{display:none;padding:28px;text-align:center}
@@ -29,11 +29,11 @@
 <div id="stage"></div>
 <div class="hud">
   <div class="card"><b>Đức Phật Thích Ca — Mesh 3D</b><small>Canvas WebGL • kéo để xoay • chụm/cuộn để zoom</small></div>
-  <div class="tools"><button id="frontBtn">Chính diện</button><button id="spinBtn">Tự xoay</button><button id="lightBtn">Ánh sáng</button></div>
+  <div class="tools"><a class="back-link" href="/lab/">← Về Lab</a><button id="frontBtn">Chính diện</button><button id="spinBtn">Tự xoay</button><button id="lightBtn">Ánh sáng</button></div>
 </div>
 <div class="hint">Bản nhẹ hơn để chạy ổn định trên Safari/iPhone/iPad.</div>
 <div id="loading"><div><div class="spinner"></div><div>Đang dựng tượng 3D…</div></div></div>
-<div id="errorBox"><div class="inner"><h2>Không thể khởi tạo 3D</h2><p id="errorText">Đã xảy ra lỗi.</p><pre id="errorDetail"></pre></div></div>
+<div id="errorBox"><div class="inner"><h2>Không thể khởi tạo 3D</h2><p id="errorText">Đã xảy ra lỗi.</p><pre id="errorDetail"></pre><p><a class="back-link" href="/lab/">← Về Lab</a></p></div></div>
 
 <script>
 (function(){
