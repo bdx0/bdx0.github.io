@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050b0c">
-<title>Rồng thời Lý 3D</title>
+<title>Rồng thời Lý 3D — GLB v2</title>
 <style>
 :root{--ink:#f4ead5;--muted:#b7aa93;--glass:rgba(8,14,15,.58);--line:rgba(255,255,255,.12)}
 *{box-sizing:border-box}
@@ -13,46 +13,53 @@ radial-gradient(circle at 65% 35%,#17312f 0,#0b1718 32%,#050b0c 72%);
 color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 #app{position:fixed;inset:0}
 canvas{display:block;width:100%;height:100%;touch-action:none}
-.panel{position:fixed;z-index:5;top:18px;left:18px;width:min(390px,calc(100vw - 36px));padding:16px 17px;
-border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(18px);
-box-shadow:0 18px 60px rgba(0,0,0,.3)}
+.panel{position:fixed;z-index:5;top:18px;left:18px;width:min(400px,calc(100vw - 36px));padding:16px 17px;border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(18px);box-shadow:0 18px 60px rgba(0,0,0,.3)}
 .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#b9d8cf;margin-bottom:6px}
 h1{font-size:clamp(23px,4vw,35px);margin:0 0 7px;letter-spacing:.01em}
 p{font-size:13px;line-height:1.55;margin:0;color:var(--muted)}
+.status{margin-top:9px;font-size:11px;color:#b9d8cf}
 .buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
 button,.back-link{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.075);color:var(--ink);padding:8px 12px;border-radius:999px;font-weight:650;cursor:pointer;font:inherit;text-decoration:none}
 button:hover,.back-link:hover{background:rgba(255,255,255,.14)}
-.tag{position:fixed;right:15px;bottom:15px;z-index:5;padding:9px 12px;border-radius:999px;border:1px solid var(--line);
-background:rgba(5,8,9,.58);font-size:11px;letter-spacing:.08em;color:#d7cdb9}
+.tag{position:fixed;right:15px;bottom:15px;z-index:5;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(5,8,9,.58);font-size:11px;letter-spacing:.08em;color:#d7cdb9}
 .note{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;font-size:11px;color:#a99f8d;white-space:nowrap;opacity:.8}
-.loader{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:#050b0c;transition:opacity .6s ease}
-.loader.hide{opacity:0;pointer-events:none}.loader span{font-size:12px;letter-spacing:.18em;color:#c9d9d4}
+.loader{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:#050b0c;transition:opacity .55s ease}
+.loader.hide{opacity:0;pointer-events:none}
+.loader-box{text-align:center}.loader-title{font-size:12px;letter-spacing:.18em;color:#d7e6e1}.loader-sub{font-size:11px;color:#758a84;margin-top:8px}
+.error{color:#ffbd9b}
 @media(max-width:640px){.panel{top:12px;left:12px;width:calc(100vw - 24px);padding:13px 14px}.panel p{font-size:12px}.note{display:none}.tag{font-size:9px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div id="app"></div>
-<div class="loader" id="loader"><span>ĐANG DỰNG RỒNG LÝ</span></div>
+<div class="loader" id="loader"><div class="loader-box"><div class="loader-title">ĐANG TẢI RỒNG LÝ</div><div class="loader-sub">GLB v2 • parametric model</div></div></div>
 <div class="panel">
-  <div class="eyebrow">Vietnamese dragon study</div>
+  <div class="eyebrow">Vietnamese dragon study • GLB v2</div>
   <h1>Rồng thời Lý — 3D</h1>
-  <p>Bản dựng tương tác lấy cảm hứng từ mỹ thuật rồng thời Lý: thân dài thanh, nhịp uốn mềm, đầu nhỏ, râu dài, mào lửa và chân gọn. Kéo để xoay, chụm/cuộn để zoom.</p>
-  <div class="buttons"><a class="back-link" href="/lab/" onclick="if(history.length>1){event.preventDefault();history.back()}">← Back</a><button id="spin">Dừng xoay</button><button id="material">Đổi chất liệu</button><button id="reset">Góc nhìn ban đầu</button></div>
+  <p>Model GLB được sinh từ bộ JSON tham số riêng của dự án. Đây là bản nền để chúng ta tiếp tục chỉnh từng bộ phận: tổng dáng, đầu, sừng, râu, bờm, chân và vảy.</p>
+  <div class="status" id="status">Đang tải model…</div>
+  <div class="buttons">
+    <a class="back-link" href="/lab/" onclick="if(history.length>1){event.preventDefault();history.back()}">← Back</a>
+    <button id="spin">Dừng xoay</button>
+    <button id="material">Đổi chất liệu</button>
+    <button id="reset">Góc nhìn ban đầu</button>
+  </div>
 </div>
-<div class="tag">THREE.JS • WEBGL • BLOOM</div>
+<div class="tag">GLB • THREE.JS • BLOOM</div>
 <div class="note">Interactive interpretation — not an archaeological reconstruction</div>
 
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const scene=new THREE.Scene();
-scene.fog=new THREE.FogExp2(0x071012,.026);
+scene.fog=new THREE.FogExp2(0x071012,.024);
 
 const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,100);
 camera.position.set(11.8,5.8,14.8);
@@ -62,288 +69,187 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.15;
+renderer.toneMappingExposure=1.12;
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 document.getElementById('app').appendChild(renderer.domElement);
 
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
-const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.45,.55,.82);
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.38,.52,.84);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
 const controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;controls.dampingFactor=.05;
-controls.target.set(.3,.55,0);
-controls.minDistance=7.5;controls.maxDistance=27;
-controls.maxPolarAngle=Math.PI*.83;
-controls.autoRotate=true;controls.autoRotateSpeed=.58;
+controls.enableDamping=true;
+controls.dampingFactor=.05;
+controls.target.set(0,.45,0);
+controls.minDistance=6.5;
+controls.maxDistance=28;
+controls.maxPolarAngle=Math.PI*.84;
+controls.autoRotate=true;
+controls.autoRotateSpeed=.55;
 
-scene.add(new THREE.HemisphereLight(0xcfe9e3,0x18201d,1.4));
-const key=new THREE.DirectionalLight(0xffe1b0,4.0);key.position.set(7,10,7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
-const rim=new THREE.DirectionalLight(0x68e0d2,4.8);rim.position.set(-8,4,-8);scene.add(rim);
-const fill=new THREE.PointLight(0x6ccfc4,16,26,2);fill.position.set(-2,2,7);scene.add(fill);
-const warm=new THREE.PointLight(0xff9e66,11,22,2);warm.position.set(6,-1,4);scene.add(warm);
+scene.add(new THREE.HemisphereLight(0xcfe9e3,0x18201d,1.45));
+const key=new THREE.DirectionalLight(0xffe1b0,4.1);key.position.set(7,10,7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
+const rim=new THREE.DirectionalLight(0x68e0d2,4.4);rim.position.set(-8,4,-8);scene.add(rim);
+const fill=new THREE.PointLight(0x6ccfc4,12,28,2);fill.position.set(-2,2,7);scene.add(fill);
+const warm=new THREE.PointLight(0xff9e66,9,24,2);warm.position.set(6,-1,4);scene.add(warm);
 
-const palettes=[
- {body:0x3f756b,body2:0x7fb6a4,belly:0xd5c48c,horn:0xe5d5ad,mane:0x9f743b,eye:0xffdc71,claw:0xdcc99b,pearl:0xffe7aa},
- {body:0x75573b,body2:0xb08753,belly:0xe1c27c,horn:0xead7ae,mane:0xbd8134,eye:0xffd55f,claw:0xe2cca0,pearl:0xffd78b},
- {body:0x81857e,body2:0xb9b9ae,belly:0xd8d0b7,horn:0xe4ddca,mane:0x8c806e,eye:0xf5c95c,claw:0xdad0b6,pearl:0xdff7ff}
-];
-let paletteIndex=0;
-const mats={};
-function makeMaterials(p){
- mats.body=new THREE.MeshPhysicalMaterial({color:p.body,roughness:.34,metalness:.15,clearcoat:.35,clearcoatRoughness:.38});
- mats.body2=new THREE.MeshPhysicalMaterial({color:p.body2,roughness:.32,metalness:.13,clearcoat:.28});
- mats.belly=new THREE.MeshPhysicalMaterial({color:p.belly,roughness:.43,metalness:.05,clearcoat:.12});
- mats.horn=new THREE.MeshStandardMaterial({color:p.horn,roughness:.56,metalness:.04});
- mats.mane=new THREE.MeshStandardMaterial({color:p.mane,roughness:.46,metalness:.12});
- mats.eye=new THREE.MeshStandardMaterial({color:p.eye,emissive:p.eye,emissiveIntensity:1.8,roughness:.18});
- mats.black=new THREE.MeshStandardMaterial({color:0x100d08,roughness:.5});
- mats.claw=new THREE.MeshStandardMaterial({color:p.claw,roughness:.5});
- mats.pearl=new THREE.MeshPhysicalMaterial({color:p.pearl,emissive:p.pearl,emissiveIntensity:1.15,roughness:.14,metalness:.06,clearcoat:1,clearcoatRoughness:.08});
-}
-makeMaterials(palettes[0]);
+const stage=new THREE.Group();scene.add(stage);
+const platform=new THREE.Mesh(
+  new THREE.CylinderGeometry(5.2,5.35,.16,96),
+  new THREE.MeshStandardMaterial({color:0x131d1c,roughness:.82,metalness:.12})
+);
+platform.position.y=-2.55;platform.receiveShadow=true;stage.add(platform);
 
-const dragon=new THREE.Group();
-dragon.rotation.set(-.05,-.08,.01);
-scene.add(dragon);
+const ring=new THREE.Mesh(
+  new THREE.TorusGeometry(4.45,.016,8,180),
+  new THREE.MeshBasicMaterial({color:0x84d8c8,transparent:true,opacity:.34})
+);
+ring.rotation.x=Math.PI/2;ring.position.y=-2.45;stage.add(ring);
 
-const pts=[
- new THREE.Vector3(-7.5,-.45,-.15),new THREE.Vector3(-6.45,.55,.55),new THREE.Vector3(-5.15,1.65,.35),
- new THREE.Vector3(-3.5,2.18,-.22),new THREE.Vector3(-1.75,1.62,-.55),new THREE.Vector3(-.25,.42,-.18),
- new THREE.Vector3(.75,-.82,.52),new THREE.Vector3(2.35,-.88,.36),new THREE.Vector3(3.55,.05,-.28),
- new THREE.Vector3(4.55,1.25,-.44),new THREE.Vector3(5.65,2.05,-.02)
-];
-const spine=new THREE.CatmullRomCurve3(pts,false,'centripetal',.5);
-
-function radiusAt(t){
- const tail=.12+.40*THREE.MathUtils.smoothstep(t,.02,.28);
- const chest=.06*Math.exp(-Math.pow((t-.83)/.16,2));
- return Math.min(.47,tail+chest);
-}
-function taperedTube(curve,segments=260,radials=18){
- const frames=curve.computeFrenetFrames(segments,false);
- const pos=[],norm=[],uv=[],idx=[];
- for(let i=0;i<=segments;i++){
-   const t=i/segments,p=curve.getPointAt(t),r=radiusAt(t);
-   for(let j=0;j<radials;j++){
-     const a=j/radials*Math.PI*2,ca=Math.cos(a),sa=Math.sin(a);
-     const n=frames.normals[i].clone().multiplyScalar(ca).addScaledVector(frames.binormals[i],sa).normalize();
-     const v=p.clone().addScaledVector(n,r);
-     pos.push(v.x,v.y,v.z);norm.push(n.x,n.y,n.z);uv.push(t,j/radials);
-   }
- }
- for(let i=0;i<segments;i++)for(let j=0;j<radials;j++){
-   const a=i*radials+j,b=i*radials+(j+1)%radials,c=(i+1)*radials+(j+1)%radials,d=(i+1)*radials+j;
-   idx.push(a,b,d,b,c,d);
- }
- const g=new THREE.BufferGeometry();
- g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
- g.setAttribute('normal',new THREE.Float32BufferAttribute(norm,3));
- g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
- g.setIndex(idx);
- return g;
-}
-const body=new THREE.Mesh(taperedTube(spine),mats.body);
-body.castShadow=body.receiveShadow=true;
-dragon.add(body);
-
-function frame(t){
- const p=spine.getPointAt(t),tangent=spine.getTangentAt(t).normalize(),up=new THREE.Vector3(0,1,0);
- let side=new THREE.Vector3().crossVectors(tangent,up);if(side.lengthSq()<.01)side.set(0,0,1);side.normalize();
- const normal=new THREE.Vector3().crossVectors(side,tangent).normalize();
- return {p,tangent,side,normal};
-}
-function ellipsoid(parent,rx,ry,rz,mat,pos){
- const g=new THREE.SphereGeometry(1,30,18);g.scale(rx,ry,rz);
- const m=new THREE.Mesh(g,mat);m.position.copy(pos);m.castShadow=true;parent.add(m);return m;
-}
-function tube(parent,points,r,mat,seg=42,radial=7){
- const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),seg,r,radial,false),mat);
- m.castShadow=true;parent.add(m);return m;
+const cloudMat=new THREE.MeshPhysicalMaterial({color:0xa7c7bf,roughness:.5,transparent:true,opacity:.10,depthWrite:false});
+for(let i=0;i<22;i++){
+ const a=i/22*Math.PI*2,r=3.7+Math.sin(i*1.5)*.65;
+ const p=new THREE.Mesh(new THREE.SphereGeometry(.62+(i%5)*.06,16,10),cloudMat);
+ p.position.set(Math.cos(a)*r,-2.27+Math.sin(i*.8)*.10,Math.sin(a)*r*.58);
+ p.scale.y=.38;stage.add(p);
 }
 
-// ventre segments
-for(let i=10;i<83;i+=3){
- const t=i/88,f=frame(t),r=radiusAt(t);
- const g=new THREE.SphereGeometry(.25,12,8);g.scale(1.25,.34,.76);
- const m=new THREE.Mesh(g,mats.belly);
- m.position.copy(f.p).addScaledVector(f.normal,-r*.82);
- m.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),f.tangent);
- dragon.add(m);
-}
-
-// scales as subtle overlapping petals
-for(let i=18;i<88;i+=3){
- const t=i/94,f=frame(t),r=radiusAt(t);
- for(const s of [-1,1]){
-   const g=new THREE.SphereGeometry(.13,9,6);g.scale(1.25,.18,.72);
-   const m=new THREE.Mesh(g,mats.body2);
-   m.position.copy(f.p).addScaledVector(f.side,s*r*.88).addScaledVector(f.normal,.02);
-   m.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),f.tangent);
-   dragon.add(m);
- }
-}
-
-// dorsal flame crest
-for(let i=16;i<84;i+=4){
- const t=i/91,f=frame(t),r=radiusAt(t),h=.32+.20*Math.sin(Math.PI*t);
- const m=new THREE.Mesh(new THREE.ConeGeometry(.17,h,5),mats.mane);
- m.position.copy(f.p).addScaledVector(f.normal,r+.16);
- m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),f.normal);
- m.rotateX(.22*Math.sin(i*.65));m.castShadow=true;dragon.add(m);
-}
-
-// elegant tail plume
-{
- const f=frame(.012);
- for(let i=0;i<5;i++){
-   const m=new THREE.Mesh(new THREE.ConeGeometry(.12+i*.022,.7+i*.08,5),i%2?mats.mane:mats.body2);
-   m.position.copy(f.p).addScaledVector(f.tangent,-.42-i*.28).addScaledVector(f.side,(i-2)*.07);
-   m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),f.tangent.clone().negate());
-   m.rotateZ((i-2)*.12);dragon.add(m);
- }
-}
-
-// head
-const hf=frame(.995);
-const head=new THREE.Group();
-head.position.copy(hf.p);
-head.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),hf.tangent);
-dragon.add(head);
-
-// cranium + elongated muzzle
-ellipsoid(head,.58,.47,.49,mats.body2,new THREE.Vector3(.28,.06,0));
-ellipsoid(head,.63,.28,.35,mats.body,new THREE.Vector3(.88,-.02,0));
-ellipsoid(head,.28,.18,.28,mats.body2,new THREE.Vector3(1.42,-.01,0));
-ellipsoid(head,.54,.11,.31,mats.belly,new THREE.Vector3(.94,-.28,0));
-
-// raised snout / nose bridge
-const bridge=ellipsoid(head,.34,.13,.24,mats.body2,new THREE.Vector3(1.28,.13,0));bridge.rotation.z=-.10;
-
-// brows + eyes
-for(const z of [-.30,.30]){
- const brow=ellipsoid(head,.28,.09,.09,mats.mane,new THREE.Vector3(.51,.34,z));brow.rotation.z=z>0?-.18:.18;
- ellipsoid(head,.085,.072,.05,mats.eye,new THREE.Vector3(.67,.22,z*1.12));
- ellipsoid(head,.036,.052,.018,mats.black,new THREE.Vector3(.73,.22,z*1.14));
-}
-for(const z of [-.15,.15])ellipsoid(head,.045,.036,.028,mats.black,new THREE.Vector3(1.63,.05,z));
-
-// flame eyebrows / cheek flourishes
-for(const z of [-1,1]){
- tube(head,[new THREE.Vector3(.46,.34,z*.27),new THREE.Vector3(.30,.52,z*.43),new THREE.Vector3(.02,.64,z*.50)],.032,mats.mane,30,6);
-}
-
-// horns: slimmer and swept back
-for(const z of [-1,1]){
- tube(head,[new THREE.Vector3(.10,.46,z*.30),new THREE.Vector3(-.20,.72,z*.42),new THREE.Vector3(-.58,.97,z*.46),new THREE.Vector3(-.93,1.16,z*.34)],.055,mats.horn,44,7);
- tube(head,[new THREE.Vector3(-.40,.87,z*.44),new THREE.Vector3(-.70,1.08,z*.68),new THREE.Vector3(-.88,1.22,z*.77)],.035,mats.horn,30,6);
-}
-
-// long whiskers, wider graceful loops
-for(const z of [-1,1]){
- tube(head,[new THREE.Vector3(1.15,-.02,z*.27),new THREE.Vector3(1.58,-.02,z*.62),new THREE.Vector3(1.95,-.17,z*.98),
- new THREE.Vector3(1.82,-.42,z*1.38),new THREE.Vector3(1.34,-.56,z*1.66),new THREE.Vector3(.82,-.40,z*1.74)],.018,mats.horn,72,6);
- tube(head,[new THREE.Vector3(.78,-.31,z*.19),new THREE.Vector3(.63,-.67,z*.31),new THREE.Vector3(.33,-.94,z*.24)],.026,mats.mane,40,6);
-}
-
-// head flame mane
-for(let i=0;i<9;i++){
- const m=new THREE.Mesh(new THREE.ConeGeometry(.13+.018*i,.54+.045*i,5),mats.mane);
- m.position.set(-.12-i*.12,.34+i*.015,(i-4)*.10);
- m.rotation.z=.72;m.rotation.x=(i-4)*.07;head.add(m);
-}
-
-// ears
-for(const z of [-1,1]){
- const ear=new THREE.Mesh(new THREE.ConeGeometry(.13,.44,5),mats.body2);
- ear.position.set(.02,.39,z*.43);ear.rotation.z=.86;ear.rotation.x=z*.18;head.add(ear);
-}
-
-// teeth
-for(let i=0;i<3;i++)for(const z of [-.18,.18]){
- const t=new THREE.Mesh(new THREE.ConeGeometry(.032,.13,6),mats.horn);
- t.position.set(1.10+i*.15,-.31,z);t.rotation.z=Math.PI;head.add(t);
-}
-
-// legs
-function cylinderBetween(a,b,r,mat){
- const mid=a.clone().add(b).multiplyScalar(.5),len=a.distanceTo(b);
- const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.78,len,9),mat);
- m.position.copy(mid);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),b.clone().sub(a).normalize());
- m.castShadow=true;dragon.add(m);
-}
-function clawAt(p,d){
- const m=new THREE.Mesh(new THREE.ConeGeometry(.038,.25,7),mats.claw);
- m.position.copy(p).addScaledVector(d,.12);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d);dragon.add(m);
-}
-function addLeg(t,s,front=false){
- const f=frame(t),r=radiusAt(t);
- const hip=f.p.clone().addScaledVector(f.side,s*r*.78);
- const knee=hip.clone().addScaledVector(f.side,s*(front?.43:.38)).add(new THREE.Vector3(0,-.38,0));
- const ankle=knee.clone().addScaledVector(f.tangent,front?.28:-.18).add(new THREE.Vector3(0,-.42,0));
- cylinderBetween(hip,knee,.085,mats.body2);cylinderBetween(knee,ankle,.063,mats.body);
- for(let k=-1;k<=1;k++){
-   const d=f.tangent.clone().multiplyScalar(.58).addScaledVector(f.side,s*k*.28).add(new THREE.Vector3(0,-.12,0)).normalize();
-   clawAt(ankle,d);
- }
-}
-addLeg(.28,1);addLeg(.30,-1);addLeg(.72,1,true);addLeg(.74,-1,true);
-
-// pearl held in front of head
-const pearlGroup=new THREE.Group();
-pearlGroup.position.set(7.55,2.18,.05);
-scene.add(pearlGroup);
-const pearl=new THREE.Mesh(new THREE.SphereGeometry(.44,32,24),mats.pearl);pearlGroup.add(pearl);
-const halo1=new THREE.Mesh(new THREE.TorusGeometry(.68,.018,8,96),new THREE.MeshBasicMaterial({color:0xffe9ad,transparent:true,opacity:.58}));
-halo1.rotation.x=Math.PI/2;pearlGroup.add(halo1);
-const halo2=halo1.clone();halo2.scale.set(.78,.78,.78);halo2.rotation.set(Math.PI/2,.8,.4);pearlGroup.add(halo2);
-const pearlLight=new THREE.PointLight(0xffd98a,8,8,2);pearlGroup.add(pearlLight);
-
-// stylized cloud floor
-const cloudMat=new THREE.MeshPhysicalMaterial({color:0xa7c7bf,roughness:.5,transparent:true,opacity:.13,depthWrite:false});
-for(let i=0;i<24;i++){
- const a=i/24*Math.PI*2,r=3.8+Math.sin(i*1.5)*.65;
- const p=new THREE.Mesh(new THREE.SphereGeometry(.65+(i%5)*.07,18,12),cloudMat);
- p.position.set(Math.cos(a)*r,-2.42+Math.sin(i*.8)*.10,Math.sin(a)*r*.58);p.scale.y=.38;scene.add(p);
-}
-for(let i=0;i<7;i++){
- const tor=new THREE.Mesh(new THREE.TorusGeometry(.5+i*.08,.035,8,64),new THREE.MeshBasicMaterial({color:0x7db5aa,transparent:true,opacity:.08}));
- tor.rotation.x=Math.PI/2;tor.position.set(-4.2+i*1.5,-2.34,Math.sin(i)*1.6);scene.add(tor);
-}
-const platform=new THREE.Mesh(new THREE.CylinderGeometry(5.15,5.3,.15,96),new THREE.MeshStandardMaterial({color:0x141d1c,roughness:.82,metalness:.12}));
-platform.position.y=-2.72;platform.receiveShadow=true;scene.add(platform);
-const ring=new THREE.Mesh(new THREE.TorusGeometry(4.45,.016,8,180),new THREE.MeshBasicMaterial({color:0x84d8c8,transparent:true,opacity:.34}));
-ring.rotation.x=Math.PI/2;ring.position.y=-2.63;scene.add(ring);
-
-// dust
-const n=520,arr=new Float32Array(n*3);
+const n=420,arr=new Float32Array(n*3);
 for(let i=0;i<n;i++){arr[i*3]=(Math.random()-.5)*30;arr[i*3+1]=(Math.random()-.5)*16;arr[i*3+2]=(Math.random()-.5)*25}
 const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(arr,3));
-const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xd5eee8,size:.022,transparent:true,opacity:.38,depthWrite:false}));
+const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xd5eee8,size:.021,transparent:true,opacity:.34,depthWrite:false}));
 scene.add(dust);
 
-// controls
-document.getElementById('spin').onclick=e=>{controls.autoRotate=!controls.autoRotate;e.currentTarget.textContent=controls.autoRotate?'Dừng xoay':'Tự xoay'};
-document.getElementById('reset').onclick=()=>{camera.position.set(11.8,5.8,14.8);controls.target.set(.3,.55,0);controls.update()};
+const palettes=[
+ {
+   name:'Ngọc',
+   Body:0x3f756b,BodyDetail:0x7fb6a4,Belly:0xd5c48c,Horn:0xe5d5ad,
+   Mane:0x9f743b,Eye:0xffdc71,Black:0x100d08,Claw:0xdcc99b,Pearl:0xffe7aa
+ },
+ {
+   name:'Đồng',
+   Body:0x75573b,BodyDetail:0xb08753,Belly:0xe1c27c,Horn:0xead7ae,
+   Mane:0xbd8134,Eye:0xffd55f,Black:0x100d08,Claw:0xe2cca0,Pearl:0xffd78b
+ },
+ {
+   name:'Đá',
+   Body:0x81857e,BodyDetail:0xb9b9ae,Belly:0xd8d0b7,Horn:0xe4ddca,
+   Mane:0x8c806e,Eye:0xf5c95c,Black:0x171817,Claw:0xdad0b6,Pearl:0xdff7ff
+ }
+];
+let paletteIndex=0;
+let modelRoot=null;
+const modelMaterials=new Set();
+const status=document.getElementById('status');
+const loaderEl=document.getElementById('loader');
+
+function normalizeName(name=''){
+ const n=name.toLowerCase();
+ if(n.includes('bodydetail')) return 'BodyDetail';
+ if(n.includes('body')) return 'Body';
+ if(n.includes('belly')) return 'Belly';
+ if(n.includes('horn')) return 'Horn';
+ if(n.includes('mane')) return 'Mane';
+ if(n.includes('eye')) return 'Eye';
+ if(n.includes('black')) return 'Black';
+ if(n.includes('claw')) return 'Claw';
+ if(n.includes('pearl')) return 'Pearl';
+ return null;
+}
+
+function applyPalette(index){
+ const palette=palettes[index];
+ for(const mat of modelMaterials){
+   const key=normalizeName(mat.name);
+   if(!key || palette[key]===undefined) continue;
+   mat.color?.setHex(palette[key]);
+   if(key==='Eye'||key==='Pearl'){
+     mat.emissive?.setHex(palette[key]);
+     if('emissiveIntensity' in mat) mat.emissiveIntensity=key==='Pearl'?1.05:1.45;
+   }
+   mat.needsUpdate=true;
+ }
+ status.textContent='GLB v2 đã tải • chất liệu '+palette.name;
+}
+
+function fitModel(root){
+ const box=new THREE.Box3().setFromObject(root);
+ const size=box.getSize(new THREE.Vector3());
+ const center=box.getCenter(new THREE.Vector3());
+ const maxDim=Math.max(size.x,size.y,size.z);
+ const targetSize=12.5;
+ const scale=maxDim>0?targetSize/maxDim:1;
+ root.scale.setScalar(scale);
+ root.updateMatrixWorld(true);
+
+ const scaledBox=new THREE.Box3().setFromObject(root);
+ const scaledCenter=scaledBox.getCenter(new THREE.Vector3());
+ root.position.sub(scaledCenter);
+ root.position.y+=.30;
+
+ controls.target.set(0,.35,0);
+ camera.position.set(11.8,5.8,14.8);
+ controls.update();
+}
+
+const gltfLoader=new GLTFLoader();
+gltfLoader.load(
+ './models/rong-thoi-ly-v2.glb',
+ gltf=>{
+   modelRoot=gltf.scene;
+   modelRoot.name='LyDragonGLBv2';
+   modelRoot.traverse(obj=>{
+     if(!obj.isMesh) return;
+     obj.castShadow=true;
+     obj.receiveShadow=true;
+     const list=Array.isArray(obj.material)?obj.material:[obj.material];
+     for(const mat of list){if(mat)modelMaterials.add(mat)}
+   });
+   scene.add(modelRoot);
+   fitModel(modelRoot);
+   applyPalette(0);
+   loaderEl.classList.add('hide');
+ },
+ progress=>{
+   if(progress.total){
+     const pct=Math.round(progress.loaded/progress.total*100);
+     status.textContent='Đang tải GLB… '+pct+'%';
+   }
+ },
+ error=>{
+   console.error(error);
+   status.textContent='Không tải được GLB v2';
+   status.classList.add('error');
+   loaderEl.querySelector('.loader-title').textContent='LỖI TẢI MODEL';
+   loaderEl.querySelector('.loader-sub').textContent=String(error?.message||error);
+ }
+);
+
+document.getElementById('spin').onclick=e=>{
+ controls.autoRotate=!controls.autoRotate;
+ e.currentTarget.textContent=controls.autoRotate?'Dừng xoay':'Tự xoay';
+};
 document.getElementById('material').onclick=()=>{
- paletteIndex=(paletteIndex+1)%palettes.length;const p=palettes[paletteIndex];
- mats.body.color.setHex(p.body);mats.body2.color.setHex(p.body2);mats.belly.color.setHex(p.belly);mats.horn.color.setHex(p.horn);
- mats.mane.color.setHex(p.mane);mats.claw.color.setHex(p.claw);mats.eye.color.setHex(p.eye);mats.eye.emissive.setHex(p.eye);
- mats.pearl.color.setHex(p.pearl);mats.pearl.emissive.setHex(p.pearl);
+ paletteIndex=(paletteIndex+1)%palettes.length;
+ applyPalette(paletteIndex);
+};
+document.getElementById('reset').onclick=()=>{
+ if(modelRoot)fitModel(modelRoot);
+ else{camera.position.set(11.8,5.8,14.8);controls.target.set(0,.35,0);controls.update()}
 };
 
 const clock=new THREE.Clock();
 function animate(){
  requestAnimationFrame(animate);
  const t=clock.getElapsedTime();
- dragon.position.y=Math.sin(t*.65)*.055;
- dragon.rotation.z=.018*Math.sin(t*.38);
- pearlGroup.position.y=2.18+Math.sin(t*1.1)*.07;
- pearlGroup.rotation.y=t*.22;
- dust.rotation.y=t*.009;
+ if(modelRoot){
+   modelRoot.position.y=.30+Math.sin(t*.65)*.045;
+   modelRoot.rotation.z=.012*Math.sin(t*.38);
+ }
+ dust.rotation.y=t*.008;
  ring.material.opacity=.27+.08*Math.sin(t*.9);
  controls.update();
  composer.render();
@@ -351,11 +257,12 @@ function animate(){
 animate();
 
 addEventListener('resize',()=>{
- camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
- renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
  composer.setSize(innerWidth,innerHeight);
 });
-requestAnimationFrame(()=>setTimeout(()=>document.getElementById('loader').classList.add('hide'),250));
 </script>
 </body>
 </html>
