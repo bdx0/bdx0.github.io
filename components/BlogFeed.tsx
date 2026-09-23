@@ -15,6 +15,8 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { formatDateOnly } from "@/lib/date";
+
 export type BlogFeedPost = {
   slug: string;
   title: string;
@@ -22,21 +24,6 @@ export type BlogFeedPost = {
   publishDate: string;
   tags: string[];
 };
-
-function formatDate(value: string) {
-  const match = value.match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);
-  if (!match) return value;
-
-  const [, year, month, day] = match;
-  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  }).format(date);
-}
 
 export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
   const [query, setQuery] = useState("");
@@ -230,7 +217,7 @@ export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
                     color="text.disabled"
                     sx={{ pt: 0.25, whiteSpace: "nowrap" }}
                   >
-                    {formatDate(post.publishDate)}
+                    {formatDateOnly(post.publishDate)}
                   </Typography>
                 </Box>
               </Link>
