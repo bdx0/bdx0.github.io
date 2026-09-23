@@ -4,54 +4,54 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Đức Phật Thích Ca — 3D Zen Halo</title>
-<meta name="description" content="Interactive 3D Gautama Buddha with a soft generated halo.">
+<meta name="description" content="Tượng Gautama Buddha 3D tự host, chất liệu trắng ngà và vòng halo phát sáng.">
 <style>
   :root{
     color-scheme:dark;
     --bg:#15130f;
-    --panel:rgba(27,24,19,.76);
+    --panel:rgba(27,24,19,.74);
     --line:rgba(255,240,205,.14);
     --text:#f5efe5;
     --muted:#bdb3a3;
-    --gold:#ffe49a;
   }
   *{box-sizing:border-box}
   html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
   body{color:var(--text)}
-  #stage{position:fixed;inset:0;background:
-    radial-gradient(circle at 50% 42%,rgba(255,221,142,.08),transparent 30%),
-    linear-gradient(180deg,#1d1a14 0%,#11100d 100%)}
-  #api-frame{
-    position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;
-    background:#15130f;
+  #stage{
+    position:fixed;inset:0;
+    background:
+      radial-gradient(circle at 50% 40%,rgba(255,224,154,.12),transparent 33%),
+      radial-gradient(circle at 50% 72%,rgba(123,101,71,.13),transparent 34%),
+      linear-gradient(180deg,#211d17 0%,#12110e 100%);
   }
+  #canvasHost{position:absolute;inset:0;z-index:2}
+  #canvasHost canvas{display:block;width:100%;height:100%;touch-action:none}
 
-  /* Generated halo, kept independent from the external model. */
   #halo{
-    position:absolute;z-index:2;pointer-events:none;
-    left:50%;top:47%;
-    width:min(52vw,560px);aspect-ratio:1;
+    position:absolute;z-index:1;pointer-events:none;
+    left:50%;top:42%;
+    width:min(48vw,52vh,520px);aspect-ratio:1;
     transform:translate(-50%,-50%);
     border-radius:50%;
-    border:clamp(5px,0.65vw,9px) solid rgba(255,232,157,.92);
+    border:clamp(5px,.6vw,8px) solid rgba(255,235,174,.93);
     box-shadow:
-      0 0 10px rgba(255,233,165,.9),
-      0 0 28px rgba(255,215,112,.52),
-      0 0 76px rgba(255,190,66,.20),
-      inset 0 0 12px rgba(255,233,165,.32);
-    filter:drop-shadow(0 0 12px rgba(255,220,130,.48));
-    opacity:.94;
+      0 0 8px rgba(255,242,202,.95),
+      0 0 24px rgba(255,218,128,.70),
+      0 0 64px rgba(255,191,72,.30),
+      0 0 120px rgba(255,176,44,.13),
+      inset 0 0 14px rgba(255,236,170,.28);
+    opacity:.96;
     transition:opacity .25s ease,transform .25s ease;
   }
   #halo::before{
-    content:"";position:absolute;inset:-22%;border-radius:50%;
-    background:radial-gradient(circle,rgba(255,226,145,.11) 0 46%,rgba(255,205,92,.05) 58%,transparent 72%);
-    filter:blur(8px);
+    content:"";position:absolute;inset:-18%;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,225,139,.10) 0 46%,rgba(255,196,77,.04) 58%,transparent 73%);
+    filter:blur(10px)
   }
   #halo.off{opacity:0;transform:translate(-50%,-50%) scale(.96)}
 
   .hud{
-    position:fixed;left:14px;right:14px;top:14px;z-index:5;
+    position:fixed;left:14px;right:14px;top:14px;z-index:10;
     display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
     pointer-events:none
   }
@@ -59,7 +59,7 @@
     pointer-events:auto;background:var(--panel);backdrop-filter:blur(16px);
     border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.24)
   }
-  .card{padding:12px 14px;border-radius:16px;max-width:min(540px,calc(100vw - 28px))}
+  .card{padding:12px 14px;border-radius:16px;max-width:min(560px,calc(100vw - 28px))}
   .card b{display:block;font:600 20px/1.2 Georgia,"Times New Roman",serif;letter-spacing:.01em}
   .card small{display:block;margin-top:5px;color:var(--muted);line-height:1.4}
   .tools{display:flex;gap:7px;padding:7px;border-radius:14px;flex-wrap:wrap;justify-content:flex-end}
@@ -72,223 +72,323 @@
   button.active{background:rgba(255,225,145,.18);border-color:rgba(255,225,145,.38);color:#fff7df}
 
   .credit{
-    position:fixed;left:14px;bottom:14px;z-index:5;border-radius:13px;padding:9px 11px;
-    font-size:11px;line-height:1.45;color:var(--muted);max-width:min(520px,calc(100vw - 28px))
+    position:fixed;left:14px;bottom:14px;z-index:10;border-radius:13px;padding:9px 11px;
+    font-size:11px;line-height:1.45;color:var(--muted);max-width:min(660px,calc(100vw - 28px))
   }
   .credit a{color:#ead9ad;text-decoration:none}
   .credit a:hover{text-decoration:underline}
 
   #loading,#errorBox{
-    position:fixed;inset:0;z-index:20;display:grid;place-items:center;
+    position:fixed;inset:0;z-index:30;display:grid;place-items:center;
     background:linear-gradient(180deg,#1c1913,#100f0c);color:#e8dcc8
   }
-  #loading.hide{opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease}
+  #loading.hide{opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease}
   #errorBox{display:none;padding:24px;text-align:center}
   #errorBox.show{display:grid}
-  .inner{max-width:620px;background:rgba(34,29,22,.88);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .inner{max-width:620px;background:rgba(34,29,22,.9);border:1px solid var(--line);border-radius:18px;padding:22px}
   .spinner{
     width:42px;height:42px;margin:0 auto 12px;border-radius:50%;
     border:3px solid rgba(255,229,168,.14);border-top-color:#eac977;animation:spin 1s linear infinite
   }
+  #progress{margin-top:7px;color:#aa9d89;font-size:12px;text-align:center}
   @keyframes spin{to{transform:rotate(360deg)}}
 
   @media(max-width:760px){
     .hud{left:10px;right:10px;top:10px;flex-direction:column}
     .tools{align-self:flex-end;max-width:100%}
-    #halo{width:min(78vw,470px);top:48%}
+    .card b{font-size:18px}
+    #halo{top:43%;width:min(74vw,46vh,430px)}
     .credit{left:10px;bottom:10px;max-width:calc(100vw - 20px);padding:7px 9px}
   }
 </style>
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
 </head>
 <body>
 <div id="stage">
   <div id="halo" aria-hidden="true"></div>
-  <iframe
-    id="api-frame"
-    title="Ancient Gautama Buddha 3D model"
-    allow="autoplay; fullscreen; xr-spatial-tracking"
-    allowfullscreen
-    sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
-  </iframe>
+  <div id="canvasHost"></div>
 </div>
 
 <div class="hud">
   <div class="card">
     <b>Đức Phật Thích Ca — Zen 3D</b>
-    <small>Model 3D thật + chất liệu trắng ngà + vòng halo phát sáng. Kéo trực tiếp trên tượng để xoay và zoom.</small>
+    <small>Model GLB được phục vụ trực tiếp từ bdx0.github.io • kéo để xoay • chụm/cuộn để zoom.</small>
   </div>
   <div class="tools">
     <a class="back-link" href="/lab/">← Lab</a>
-    <button id="whiteBtn" class="active">Tượng trắng</button>
+    <button id="materialBtn" class="active">Tượng trắng</button>
     <button id="haloBtn" class="active">Halo</button>
+    <button id="spinBtn">Tự xoay</button>
     <button id="resetBtn">Chính diện</button>
   </div>
 </div>
 
 <div class="credit">
-  Model: <a href="https://sketchfab.com/3d-models/ancient-gautama-buddha-statue-609fd6cce15c4557b85871606fa790a6" target="_blank" rel="noopener">Ancient Gautama Buddha Statue</a>
-  — Akhil JM, Sketchfab, CC Attribution. Halo và phối cảnh trang được dựng riêng cho Lab.
+  3D scan: <a href="https://zenodo.org/records/21411042" target="_blank" rel="noopener">Gautama Buddha — Scan-the-World</a>,
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>.
+  Material trắng ngà và halo là phần trình bày của Lab.
 </div>
 
-<div id="loading"><div><div class="spinner"></div><div>Đang tải tượng 3D…</div></div></div>
+<div id="loading">
+  <div><div class="spinner"></div><div>Đang tải tượng 3D từ site…</div><div id="progress">0%</div></div>
+</div>
 <div id="errorBox"><div class="inner"><h2>Không thể tải model 3D</h2><p id="errorText"></p><p><a class="back-link" href="/lab/">← Về Lab</a></p></div></div>
 
-<script src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
-<script>
-(function(){
-  const MODEL_UID = "609fd6cce15c4557b85871606fa790a6";
-  const iframe = document.getElementById("api-frame");
-  const loading = document.getElementById("loading");
-  const errorBox = document.getElementById("errorBox");
-  const errorText = document.getElementById("errorText");
-  const whiteBtn = document.getElementById("whiteBtn");
-  const haloBtn = document.getElementById("haloBtn");
-  const resetBtn = document.getElementById("resetBtn");
-  const halo = document.getElementById("halo");
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-  let api = null;
-  let originalMaterials = [];
-  let defaultCamera = null;
-  let whiteMode = true;
+const host = document.getElementById("canvasHost");
+const loading = document.getElementById("loading");
+const progress = document.getElementById("progress");
+const errorBox = document.getElementById("errorBox");
+const errorText = document.getElementById("errorText");
+const halo = document.getElementById("halo");
+const materialBtn = document.getElementById("materialBtn");
+const haloBtn = document.getElementById("haloBtn");
+const spinBtn = document.getElementById("spinBtn");
+const resetBtn = document.getElementById("resetBtn");
 
-  function fail(message){
-    loading.classList.add("hide");
-    errorText.textContent = message || "Sketchfab Viewer không khởi tạo được.";
-    errorBox.classList.add("show");
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, .01, 100);
+camera.position.set(0, 2.25, 6.6);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias:true,
+  alpha:true,
+  powerPreference:"high-performance"
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.8));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+host.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = .055;
+controls.enablePan = false;
+controls.minDistance = 3.7;
+controls.maxDistance = 10;
+controls.minPolarAngle = Math.PI * .22;
+controls.maxPolarAngle = Math.PI * .70;
+controls.target.set(0, 1.8, 0);
+controls.update();
+
+scene.add(new THREE.HemisphereLight(0xfff7e8, 0x5f554a, 2.15));
+
+const key = new THREE.DirectionalLight(0xfff0ce, 4.6);
+key.position.set(4.5, 7.5, 5.5);
+key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+key.shadow.camera.left = -4;
+key.shadow.camera.right = 4;
+key.shadow.camera.top = 6;
+key.shadow.camera.bottom = -1;
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xdde7ff, 1.35);
+fill.position.set(-4, 3.5, 4.5);
+scene.add(fill);
+
+const rim = new THREE.PointLight(0xffce72, 2.2, 12, 2);
+rim.position.set(0, 4.4, -2.5);
+scene.add(rim);
+
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(4.2, 96),
+  new THREE.MeshStandardMaterial({
+    color:0x28231d,
+    roughness:.96,
+    metalness:0,
+    transparent:true,
+    opacity:.68
+  })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -.015;
+floor.receiveShadow = true;
+scene.add(floor);
+
+let model = null;
+let autoSpin = false;
+let whiteMode = true;
+let homeCamera = null;
+const originalMaterials = new Map();
+
+function fail(message){
+  loading.classList.add("hide");
+  errorText.textContent = message;
+  errorBox.classList.add("show");
+}
+
+function ivoryFrom(source){
+  const material = new THREE.MeshStandardMaterial({
+    color:0xf1eee5,
+    roughness:.56,
+    metalness:.015,
+    side:source?.side ?? THREE.FrontSide,
+    transparent:source?.transparent ?? false,
+    opacity:source?.opacity ?? 1
+  });
+  if(source?.normalMap){
+    material.normalMap = source.normalMap;
+    material.normalScale.copy(source.normalScale || new THREE.Vector2(1,1));
   }
-
-  function clone(value){
-    return JSON.parse(JSON.stringify(value));
+  if(source?.aoMap){
+    material.aoMap = source.aoMap;
+    material.aoMapIntensity = .55;
   }
+  return material;
+}
 
-  function makeIvory(material){
-    const m = clone(material);
-    const c = m.channels || {};
-
-    if(c.AlbedoPBR){
-      c.AlbedoPBR.enable = true;
-      c.AlbedoPBR.color = [0.93,0.92,0.89];
-      if("texture" in c.AlbedoPBR) c.AlbedoPBR.texture = null;
-      if("factor" in c.AlbedoPBR) c.AlbedoPBR.factor = 1;
+function applyIvory(){
+  if(!model) return;
+  model.traverse(node=>{
+    if(!node.isMesh) return;
+    const saved = originalMaterials.get(node.uuid);
+    if(Array.isArray(saved)){
+      node.material = saved.map(m=>ivoryFrom(m));
+    }else if(saved){
+      node.material = ivoryFrom(saved);
     }
-    if(c.DiffuseColor){
-      c.DiffuseColor.enable = true;
-      c.DiffuseColor.color = [0.93,0.92,0.89];
-      if("texture" in c.DiffuseColor) c.DiffuseColor.texture = null;
-      if("factor" in c.DiffuseColor) c.DiffuseColor.factor = 1;
+  });
+  whiteMode = true;
+  materialBtn.classList.add("active");
+  materialBtn.textContent = "Tượng trắng";
+}
+
+function applyOriginal(){
+  if(!model) return;
+  model.traverse(node=>{
+    if(!node.isMesh) return;
+    const saved = originalMaterials.get(node.uuid);
+    if(Array.isArray(saved)){
+      node.material = saved.map(m=>m.clone());
+    }else if(saved){
+      node.material = saved.clone();
     }
-    if(c.DiffusePBR){
-      c.DiffusePBR.enable = true;
-      c.DiffusePBR.color = [0.93,0.92,0.89];
-      if("texture" in c.DiffusePBR) c.DiffusePBR.texture = null;
-      if("factor" in c.DiffusePBR) c.DiffusePBR.factor = 1;
-    }
-    if(c.MetalnessPBR){
-      c.MetalnessPBR.enable = true;
-      if("factor" in c.MetalnessPBR) c.MetalnessPBR.factor = 0.03;
-    }
-    if(c.RoughnessPBR){
-      c.RoughnessPBR.enable = true;
-      if("factor" in c.RoughnessPBR) c.RoughnessPBR.factor = 0.48;
-    }
-    if(c.EmitColor){
-      c.EmitColor.enable = false;
-    }
-    return m;
-  }
+  });
+  whiteMode = false;
+  materialBtn.classList.remove("active");
+  materialBtn.textContent = "Màu gốc";
+}
 
-  function applyWhite(){
-    if(!api || !originalMaterials.length) return;
-    originalMaterials.forEach(function(source){
-      api.setMaterial(makeIvory(source));
-    });
-    whiteMode = true;
-    whiteBtn.classList.add("active");
-    whiteBtn.textContent = "Tượng trắng";
-  }
+function frameModel(root){
+  let box = new THREE.Box3().setFromObject(root);
+  const size = box.getSize(new THREE.Vector3());
+  const largest = Math.max(size.x, size.y, size.z) || 1;
+  const scale = 4.25 / largest;
+  root.scale.setScalar(scale);
 
-  function restoreOriginal(){
-    if(!api || !originalMaterials.length) return;
-    originalMaterials.forEach(function(source){
-      api.setMaterial(clone(source));
-    });
-    whiteMode = false;
-    whiteBtn.classList.remove("active");
-    whiteBtn.textContent = "Màu gốc";
-  }
+  box = new THREE.Box3().setFromObject(root);
+  const center = box.getCenter(new THREE.Vector3());
+  root.position.x -= center.x;
+  root.position.z -= center.z;
+  root.position.y -= box.min.y;
 
-  try{
-    if(!window.Sketchfab){
-      fail("Không tải được Sketchfab Viewer API.");
-      return;
-    }
+  box = new THREE.Box3().setFromObject(root);
+  const finalSize = box.getSize(new THREE.Vector3());
+  const yTarget = Math.max(1.2, finalSize.y * .48);
+  const z = Math.max(5.3, finalSize.y * 1.42);
 
-    const client = new window.Sketchfab("1.12.1", iframe);
-    client.init(MODEL_UID,{
-      autostart:1,
-      preload:0,
-      camera:0,
-      autospin:0,
-      ui_infos:0,
-      ui_controls:1,
-      ui_stop:0,
-      ui_help:0,
-      ui_inspector:0,
-      ui_settings:0,
-      ui_vr:0,
-      ui_ar:0,
-      ui_fullscreen:1,
-      ui_theme:"dark",
-      scrollwheel:1,
-      success:function(viewer){
-        api = viewer;
-        api.start(function(){
-          api.addEventListener("viewerready",function(){
-            try{
-              api.setBackground({color:[0.082,0.074,0.058]});
-              api.setTextureQuality(window.innerWidth < 760 ? "sd" : "hd");
+  camera.position.set(0, yTarget + .22, z);
+  controls.target.set(0, yTarget, 0);
+  controls.minDistance = Math.max(3.3, z * .58);
+  controls.maxDistance = z * 1.75;
+  controls.update();
 
-              api.getCameraLookAt(function(err,camera){
-                if(!err && camera) defaultCamera = clone(camera);
-              });
+  homeCamera = {
+    position:camera.position.clone(),
+    target:controls.target.clone(),
+    rotation:root.rotation.clone()
+  };
+}
 
-              api.getMaterialList(function(err,materials){
-                if(!err && materials && materials.length){
-                  originalMaterials = clone(materials);
-                  applyWhite();
-                }
-              });
+const loader = new GLTFLoader();
+loader.load(
+  "./buddha.glb",
+  gltf=>{
+    model = gltf.scene;
+    scene.add(model);
 
-              loading.classList.add("hide");
-            }catch(e){
-              loading.classList.add("hide");
-            }
-          });
-        });
-      },
-      error:function(){
-        fail("Sketchfab không thể khởi tạo model này. Hãy kiểm tra kết nối mạng hoặc thử tải lại trang.");
+    model.traverse(node=>{
+      if(!node.isMesh) return;
+      node.castShadow = true;
+      node.receiveShadow = true;
+      if(Array.isArray(node.material)){
+        originalMaterials.set(node.uuid, node.material.map(m=>m.clone()));
+      }else if(node.material){
+        originalMaterials.set(node.uuid, node.material.clone());
       }
     });
-  }catch(e){
-    fail(e && e.message ? e.message : String(e));
+
+    frameModel(model);
+    applyIvory();
+    renderer.render(scene,camera);
+    loading.classList.add("hide");
+  },
+  event=>{
+    if(event.total){
+      progress.textContent = Math.min(100, Math.round(event.loaded / event.total * 100)) + "%";
+    }else{
+      progress.textContent = Math.round(event.loaded / 1024) + " KB";
+    }
+  },
+  err=>{
+    console.error(err);
+    fail("File buddha.glb chưa tải được hoặc trình duyệt không đọc được GLB.");
   }
+);
 
-  whiteBtn.addEventListener("click",function(){
-    if(!api) return;
-    whiteMode ? restoreOriginal() : applyWhite();
-  });
+materialBtn.addEventListener("click",()=>{
+  whiteMode ? applyOriginal() : applyIvory();
+});
 
-  haloBtn.addEventListener("click",function(){
-    halo.classList.toggle("off");
-    haloBtn.classList.toggle("active",!halo.classList.contains("off"));
-  });
+haloBtn.addEventListener("click",()=>{
+  halo.classList.toggle("off");
+  haloBtn.classList.toggle("active", !halo.classList.contains("off"));
+});
 
-  resetBtn.addEventListener("click",function(){
-    if(!api || !defaultCamera) return;
-    api.setCameraLookAt(defaultCamera.position,defaultCamera.target,1.0);
-  });
-})();
+spinBtn.addEventListener("click",()=>{
+  autoSpin = !autoSpin;
+  spinBtn.classList.toggle("active", autoSpin);
+  spinBtn.textContent = autoSpin ? "Dừng xoay" : "Tự xoay";
+});
+
+resetBtn.addEventListener("click",()=>{
+  if(!homeCamera || !model) return;
+  camera.position.copy(homeCamera.position);
+  controls.target.copy(homeCamera.target);
+  model.rotation.copy(homeCamera.rotation);
+  controls.update();
+});
+
+addEventListener("resize",()=>{
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1,1.8));
+});
+
+function animate(){
+  requestAnimationFrame(animate);
+  if(autoSpin && model) model.rotation.y += .0032;
+  controls.update();
+  renderer.render(scene,camera);
+}
+animate();
 </script>
 </body>
 </html>
