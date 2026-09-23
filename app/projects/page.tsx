@@ -39,30 +39,25 @@ export default function ProjectsPage() {
       >
         {projects.map((project: any, index: number) => (
           <Box key={project.slug}>
-            <Box
-              component={Link}
+            <Link
               href={`/projects/${project.slug}`}
-              sx={{
-                display: "block",
-                px: { xs: 2, sm: 2.5 },
-                py: 2,
-                color: "inherit",
-                textDecoration: "none",
-                "&:hover": { bgcolor: "action.hover" },
-                "&:focus-visible": {
-                  outline: "2px solid",
-                  outlineColor: "primary.main",
-                  outlineOffset: -2,
-                },
-              }}
+              style={{ color: "inherit", textDecoration: "none" }}
             >
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-                {project.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {project.description}
-              </Typography>
-            </Box>
+              <Box
+                sx={{
+                  px: { xs: 2, sm: 2.5 },
+                  py: 2,
+                  "&:hover": { bgcolor: "action.hover" },
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  {project.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {project.description}
+                </Typography>
+              </Box>
+            </Link>
             {index < projects.length - 1 && <Divider />}
           </Box>
         ))}
