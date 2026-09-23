@@ -36,7 +36,7 @@ const drawerWidth = 248;
 
 const workItems = [
   { href: "/projects", label: "Projects", icon: FolderOutlined },
-  { href: "/blog", label: "Blog", icon: ArticleOutlined },
+  { href: "/writing", label: "Blog", icon: ArticleOutlined },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -44,7 +44,7 @@ function isActive(pathname: string, href: string) {
     return pathname === "/" || pathname === "/me";
   }
 
-  if (href === "/blog") {
+  if (href === "/writing") {
     return (
       pathname === "/blog" ||
       pathname.startsWith("/blog/") ||
@@ -63,7 +63,7 @@ function isActive(pathname: string, href: string) {
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);
+  const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);\n  const isBlogRoute =\n    pathname === "/writing" ||\n    pathname.startsWith("/writing/") ||\n    pathname.startsWith("/tags/");
 
   const nav = (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -316,7 +316,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Box
           sx={{
             width: "100%",
-            maxWidth: 1120,
+            maxWidth: isBlogRoute ? 1520 : 1120,
             mx: "auto",
             px: { xs: 2, sm: 3, lg: 4 },
             py: { xs: 2.5, md: 4 },
