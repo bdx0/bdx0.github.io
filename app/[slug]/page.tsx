@@ -1,55 +1,74 @@
-import { getAllContent, getContentBySlug } from "@/lib/markdown";
-import { useMDXComponents } from "@/mdx-components"; // Import useMDXComponents
-import { Box, Chip, Container, Stack, Typography } from "@mui/material"; // Import Chip and Stack
-import DateComponent from "components/Date";
+import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
+import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import Link from "next/link"; // Import Link
+import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  const posts = getAllContent("blog");
-  return posts.map((post: any) => ({
+import DateComponent from "@/components/Date";
+import { getAllContent, getContentBySlug } from "@/lib/markdown";
+import { useMDXComponents } from "@/mdx-components";
+
+export function generateStaticParams() {
+  return getAllContent("blog").map((post: any) => ({
     slug: post.slug,
   }));
 }
 
-const PostPage = async ({ params }: { params: { slug: string } }) => {
-  const components = useMDXComponents({}); // Spread existing components from useMDXComponents
-  const resolvedParams = await params;
-  console.log("Generating page for slug:", resolvedParams.slug);
-  const slug = resolvedParams.slug;
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const post = await getContentBySlug("blog", slug);
 
-  if (!post) {
-    return <div>Post not found</div>;
-  }
-  const scope = {
-    frontmatter: post?.frontmatter,
-  };
+  if (!post) notFound();
+
+  const components = useMDXComponents({});
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Box>
-        {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
-          <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-            <Typography variant="subtitle2" color="text.secondary">
-              Tags:
-            </Typography>
+    <Box sx={{ maxWidth: 860, mx: "auto" }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        spacing={1.5}
+        sx={{ mb: 2 }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          <DateComponent date={post.frontmatter.publish_date} />
+        </Typography>
+
+        {Array.isArray(post.frontmatter.tags) && post.frontmatter.tags.length > 0 && (
+          <Stack direction="row" spacing={0.75} sx={{ flexWrap: "wrap", gap: 0.75 }}>
             {post.frontmatter.tags.map((tag: string) => (
-              <Link href={`/tags/${tag}`} passHref key={tag}>
-                <Chip label={tag} size="small" clickable />
-              </Link>
+              <Chip
+                key={tag}
+                component={Link}
+                href={`/tags/${encodeURIComponent(tag)}`}
+                label={tag}
+                size="small"
+                clickable
+                variant="outlined"
+              />
             ))}
           </Stack>
         )}
-        <DateComponent date={post.frontmatter.publish_date} />
-        <MDXRemote
-          source={post?.content}
-          components={components}
-          options={{ scope: scope }}
-        />
-      </Box>
-    </Container>
-  );
-};
+      </Stack>
 
-export default PostPage;
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 2.25, sm: 3.5, md: 4.5 },
+          borderRadius: 3,
+          bgcolor: "background.paper",
+        }}
+      >
+        <MDXRemote
+          source={post.content}
+          components={components}
+          options={{ scope: { frontmatter: post.frontmatter } }}
+        />
+      </Paper>
+    </Box>
+  );
+}
