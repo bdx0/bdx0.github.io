@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Đức Phật Thích Ca — Canvas Mesh 3D</title>
+<style>
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#eee6d9;font-family:Inter,system-ui,sans-serif}
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%;touch-action:none}
+  .hud{position:fixed;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;gap:12px;z-index:10;pointer-events:none}
+  .card,.tools{pointer-events:auto;background:rgba(255,252,246,.84);backdrop-filter:blur(14px);border:1px solid rgba(80,60,35,.14);box-shadow:0 14px 36px rgba(70,45,15,.10)}
+  .card{padding:12px 14px;border-radius:16px;max-width:520px;color:#4b3a27}
+  .card b{font-family:Georgia,serif;font-size:20px}.card small{display:block;margin-top:4px;color:#776953}
+  .tools{display:flex;gap:8px;padding:8px;border-radius:14px}
+  button{border:1px solid rgba(80,60,35,.14);background:#fffaf2;color:#59462d;padding:9px 11px;border-radius:10px;font-weight:700}
+  #loading,#errorBox{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:linear-gradient(#f4eee4,#e7dccb);color:#6a5639}
+  #loading.hide{display:none}
+  #errorBox{display:none;padding:28px;text-align:center}
+  #errorBox.show{display:grid}
+  #errorBox .inner{max-width:620px;background:#fffaf2;border:1px solid rgba(100,70,30,.16);border-radius:18px;padding:22px;box-shadow:0 20px 50px rgba(60,40,20,.12)}
+  #errorBox pre{white-space:pre-wrap;text-align:left;font-size:12px;color:#7a3f2c;background:#fff4eb;padding:12px;border-radius:10px;max-height:40vh;overflow:auto}
+  .spinner{width:40px;height:40px;border:3px solid rgba(130,95,40,.15);border-top-color:#a07434;border-radius:50%;animation:s 1s linear infinite;margin:0 auto 12px}@keyframes s{to{transform:rotate(360deg)}}
+  .hint{position:fixed;left:14px;bottom:14px;z-index:10;background:rgba(255,252,246,.72);backdrop-filter:blur(12px);border:1px solid rgba(80,60,35,.13);border-radius:13px;padding:9px 12px;color:#76664f;font-size:12px}
+  @media(max-width:720px){.hud{flex-direction:column}.tools{align-self:flex-end}.card{max-width:100%}.hint{right:14px}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="hud">
+  <div class="card"><b>Đức Phật Thích Ca — Mesh 3D</b><small>Canvas WebGL • kéo để xoay • chụm/cuộn để zoom</small></div>
+  <div class="tools"><button id="frontBtn">Chính diện</button><button id="spinBtn">Tự xoay</button><button id="lightBtn">Ánh sáng</button></div>
+</div>
+<div class="hint">Bản nhẹ hơn để chạy ổn định trên Safari/iPhone/iPad.</div>
+<div id="loading"><div><div class="spinner"></div><div>Đang dựng tượng 3D…</div></div></div>
+<div id="errorBox"><div class="inner"><h2>Không thể khởi tạo 3D</h2><p id="errorText">Đã xảy ra lỗi.</p><pre id="errorDetail"></pre></div></div>
+
+<script>
+(function(){
+  function showError(title, detail){
+    document.getElementById('loading').classList.add('hide');
+    document.getElementById('errorBox').classList.add('show');
+    document.getElementById('errorText').textContent = title;
+    document.getElementById('errorDetail').textContent = detail || '';
+  }
+  window.__show3DError = showError;
+  window.addEventListener('error', function(e){
+    if(e.message || e.filename) showError('JavaScript/WebGL không chạy được.', (e.message||'')+'\n'+(e.filename||'')+':'+(e.lineno||''));
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    showError('Module 3D tải thất bại.', String(e.reason || 'Unknown promise rejection'));
+  });
+  try{
+    var c=document.createElement('canvas');
+    var gl=c.getContext('webgl2')||c.getContext('webgl');
+    if(!gl) showError('Thiết bị hoặc trình duyệt hiện không cấp WebGL.', 'Hãy thử mở bằng Safari/Chrome mới và tắt chế độ hạn chế nội dung nếu có.');
+  }catch(err){ showError('Không kiểm tra được WebGL.', String(err)); }
+})();
+</script>
+
+<script type="module">
+try{
+  const THREE = await import("https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js");
+
+  const stage=document.getElementById("stage");
+  const loading=document.getElementById("loading");
+
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0xeee6d9);
+
+  const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,0.1,100);
+  camera.position.set(0,2.8,10.7);
+
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"default"});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.7));
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.08;
+  stage.appendChild(renderer.domElement);
+
+  const group=new THREE.Group();
+  scene.add(group);
+
+  const matGold=new THREE.MeshStandardMaterial({color:0xc89b52,metalness:.45,roughness:.38});
+  const matGold2=new THREE.MeshStandardMaterial({color:0xe0b96e,metalness:.34,roughness:.35});
+  const matDark=new THREE.MeshStandardMaterial({color:0x2d261f,metalness:.15,roughness:.64});
+  const matRobe=new THREE.MeshStandardMaterial({color:0xb47b32,metalness:.28,roughness:.48});
+  const matRobe2=new THREE.MeshStandardMaterial({color:0xd19d49,metalness:.22,roughness:.45});
+  const matLotus=new THREE.MeshStandardMaterial({color:0xba7885,metalness:.10,roughness:.55});
+  const matLotus2=new THREE.MeshStandardMaterial({color:0xd7a3ab,metalness:.08,roughness:.52});
+  const matFaceLine=new THREE.MeshBasicMaterial({color:0x5e422d});
+
+  function mesh(geo,mat,pos,scale,rot){
+    const m=new THREE.Mesh(geo,mat);
+    if(pos)m.position.set(pos[0],pos[1],pos[2]);
+    if(scale)m.scale.set(scale[0],scale[1],scale[2]);
+    if(rot)m.rotation.set(rot[0],rot[1],rot[2]);
+    group.add(m); return m;
+  }
+  function sph(r,pos,scale,mat){return mesh(new THREE.SphereGeometry(r,40,24),mat,pos,scale)}
+  function cap(r,h,pos,rot,scale,mat){return mesh(new THREE.CapsuleGeometry(r,h,6,16),mat,pos,scale,rot)}
+  function cyl(rt,rb,h,pos,mat){return mesh(new THREE.CylinderGeometry(rt,rb,h,48),mat,pos)}
+
+  // pedestal
+  cyl(2.55,2.72,.32,[0,.16,0],matGold);
+  cyl(2.35,2.50,.24,[0,.43,0],matGold2);
+
+  for(let i=0;i<16;i++){
+    const a=i/16*Math.PI*2;
+    const p=sph(.55,[Math.cos(a)*1.55,.70,Math.sin(a)*1.55],[.72,.26,1.10],i%2?matLotus:matLotus2);
+    p.rotation.y=-a+Math.PI/2;
+    p.rotation.z=Math.PI/2;
+  }
+  cyl(1.65,1.86,.22,[0,.95,0],matGold2);
+
+  // crossed legs
+  cap(.43,1.55,[-.72,1.35,.08],[0,0,-1.30],[1.12,.95,1],matRobe2);
+  cap(.43,1.55,[.72,1.35,.08],[0,0,1.30],[1.12,.95,1],matRobe);
+  sph(.40,[.48,1.48,.42],[1.35,.52,.72],matGold2);
+  sph(.40,[-.48,1.48,.42],[1.35,.52,.72],matGold);
+
+  // torso + robe
+  sph(1,[0,2.88,0],[1.16,1.38,.72],matRobe);
+  sph(.84,[0,2.32,.06],[1.25,.82,.74],matRobe2);
+  sph(.68,[-.62,3.28,0],[1.02,.68,.57],matRobe2);
+  sph(.68,[.62,3.28,0],[1.02,.68,.57],matRobe);
+  const sash=cap(.14,2.05,[.18,3.00,.55],[0,0,-.48],[1.35,1,1],matRobe2);
+  sash.rotation.x=.04;
+
+  // arms
+  function limb(a,b,r,mat){
+    const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A),len=d.length();
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(r*.86,r,len,18),mat);
+    m.position.copy(A.clone().add(B).multiplyScalar(.5));
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());
+    group.add(m); return m;
+  }
+  limb([-.78,3.35,.06],[-1.05,2.78,.28],.20,matGold2);
+  limb([-1.05,2.78,.28],[-.46,2.24,.65],.17,matGold2);
+  limb([.78,3.35,.06],[1.05,2.78,.28],.20,matGold);
+  limb([1.05,2.78,.28],[.48,2.20,.68],.17,matGold);
+
+  // hands
+  sph(.23,[-.22,2.16,.74],[1.18,.52,.82],matGold2);
+  sph(.23,[.28,2.12,.77],[1.18,.52,.82],matGold);
+
+  // neck + head
+  cap(.29,.30,[0,4.05,0],[0,0,0],[1,1,.92],matGold2);
+  sph(1,[0,4.83,.01],[.66,.82,.64],matGold2);
+  sph(.24,[-.29,4.74,.48],[.9,1,.55],matGold2);
+  sph(.24,[.29,4.74,.48],[.9,1,.55],matGold2);
+
+  // ears
+  cap(.11,.66,[-.69,4.78,.0],[0,0,-.08],[.82,1.2,.62],matGold2);
+  cap(.11,.66,[.69,4.78,.0],[0,0,.08],[.82,1.2,.62],matGold2);
+
+  // hair + ushnisha
+  sph(.68,[0,5.22,-.04],[1.02,.73,1],matDark);
+  sph(.33,[0,5.76,-.04],[1,1,1],matDark);
+
+  // curls
+  const curlGeo=new THREE.SphereGeometry(.06,10,8);
+  for(let lat=0;lat<5;lat++){
+    const phi=.42+lat*.20;
+    const rr=.62*Math.sin(phi), yy=5.23+.47*Math.cos(phi), n=Math.max(8,Math.round(16*Math.sin(phi)));
+    for(let j=0;j<n;j++){
+      const th=j/n*Math.PI*2+(lat%2)*.12;
+      mesh(curlGeo,matDark,[Math.cos(th)*rr,yy,-.04+Math.sin(th)*rr*.92],[1,1,1]);
+    }
+  }
+
+  // face details
+  for(const s of [-1,1]){
+    cap(.018,.24,[s*.23,4.90,.635],[Math.PI/2,0,-.78*s],[1,1,.45],matFaceLine);
+    cap(.020,.28,[s*.23,5.00,.615],[Math.PI/2,0,-.70*s],[1,1,.5],matFaceLine);
+  }
+  sph(.13,[0,4.80,.65],[.56,1.18,.60],matGold2);
+  sph(.095,[0,4.69,.70],[.78,.55,.62],matGold2);
+  cap(.021,.20,[0,4.57,.68],[Math.PI/2,0,Math.PI/2],[1,1,.8],new THREE.MeshBasicMaterial({color:0x8e6045}));
+  sph(.028,[0,5.10,.65],[1,1,1],new THREE.MeshBasicMaterial({color:0xffedac}));
+
+  // halo
+  const halo=new THREE.Mesh(new THREE.RingGeometry(1.18,1.28,96),new THREE.MeshBasicMaterial({color:0xe2b75e,transparent:true,opacity:.30,side:THREE.DoubleSide}));
+  halo.position.set(0,4.95,-.72); group.add(halo);
+
+  // floor
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(7,96),new THREE.MeshStandardMaterial({color:0xe4d9c7,roughness:1}));
+  floor.rotation.x=-Math.PI/2; floor.position.y=-.02; scene.add(floor);
+
+  // lighting
+  scene.add(new THREE.HemisphereLight(0xfff7e8,0x8c7760,1.8));
+  const key=new THREE.DirectionalLight(0xffdf9b,3.8); key.position.set(4,7,5); scene.add(key);
+  const fill=new THREE.DirectionalLight(0xc9dcff,1.2); fill.position.set(-4,4,4); scene.add(fill);
+  const rim=new THREE.PointLight(0xffc45b,2.8,11,2); rim.position.set(0,5,-2.5); scene.add(rim);
+
+  group.scale.setScalar(.96);
+  group.position.y=-.06;
+
+  // interaction without addons
+  let dragging=false,lastX=0,lastY=0,autoSpin=false;
+  const cvs=renderer.domElement;
+  cvs.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;cvs.setPointerCapture(e.pointerId)});
+  cvs.addEventListener("pointerup",()=>dragging=false);
+  cvs.addEventListener("pointercancel",()=>dragging=false);
+  cvs.addEventListener("pointermove",e=>{
+    if(!dragging)return;
+    const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;
+    group.rotation.y+=dx*.008;
+    group.rotation.x=Math.max(-.12,Math.min(.12,group.rotation.x+dy*.004));
+  });
+  cvs.addEventListener("wheel",e=>{
+    e.preventDefault();
+    camera.position.z=Math.max(7,Math.min(14,camera.position.z+e.deltaY*.008));
+  },{passive:false});
+
+  let pinch=0;
+  cvs.addEventListener("touchstart",e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
+  cvs.addEventListener("touchmove",e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);camera.position.z=Math.max(7,Math.min(14,camera.position.z-(d-pinch)*.015));pinch=d}},{passive:true});
+
+  document.getElementById("frontBtn").onclick=()=>{group.rotation.set(0,0,0);camera.position.set(0,2.8,10.7)};
+  document.getElementById("spinBtn").onclick=e=>{autoSpin=!autoSpin;e.currentTarget.textContent=autoSpin?"Dừng xoay":"Tự xoay"};
+  let warm=true;
+  document.getElementById("lightBtn").onclick=()=>{warm=!warm;key.color.set(warm?0xffdf9b:0xf4f7ff);fill.color.set(warm?0xc9dcff:0xd9ecff);scene.background.set(warm?0xeee6d9:0xe7edf0)};
+
+  addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.7))});
+
+  function render(){
+    requestAnimationFrame(render);
+    if(autoSpin) group.rotation.y+=.003;
+    renderer.render(scene,camera);
+  }
+  renderer.render(scene,camera);
+  loading.classList.add("hide");
+  render();
+}catch(err){
+  window.__show3DError("Khởi tạo Three.js thất bại.", err && err.stack ? err.stack : String(err));
+}
+</script>
+</body>
+</html>
