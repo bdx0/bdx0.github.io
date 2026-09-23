@@ -36,7 +36,7 @@ const drawerWidth = 248;
 
 const workItems = [
   { href: "/projects", label: "Projects", icon: FolderOutlined },
-  { href: "/writing", label: "Blog", icon: ArticleOutlined },
+  { href: "/blog", label: "Blog", icon: ArticleOutlined },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -44,13 +44,15 @@ function isActive(pathname: string, href: string) {
     return pathname === "/" || pathname === "/me";
   }
 
-  if (href === "/writing") {
+  if (href === "/blog") {
     return (
-      pathname === "/writing" ||
+      pathname === "/blog" ||
+      pathname.startsWith("/blog/") ||
       pathname.startsWith("/tags/") ||
       (!pathname.startsWith("/projects") &&
         !pathname.startsWith("/resume") &&
         !pathname.startsWith("/me") &&
+        !pathname.startsWith("/lab") &&
         pathname !== "/")
     );
   }
