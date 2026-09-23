@@ -226,7 +226,7 @@ export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
                     color="text.disabled"
                     sx={{ pt: 0.25, whiteSpace: "nowrap" }}
                   >
-                    {formatDate(post.publishDate)}
+                    {formatDateOnly(post.publishDate)}
                   </Typography>
                 </Box>
               </Link>
