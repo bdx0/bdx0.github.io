@@ -78,7 +78,7 @@ export default async function WritingPostPage({
           alignItems="center"
           sx={{ mb: 2 }}
         >
-          <Link href="/writing" style={{ color: "inherit", textDecoration: "none" }}>
+          <Link href="/blog" style={{ color: "inherit", textDecoration: "none" }}>
             <Typography variant="caption" color="text.secondary">
               Blog
             </Typography>
@@ -178,7 +178,7 @@ export default async function WritingPostPage({
         >
           {previousPost && (
             <Link
-              href={`/writing/${previousPost.slug}`}
+              href={`/blog/${previousPost.slug}`}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               <Paper
@@ -206,7 +206,7 @@ export default async function WritingPostPage({
 
           {nextPost && (
             <Link
-              href={`/writing/${nextPost.slug}`}
+              href={`/blog/${nextPost.slug}`}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               <Paper

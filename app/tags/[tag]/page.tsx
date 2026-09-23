@@ -67,7 +67,7 @@ export default async function TagPage({
             filteredPosts.map((post, index) => (
               <Box key={post.slug}>
                 <Link
-                  href={`/writing/${post.slug}`}
+                  href={`/blog/${post.slug}`}
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <Box
