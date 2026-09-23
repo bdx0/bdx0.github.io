@@ -27,7 +27,7 @@ export default function BlogDocsShell({
 
   const navigation = (
     <>
-      <Link href="/writing" style={{ color: "inherit", textDecoration: "none" }}>
+      <Link href="/blog" style={{ color: "inherit", textDecoration: "none" }}>
         <Box
           sx={{
             px: 1.25,
@@ -67,7 +67,7 @@ export default function BlogDocsShell({
               return (
                 <ListItem key={post.slug} disablePadding sx={{ mb: 0.25 }}>
                   <Link
-                    href={`/writing/${post.slug}`}
+                    href={`/blog/${post.slug}`}
                     style={{
                       color: "inherit",
                       textDecoration: "none",
