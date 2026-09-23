@@ -1,11 +1,8 @@
-import SearchRounded from "@mui/icons-material/SearchRounded";
 import {
   Box,
-  Button,
   Divider,
   List,
   ListItem,
-  Stack,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
@@ -108,59 +105,6 @@ export default function BlogDocsShell({
 
   return (
     <Box>
-      <Box
-        component="header"
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 5,
-          mb: 3,
-          py: 1.5,
-          borderBottom: 1,
-          borderColor: "divider",
-          bgcolor: "background.default",
-        }}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={2}
-        >
-          <Box>
-            <Typography
-              variant="caption"
-              color="text.disabled"
-              sx={{
-                display: "block",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}
-            >
-              BDX0 / Knowledge
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 750, lineHeight: 1.25 }}>
-              Blog
-            </Typography>
-          </Box>
-
-          <Link
-            href="/writing#blog-search"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            <Button
-              size="small"
-              variant="outlined"
-              startIcon={<SearchRounded />}
-              sx={{ borderRadius: 2, textTransform: "none" }}
-            >
-              Search
-            </Button>
-          </Link>
-        </Stack>
-      </Box>
-
       <Box
         component="details"
         sx={{
