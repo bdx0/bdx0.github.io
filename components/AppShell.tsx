@@ -7,14 +7,12 @@ import {
   HomeOutlined,
   ScienceOutlined,
   Menu as MenuIcon,
-  SearchRounded,
   SettingsOutlined,
   WorkOutline,
 } from "@mui/icons-material";
 import {
   AppBar,
   Box,
-  Button,
   Divider,
   Drawer,
   IconButton,
@@ -274,67 +272,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Toolbar>
       </AppBar>
 
-      {isBlogRoute && (
-        <AppBar
-          position="fixed"
-          color="inherit"
-          elevation={0}
-          sx={{
-            display: { xs: "none", md: "block" },
-            left: `${drawerWidth}px`,
-            width: `calc(100% - ${drawerWidth}px)`,
-            borderBottom: 1,
-            borderColor: "divider",
-            bgcolor: "background.paper",
-            zIndex: (theme) => theme.zIndex.drawer - 1,
-          }}
-        >
-          <Toolbar sx={{ minHeight: "64px !important", px: "0 !important" }}>
-            <Box
-              sx={{
-                width: "100%",
-                maxWidth: 1520,
-                mx: "auto",
-                px: { md: 4 },
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                <Typography
-                  variant="caption"
-                  color="text.disabled"
-                  sx={{
-                    display: "block",
-                    lineHeight: 1.1,
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  BDX0 / Knowledge
-                </Typography>
-                <Typography variant="subtitle1" sx={{ fontWeight: 750, lineHeight: 1.35 }}>
-                  Blog
-                </Typography>
-              </Box>
-
-              <Button
-                component={Link}
-                href="/writing#blog-search"
-                size="small"
-                variant="outlined"
-                startIcon={<SearchRounded />}
-                sx={{ borderRadius: 2, textTransform: "none", flexShrink: 0 }}
-              >
-                Search
-              </Button>
-            </Box>
-          </Toolbar>
-        </AppBar>
-      )}
-
       <Box component="nav" aria-label="Primary navigation">
         <Drawer
           variant="permanent"
@@ -376,7 +313,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         sx={{
           minHeight: "100vh",
           ml: { md: `${drawerWidth}px` },
-          pt: { xs: "56px", md: isBlogRoute ? "64px" : 0 },
+          pt: { xs: "56px", md: 0 },
         }}
       >
         <Box
