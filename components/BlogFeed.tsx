@@ -24,14 +24,18 @@ export type BlogFeedPost = {
 };
 
 function formatDate(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
+  const match = value.match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);
+  if (!match) return value;
 
-  return date.toLocaleDateString("en-US", {
+  const [, year, month, day] = match;
+  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+
+  return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
-  });
+    timeZone: "UTC",
+  }).format(date);
 }
 
 export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
@@ -226,7 +230,7 @@ export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
                     color="text.disabled"
                     sx={{ pt: 0.25, whiteSpace: "nowrap" }}
                   >
-                    {formatDateOnly(post.publishDate)}
+                    {formatDate(post.publishDate)}
                   </Typography>
                 </Box>
               </Link>
