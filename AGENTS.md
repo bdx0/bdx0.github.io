@@ -42,7 +42,7 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 - `lib/markdown.ts` — filesystem content discovery/front matter parsing and build-time resume fetch.
 - `content/blog/` — blog posts.
 - `content/projects/` — project content.
-- `public/` — static assets and standalone demos such as `public/ly-dragon/index.html`.
+- `public/` — static assets and standalone demos such as `public/lab/ly-dragon/index.html`.
 - `.github/workflows/gh-pages.yaml` — GitHub Pages build/deploy workflow.
 - `Dockerfile`, `docker-compose.yml`, `justfile` — optional development tooling; GitHub Pages remains the production target.
 
@@ -223,7 +223,7 @@ The root layout loads JetBrains Mono and Tektur through `next/font/google`.
 
 `public/fonts/` also contains older local font files. Do not assume they are active without finding a source reference.
 
-Do not delete standalone public pages or demos (for example `public/ly-dragon/index.html`) as part of normal blog refactoring.
+Do not delete standalone public pages or demos (for example `public/lab/ly-dragon/index.html`) as part of normal blog refactoring.
 
 ## GitHub Pages deployment
 
