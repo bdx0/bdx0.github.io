@@ -145,16 +145,19 @@ export default function BlogDocsShell({
             </Typography>
           </Box>
 
-          <Button
-            component={Link}
+          <Link
             href="/writing#blog-search"
-            size="small"
-            variant="outlined"
-            startIcon={<SearchRounded />}
-            sx={{ borderRadius: 2, textTransform: "none" }}
+            style={{ color: "inherit", textDecoration: "none" }}
           >
-            Search
-          </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<SearchRounded />}
+              sx={{ borderRadius: 2, textTransform: "none" }}
+            >
+              Search
+            </Button>
+          </Link>
         </Stack>
       </Box>
 
