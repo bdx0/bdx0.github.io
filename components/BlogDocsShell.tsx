@@ -105,6 +105,57 @@ export default function BlogDocsShell({
 
   return (
     <Box>
+      <header
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 16,
+          marginBottom: 24,
+          padding: "12px 0",
+          borderBottom: "1px solid rgba(127, 127, 127, 0.24)",
+          backgroundColor: "inherit",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              marginBottom: 2,
+              fontSize: 11,
+              lineHeight: 1.2,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              opacity: 0.56,
+            }}
+          >
+            BDX0 / Knowledge
+          </div>
+          <div style={{ fontSize: 18, lineHeight: 1.3, fontWeight: 750 }}>
+            Blog
+          </div>
+        </div>
+
+        <a
+          href="/writing#blog-search"
+          style={{
+            color: "inherit",
+            textDecoration: "none",
+            border: "1px solid rgba(127, 127, 127, 0.35)",
+            borderRadius: 8,
+            padding: "7px 12px",
+            fontSize: 13,
+            lineHeight: 1.2,
+            fontWeight: 650,
+          }}
+        >
+          Search
+        </a>
+      </header>
+
       <Box
         component="details"
         sx={{
