@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowBack,
   ArticleOutlined,
   DescriptionOutlined,
   FolderOutlined,
@@ -25,7 +26,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -59,6 +60,7 @@ function isActive(pathname: string, href: string) {
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);
   const isBlogRoute =
@@ -244,15 +246,31 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         color="inherit"
         elevation={0}
         sx={{
-          display: { md: "none" },
           borderBottom: 1,
           borderColor: "divider",
           bgcolor: "background.paper",
         }}
       >
         <Toolbar sx={{ minHeight: "56px !important", gap: 1 }}>
+          {pathname !== "/" && (
+            <Tooltip title="Back">
+              <IconButton
+                edge="start"
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    router.back();
+                  } else {
+                    router.push("/");
+                  }
+                }}
+                aria-label="Back"
+              >
+                <ArrowBack />
+              </IconButton>
+            </Tooltip>
+          )}
           <IconButton
-            edge="start"
+            edge={pathname === "/" ? "start" : false}
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
           >
@@ -274,29 +292,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <Box component="nav" aria-label="Primary navigation">
         <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              borderRight: 1,
-              borderColor: "divider",
-              bgcolor: "background.paper",
-            },
-          }}
-          open
-        >
-          {nav}
-        </Drawer>
-
-        <Drawer
           variant="temporary"
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
           ModalProps={{ keepMounted: true }}
           sx={{
-            display: { xs: "block", md: "none" },
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
@@ -312,8 +312,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         component="main"
         sx={{
           minHeight: "100vh",
-          ml: { md: `${drawerWidth}px` },
-          pt: { xs: "56px", md: 0 },
+          pt: "56px",
         }}
       >
         <Box
