@@ -1,0 +1,74 @@
+import { normalizeDateOnly } from "@/lib/date";
+import { getAllContent } from "@/lib/markdown";
+
+export type BlogNavItem = {
+  slug: string;
+  title: string;
+  description: string;
+  publishDate: string;
+  tags: string[];
+};
+
+export type BlogTocItem = {
+  id: string;
+  text: string;
+  level: 2 | 3;
+};
+
+export function slugifyHeading(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+export function getSortedBlogPosts(): BlogNavItem[] {
+  return getAllContent("blog")
+    .map((post: any) => ({
+      slug: String(post.slug ?? ""),
+      title: String(post.title ?? post.slug ?? ""),
+      description: String(post.description ?? ""),
+      publishDate: normalizeDateOnly(post.publish_date),
+      tags: Array.isArray(post.tags) ? post.tags.map(String) : [],
+    }))
+    .sort((a, b) => b.publishDate.localeCompare(a.publishDate));
+}
+
+export function extractBlogToc(content: string): BlogTocItem[] {
+  return content
+    .split("\n")
+    .map((line) => {
+      const match = /^(##|###)\s+(.+?)\s*$/.exec(line);
+      if (!match) return null;
+
+      const text = match[2]
+        .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+        .replace(/[\*_~]/g, "")
+        .replace(/\x60/g, "")
+        .trim();
+
+      return {
+        id: slugifyHeading(text),
+        text,
+        level: match[1] === "##" ? (2 as const) : (3 as const),
+      };
+    })
+    .filter((item): item is BlogTocItem => Boolean(item));
+}
+
+export function stripMatchingH1(content: string, title: string) {
+  const match = /^\s*#\s+(.+?)\s*\n+/.exec(content);
+  if (!match) return content;
+
+  const heading = match[1]
+    .replace(/[\*_~]/g, "")
+    .replace(/\x60/g, "")
+    .trim();
+
+  if (slugifyHeading(heading) !== slugifyHeading(title)) return content;
+
+  return content.slice(match[0].length);
+}
