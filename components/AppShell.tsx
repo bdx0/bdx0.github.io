@@ -4,8 +4,8 @@ import {
   ArticleOutlined,
   DescriptionOutlined,
   FolderOutlined,
+  HomeOutlined,
   Menu as MenuIcon,
-  PersonOutline,
   SettingsOutlined,
 } from "@mui/icons-material";
 import {
@@ -33,22 +33,28 @@ import ThemeSelector from "./ThemeSelector";
 const drawerWidth = 248;
 
 const navItems = [
-  { href: "/", label: "Blog", icon: ArticleOutlined },
+  { href: "/", label: "Home", icon: HomeOutlined },
+  { href: "/blog", label: "Blog", icon: ArticleOutlined },
   { href: "/projects", label: "Projects", icon: FolderOutlined },
   { href: "/resume", label: "Resume", icon: DescriptionOutlined },
-  { href: "/me", label: "About", icon: PersonOutline },
 ];
 
 function isActive(pathname: string, href: string) {
   if (href === "/") {
+    return pathname === "/" || pathname === "/me";
+  }
+
+  if (href === "/blog") {
     return (
-      pathname === "/" ||
+      pathname === "/blog" ||
       pathname.startsWith("/tags/") ||
       (!pathname.startsWith("/projects") &&
         !pathname.startsWith("/resume") &&
-        !pathname.startsWith("/me"))
+        !pathname.startsWith("/me") &&
+        pathname !== "/")
     );
   }
+
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
