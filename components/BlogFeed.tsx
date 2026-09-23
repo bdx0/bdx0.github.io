@@ -25,7 +25,13 @@ export type BlogFeedPost = {
   tags: string[];
 };
 
-export default function BlogFeed({\n  posts,\n  embedded = false,\n}: {\n  posts: BlogFeedPost[];\n  embedded?: boolean;\n}) {
+export default function BlogFeed({
+  posts,
+  embedded = false,
+}: {
+  posts: BlogFeedPost[];
+  embedded?: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
