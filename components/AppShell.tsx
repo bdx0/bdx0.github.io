@@ -63,7 +63,11 @@ function isActive(pathname: string, href: string) {
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);\n  const isBlogRoute =\n    pathname === "/writing" ||\n    pathname.startsWith("/writing/") ||\n    pathname.startsWith("/tags/");
+  const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);
+  const isBlogRoute =
+    pathname === "/writing" ||
+    pathname.startsWith("/writing/") ||
+    pathname.startsWith("/tags/");
 
   const nav = (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
