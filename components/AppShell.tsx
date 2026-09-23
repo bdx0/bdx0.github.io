@@ -7,6 +7,7 @@ import {
   HomeOutlined,
   Menu as MenuIcon,
   SettingsOutlined,
+  WorkOutline,
 } from "@mui/icons-material";
 import {
   AppBar,
@@ -32,11 +33,9 @@ import ThemeSelector from "./ThemeSelector";
 
 const drawerWidth = 248;
 
-const navItems = [
-  { href: "/", label: "Home", icon: HomeOutlined },
-  { href: "/writing", label: "Blog", icon: ArticleOutlined },
+const workItems = [
   { href: "/projects", label: "Projects", icon: FolderOutlined },
-  { href: "/resume", label: "Resume", icon: DescriptionOutlined },
+  { href: "/writing", label: "Blog", icon: ArticleOutlined },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -81,8 +80,52 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <Divider />
 
       <List sx={{ px: 1.25, py: 1.5 }}>
-        {navItems.map(({ href, label, icon: Icon }) => {
+        <ListItemButton
+          component={Link}
+          href="/"
+          selected={isActive(pathname, "/")}
+          onClick={() => setMobileOpen(false)}
+          sx={{
+            borderRadius: 2,
+            minHeight: 44,
+            "&.Mui-selected": { bgcolor: "action.selected" },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 38 }}>
+            <HomeOutlined fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Home"
+            primaryTypographyProps={{
+              fontSize: 14,
+              fontWeight: isActive(pathname, "/") ? 700 : 500,
+            }}
+          />
+        </ListItemButton>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            px: 1.5,
+            pt: 2.5,
+            pb: 0.75,
+            color: "text.disabled",
+          }}
+        >
+          <WorkOutline sx={{ fontSize: 16 }} />
+          <Typography
+            variant="caption"
+            sx={{ fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}
+          >
+            Work
+          </Typography>
+        </Box>
+
+        {workItems.map(({ href, label, icon: Icon }) => {
           const selected = isActive(pathname, href);
+
           return (
             <ListItemButton
               key={href}
@@ -93,18 +136,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               sx={{
                 borderRadius: 2,
                 mb: 0.5,
-                minHeight: 44,
-                "&.Mui-selected": {
-                  bgcolor: "action.selected",
-                },
+                minHeight: 42,
+                pl: 2.25,
+                "&.Mui-selected": { bgcolor: "action.selected" },
               }}
             >
-              <ListItemIcon sx={{ minWidth: 38 }}>
+              <ListItemIcon sx={{ minWidth: 34 }}>
                 <Icon fontSize="small" />
               </ListItemIcon>
               <ListItemText
                 primary={label}
-                primaryTypographyProps={{ fontSize: 14, fontWeight: selected ? 700 : 500 }}
+                primaryTypographyProps={{
+                  fontSize: 14,
+                  fontWeight: selected ? 700 : 500,
+                }}
               />
             </ListItemButton>
           );
@@ -113,9 +158,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <Box sx={{ mt: "auto", p: 1.25 }}>
         <Divider sx={{ mb: 1 }} />
+
+        <ListItemButton
+          component={Link}
+          href="/resume"
+          selected={isActive(pathname, "/resume")}
+          onClick={() => setMobileOpen(false)}
+          sx={{
+            borderRadius: 2,
+            minHeight: 42,
+            mb: 0.5,
+            "&.Mui-selected": { bgcolor: "action.selected" },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 38 }}>
+            <DescriptionOutlined fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Resume"
+            primaryTypographyProps={{
+              fontSize: 14,
+              fontWeight: isActive(pathname, "/resume") ? 700 : 500,
+            }}
+          />
+        </ListItemButton>
+
         <ListItemButton
           onClick={(event) => setSettingsAnchor(event.currentTarget)}
-          sx={{ borderRadius: 2, minHeight: 44 }}
+          sx={{ borderRadius: 2, minHeight: 42 }}
         >
           <ListItemIcon sx={{ minWidth: 38 }}>
             <SettingsOutlined fontSize="small" />
@@ -125,6 +195,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
           />
         </ListItemButton>
+
         <Typography
           variant="caption"
           color="text.disabled"
