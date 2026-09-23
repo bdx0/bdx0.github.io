@@ -141,6 +141,25 @@
 </div>
 <div id="errorBox"><div class="inner"><h2>Không thể tải model 3D</h2><p id="errorText"></p><p><a class="back-link" href="/lab/">← Về Lab</a></p></div></div>
 
+<script>
+(function(){
+  function showBootError(message){
+    const loading=document.getElementById("loading");
+    const box=document.getElementById("errorBox");
+    const text=document.getElementById("errorText");
+    if(loading) loading.classList.add("hide");
+    if(text) text.textContent=message;
+    if(box) box.classList.add("show");
+  }
+  window.addEventListener("error",function(e){
+    showBootError("JavaScript: "+(e.message||"unknown error")+" @ "+(e.filename||"")+" :"+(e.lineno||""));
+  });
+  window.addEventListener("unhandledrejection",function(e){
+    showBootError("Promise: "+String(e.reason?.message||e.reason||"unknown rejection"));
+  });
+})();
+</script>
+
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
