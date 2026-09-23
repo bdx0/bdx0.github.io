@@ -46,14 +46,11 @@ function isActive(pathname: string, href: string) {
 
   if (href === "/writing") {
     return (
+      pathname === "/writing" ||
+      pathname.startsWith("/writing/") ||
       pathname === "/blog" ||
       pathname.startsWith("/blog/") ||
-      pathname.startsWith("/tags/") ||
-      (!pathname.startsWith("/projects") &&
-        !pathname.startsWith("/resume") &&
-        !pathname.startsWith("/me") &&
-        !pathname.startsWith("/lab") &&
-        pathname !== "/")
+      pathname.startsWith("/tags/")
     );
   }
 
@@ -67,6 +64,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
+    pathname === "/blog" ||
+    pathname.startsWith("/blog/") ||
     pathname.startsWith("/tags/");
 
   const nav = (

@@ -86,6 +86,7 @@ export default function BlogFeed({
       )}
 
       <TextField
+        id="blog-search"
         fullWidth
         size="small"
         value={query}

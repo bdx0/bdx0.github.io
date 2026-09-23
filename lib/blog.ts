@@ -15,6 +15,30 @@ export type BlogTocItem = {
   level: 2 | 3;
 };
 
+export type BlogSection = {
+  id: string;
+  title: string;
+  posts: BlogNavItem[];
+};
+
+const sectionRules = [
+  {
+    id: "ai-ml",
+    title: "AI & Machine Learning",
+    terms: ["ai", "deep learning", "machine learning", "nlp", "transformer"],
+  },
+  {
+    id: "cloud-infrastructure",
+    title: "Kubernetes & Cloud",
+    terms: ["kubernetes", "devops", "cloud native", "control plane", "master node"],
+  },
+  {
+    id: "software-career",
+    title: "Software Engineering & Career",
+    terms: ["jobs", "career", "software engineering", "software engineer"],
+  },
+] as const;
+
 export function slugifyHeading(value: string) {
   return value
     .normalize("NFD")
@@ -35,6 +59,35 @@ export function getSortedBlogPosts(): BlogNavItem[] {
       tags: Array.isArray(post.tags) ? post.tags.map(String) : [],
     }))
     .sort((a, b) => b.publishDate.localeCompare(a.publishDate));
+}
+
+export function getBlogSections(posts: BlogNavItem[]): BlogSection[] {
+  const groups = new Map<string, BlogNavItem[]>();
+  for (const rule of sectionRules) groups.set(rule.id, []);
+  groups.set("notes", []);
+
+  for (const post of posts) {
+    const haystack = [post.title, ...post.tags].join(" ").toLowerCase();
+    const rule = sectionRules.find((candidate) =>
+      candidate.terms.some((term) => haystack.includes(term)),
+    );
+
+    groups.get(rule?.id ?? "notes")?.push(post);
+  }
+
+  const sections: BlogSection[] = sectionRules.map((rule) => ({
+    id: rule.id,
+    title: rule.title,
+    posts: groups.get(rule.id) ?? [],
+  }));
+
+  sections.push({
+    id: "notes",
+    title: "Notes",
+    posts: groups.get("notes") ?? [],
+  });
+
+  return sections.filter((section) => section.posts.length > 0);
 }
 
 export function extractBlogToc(content: string): BlogTocItem[] {
