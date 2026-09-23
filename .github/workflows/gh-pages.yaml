@@ -5,27 +5,20 @@
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Build job
   build:
     runs-on: ubuntu-latest
     steps:
@@ -56,30 +49,7 @@ jobs:
           head -c 500 /tmp/3dstl-response.json 2>/dev/null || true
           echo
 
-          URL="$(python3 - <<'PY'
-import json
-from pathlib import Path
-p=Path('/tmp/3dstl-response.json')
-try:
-    outer=json.loads(p.read_text())
-    inner=outer.get('data')
-    if isinstance(inner,str):
-        try:
-            inner=json.loads(inner)
-        except Exception:
-            pass
-    if isinstance(inner,dict):
-        url=inner.get('data') or inner.get('url') or ''
-    elif isinstance(inner,str):
-        url=inner
-    else:
-        url=''
-    print(url)
-except Exception:
-    print('')
-PY
-          )"
-
+          URL="$(python3 -c 'import json; p="/tmp/3dstl-response.json"; outer=json.load(open(p)); inner=outer.get("data",""); inner=json.loads(inner) if isinstance(inner,str) and inner.lstrip().startswith(("{","[")) else inner; print((inner.get("data") or inner.get("url") or "") if isinstance(inner,dict) else (inner if isinstance(inner,str) else ""))' 2>/dev/null)"
           if [ -n "${URL}" ]; then
             echo "prepared-url=yes"
             curl -sS -L --retry 2 --connect-timeout 20 --max-time 120               -A "Mozilla/5.0"               "${URL}"               -o /tmp/3dstl-prepared-model.bin
@@ -101,7 +71,6 @@ PY
         with:
           path: ./out
 
-  # Deployment job
   deploy:
     environment:
       name: github-pages
