@@ -1,12 +1,6 @@
 import BlogFeed, { type BlogFeedPost } from "@/components/BlogFeed";
+import { normalizeDateOnly } from "@/lib/date";
 import { getAllContent } from "@/lib/markdown";
-
-function toDateString(value: unknown) {
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value === "string") return value;
-  if (typeof value === "number") return new Date(value).toISOString();
-  return "";
-}
 
 export default function HomePage() {
   const posts: BlogFeedPost[] = getAllContent("blog")
@@ -14,13 +8,10 @@ export default function HomePage() {
       slug: post.slug,
       title: String(post.title ?? ""),
       description: String(post.description ?? ""),
-      publishDate: toDateString(post.publish_date),
+      publishDate: normalizeDateOnly(post.publish_date),
       tags: Array.isArray(post.tags) ? post.tags.map(String) : [],
     }))
-    .sort(
-      (a, b) =>
-        new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime(),
-    );
+    .sort((a, b) => b.publishDate.localeCompare(a.publishDate));
 
   return <BlogFeed posts={posts} />;
 }
