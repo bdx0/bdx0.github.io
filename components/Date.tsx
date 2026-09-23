@@ -1,9 +1,8 @@
-import { format } from 'date-fns';
+import { formatDateOnly, normalizeDateOnly } from "@/lib/date";
 
 export default function DateComponent({ date }: { date: string | Date }) {
-  if (!date) {
-    return null;
-  }
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return <time dateTime={dateObj.toISOString()}>{format(dateObj, 'LLLL d, yyyy')}</time>;
+  const normalized = normalizeDateOnly(date);
+  if (!normalized) return null;
+
+  return <time dateTime={normalized}>{formatDateOnly(normalized)}</time>;
 }
