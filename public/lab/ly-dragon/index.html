@@ -3,150 +3,359 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#071012">
+<meta name="theme-color" content="#050b0c">
 <title>Rồng thời Lý 3D</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071012;color:#f5ead6;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#app{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
-.panel{position:fixed;z-index:4;top:18px;left:18px;width:min(370px,calc(100vw - 36px));padding:16px 17px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(10,16,17,.62);backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.28)}
-h1{font-size:clamp(22px,4vw,34px);margin:0 0 7px;letter-spacing:.01em}p{font-size:13px;line-height:1.55;margin:0;color:#beb3a0}
-.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}button,.back-link{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#f5ead6;padding:8px 12px;border-radius:999px;font-weight:650;cursor:pointer;font:inherit;text-decoration:none}
-button:hover,.back-link:hover{background:rgba(255,255,255,.14)}.tag{position:fixed;right:15px;bottom:15px;z-index:4;padding:9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(5,8,9,.60);font-size:11px;letter-spacing:.08em;color:#d7cdb9}
-.note{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:4;font-size:11px;color:#afa692;white-space:nowrap;opacity:.8}
-@media(max-width:640px){.panel{top:12px;left:12px;width:calc(100vw - 24px);padding:13px 14px}.panel p{font-size:12px}.note{display:none}}
+:root{--ink:#f4ead5;--muted:#b7aa93;--glass:rgba(8,14,15,.58);--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:
+radial-gradient(circle at 65% 35%,#17312f 0,#0b1718 32%,#050b0c 72%);
+color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#app{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{position:fixed;z-index:5;top:18px;left:18px;width:min(390px,calc(100vw - 36px));padding:16px 17px;
+border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(18px);
+box-shadow:0 18px 60px rgba(0,0,0,.3)}
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#b9d8cf;margin-bottom:6px}
+h1{font-size:clamp(23px,4vw,35px);margin:0 0 7px;letter-spacing:.01em}
+p{font-size:13px;line-height:1.55;margin:0;color:var(--muted)}
+.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+button,.back-link{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.075);color:var(--ink);padding:8px 12px;border-radius:999px;font-weight:650;cursor:pointer;font:inherit;text-decoration:none}
+button:hover,.back-link:hover{background:rgba(255,255,255,.14)}
+.tag{position:fixed;right:15px;bottom:15px;z-index:5;padding:9px 12px;border-radius:999px;border:1px solid var(--line);
+background:rgba(5,8,9,.58);font-size:11px;letter-spacing:.08em;color:#d7cdb9}
+.note{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;font-size:11px;color:#a99f8d;white-space:nowrap;opacity:.8}
+.loader{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:#050b0c;transition:opacity .6s ease}
+.loader.hide{opacity:0;pointer-events:none}.loader span{font-size:12px;letter-spacing:.18em;color:#c9d9d4}
+@media(max-width:640px){.panel{top:12px;left:12px;width:calc(100vw - 24px);padding:13px 14px}.panel p{font-size:12px}.note{display:none}.tag{font-size:9px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div id="app"></div>
+<div class="loader" id="loader"><span>ĐANG DỰNG RỒNG LÝ</span></div>
 <div class="panel">
+  <div class="eyebrow">Vietnamese dragon study</div>
   <h1>Rồng thời Lý — 3D</h1>
-  <p>Mô hình tương tác lấy cảm hứng từ hình tượng rồng thời Lý: thân dài thanh, đường uốn mềm, đầu nhỏ, râu dài, mào lửa và chân nhỏ. Kéo để xoay, cuộn hoặc chụm để zoom.</p>
+  <p>Bản dựng tương tác lấy cảm hứng từ mỹ thuật rồng thời Lý: thân dài thanh, nhịp uốn mềm, đầu nhỏ, râu dài, mào lửa và chân gọn. Kéo để xoay, chụm/cuộn để zoom.</p>
   <div class="buttons"><a class="back-link" href="/lab/">← Về Lab</a><button id="spin">Dừng xoay</button><button id="material">Đổi chất liệu</button><button id="reset">Góc nhìn ban đầu</button></div>
 </div>
-<div class="tag">THREE.JS • WEBGL</div>
-<div class="note">Vietnamese Lý dynasty dragon — interactive study</div>
+<div class="tag">THREE.JS • WEBGL • BLOOM</div>
+<div class="note">Interactive interpretation — not an archaeological reconstruction</div>
+
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x071012);
-scene.fog=new THREE.FogExp2(0x071012,.034);
+scene.fog=new THREE.FogExp2(0x071012,.026);
 
-const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
-camera.position.set(11,6.2,13.5);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,100);
+camera.position.set(11.8,5.8,14.8);
 
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.18;
+renderer.toneMappingExposure=1.15;
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 document.getElementById('app').appendChild(renderer.domElement);
 
-const controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;
-controls.dampingFactor=.055;
-controls.target.set(0,.65,0);
-controls.minDistance=7;
-controls.maxDistance=28;
-controls.maxPolarAngle=Math.PI*.82;
-controls.autoRotate=true;
-controls.autoRotateSpeed=.72;
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.45,.55,.82);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
 
-scene.add(new THREE.HemisphereLight(0xd8fff5,0x17201f,1.75));
-const key=new THREE.DirectionalLight(0xffe7ba,4.7);key.position.set(7,10,8);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
-const rim=new THREE.DirectionalLight(0x65d5ca,4.4);rim.position.set(-8,4,-7);scene.add(rim);
-const warm=new THREE.PointLight(0xff9d66,18,26,2);warm.position.set(5,-1,5);scene.add(warm);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.05;
+controls.target.set(.3,.55,0);
+controls.minDistance=7.5;controls.maxDistance=27;
+controls.maxPolarAngle=Math.PI*.83;
+controls.autoRotate=true;controls.autoRotateSpeed=.58;
+
+scene.add(new THREE.HemisphereLight(0xcfe9e3,0x18201d,1.4));
+const key=new THREE.DirectionalLight(0xffe1b0,4.0);key.position.set(7,10,7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
+const rim=new THREE.DirectionalLight(0x68e0d2,4.8);rim.position.set(-8,4,-8);scene.add(rim);
+const fill=new THREE.PointLight(0x6ccfc4,16,26,2);fill.position.set(-2,2,7);scene.add(fill);
+const warm=new THREE.PointLight(0xff9e66,11,22,2);warm.position.set(6,-1,4);scene.add(warm);
 
 const palettes=[
-{body:0x3f766c,body2:0x72aa98,belly:0xd8c992,horn:0xe0d3ad,mane:0x956d3b,eye:0xffd568,claw:0xd4c49b},
-{body:0x755c3e,body2:0xab8450,belly:0xdfc27d,horn:0xead8ad,mane:0xb07a31,eye:0xffdc6a,claw:0xddcba2},
-{body:0x858780,body2:0xbab8aa,belly:0xd6cfb8,horn:0xe4ddc7,mane:0x8d806c,eye:0xf0c65a,claw:0xd7cfb5}
+ {body:0x3f756b,body2:0x7fb6a4,belly:0xd5c48c,horn:0xe5d5ad,mane:0x9f743b,eye:0xffdc71,claw:0xdcc99b,pearl:0xffe7aa},
+ {body:0x75573b,body2:0xb08753,belly:0xe1c27c,horn:0xead7ae,mane:0xbd8134,eye:0xffd55f,claw:0xe2cca0,pearl:0xffd78b},
+ {body:0x81857e,body2:0xb9b9ae,belly:0xd8d0b7,horn:0xe4ddca,mane:0x8c806e,eye:0xf5c95c,claw:0xdad0b6,pearl:0xdff7ff}
 ];
 let paletteIndex=0;
 const mats={};
-function matset(p){
-  mats.body=new THREE.MeshPhysicalMaterial({color:p.body,roughness:.38,metalness:.18,clearcoat:.28,clearcoatRoughness:.45});
-  mats.body2=new THREE.MeshPhysicalMaterial({color:p.body2,roughness:.34,metalness:.14,clearcoat:.2});
-  mats.belly=new THREE.MeshPhysicalMaterial({color:p.belly,roughness:.48,metalness:.06});
-  mats.horn=new THREE.MeshStandardMaterial({color:p.horn,roughness:.6});
-  mats.mane=new THREE.MeshStandardMaterial({color:p.mane,roughness:.5,metalness:.1});
-  mats.eye=new THREE.MeshStandardMaterial({color:p.eye,emissive:p.eye,emissiveIntensity:1.35,roughness:.2});
-  mats.black=new THREE.MeshStandardMaterial({color:0x100d08,roughness:.55});
-  mats.claw=new THREE.MeshStandardMaterial({color:p.claw,roughness:.5});
+function makeMaterials(p){
+ mats.body=new THREE.MeshPhysicalMaterial({color:p.body,roughness:.34,metalness:.15,clearcoat:.35,clearcoatRoughness:.38});
+ mats.body2=new THREE.MeshPhysicalMaterial({color:p.body2,roughness:.32,metalness:.13,clearcoat:.28});
+ mats.belly=new THREE.MeshPhysicalMaterial({color:p.belly,roughness:.43,metalness:.05,clearcoat:.12});
+ mats.horn=new THREE.MeshStandardMaterial({color:p.horn,roughness:.56,metalness:.04});
+ mats.mane=new THREE.MeshStandardMaterial({color:p.mane,roughness:.46,metalness:.12});
+ mats.eye=new THREE.MeshStandardMaterial({color:p.eye,emissive:p.eye,emissiveIntensity:1.8,roughness:.18});
+ mats.black=new THREE.MeshStandardMaterial({color:0x100d08,roughness:.5});
+ mats.claw=new THREE.MeshStandardMaterial({color:p.claw,roughness:.5});
+ mats.pearl=new THREE.MeshPhysicalMaterial({color:p.pearl,emissive:p.pearl,emissiveIntensity:1.15,roughness:.14,metalness:.06,clearcoat:1,clearcoatRoughness:.08});
 }
-matset(palettes[0]);
+makeMaterials(palettes[0]);
 
-const dragon=new THREE.Group();dragon.rotation.set(-.08,-.10,.02);scene.add(dragon);
+const dragon=new THREE.Group();
+dragon.rotation.set(-.05,-.08,.01);
+scene.add(dragon);
+
 const pts=[
-new THREE.Vector3(-6.7,-.4,-.25),new THREE.Vector3(-5.7,1.0,.45),new THREE.Vector3(-4.1,2.1,.05),
-new THREE.Vector3(-2.2,1.65,-.48),new THREE.Vector3(-.5,.2,-.05),new THREE.Vector3(1,-1.05,.55),
-new THREE.Vector3(2.7,-.4,.12),new THREE.Vector3(4,1.25,-.34),new THREE.Vector3(5.4,2,.02)
+ new THREE.Vector3(-7.5,-.45,-.15),new THREE.Vector3(-6.45,.55,.55),new THREE.Vector3(-5.15,1.65,.35),
+ new THREE.Vector3(-3.5,2.18,-.22),new THREE.Vector3(-1.75,1.62,-.55),new THREE.Vector3(-.25,.42,-.18),
+ new THREE.Vector3(.75,-.82,.52),new THREE.Vector3(2.35,-.88,.36),new THREE.Vector3(3.55,.05,-.28),
+ new THREE.Vector3(4.55,1.25,-.44),new THREE.Vector3(5.65,2.05,-.02)
 ];
-const spine=new THREE.CatmullRomCurve3(pts,false,'centripetal',.55);
-const body=new THREE.Mesh(new THREE.TubeGeometry(spine,220,.46,18,false),mats.body);body.castShadow=body.receiveShadow=true;dragon.add(body);
+const spine=new THREE.CatmullRomCurve3(pts,false,'centripetal',.5);
+
+function radiusAt(t){
+ const tail=.12+.40*THREE.MathUtils.smoothstep(t,.02,.28);
+ const chest=.06*Math.exp(-Math.pow((t-.83)/.16,2));
+ return Math.min(.47,tail+chest);
+}
+function taperedTube(curve,segments=260,radials=18){
+ const frames=curve.computeFrenetFrames(segments,false);
+ const pos=[],norm=[],uv=[],idx=[];
+ for(let i=0;i<=segments;i++){
+   const t=i/segments,p=curve.getPointAt(t),r=radiusAt(t);
+   for(let j=0;j<radials;j++){
+     const a=j/radials*Math.PI*2,ca=Math.cos(a),sa=Math.sin(a);
+     const n=frames.normals[i].clone().multiplyScalar(ca).addScaledVector(frames.binormals[i],sa).normalize();
+     const v=p.clone().addScaledVector(n,r);
+     pos.push(v.x,v.y,v.z);norm.push(n.x,n.y,n.z);uv.push(t,j/radials);
+   }
+ }
+ for(let i=0;i<segments;i++)for(let j=0;j<radials;j++){
+   const a=i*radials+j,b=i*radials+(j+1)%radials,c=(i+1)*radials+(j+1)%radials,d=(i+1)*radials+j;
+   idx.push(a,b,d,b,c,d);
+ }
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+ g.setAttribute('normal',new THREE.Float32BufferAttribute(norm,3));
+ g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+ g.setIndex(idx);
+ return g;
+}
+const body=new THREE.Mesh(taperedTube(spine),mats.body);
+body.castShadow=body.receiveShadow=true;
+dragon.add(body);
 
 function frame(t){
-  const p=spine.getPointAt(t),tangent=spine.getTangentAt(t).normalize(),up=new THREE.Vector3(0,1,0);
-  let side=new THREE.Vector3().crossVectors(tangent,up);if(side.lengthSq()<.01)side.set(0,0,1);side.normalize();
-  return {p,tangent,side,normal:new THREE.Vector3().crossVectors(side,tangent).normalize()};
+ const p=spine.getPointAt(t),tangent=spine.getTangentAt(t).normalize(),up=new THREE.Vector3(0,1,0);
+ let side=new THREE.Vector3().crossVectors(tangent,up);if(side.lengthSq()<.01)side.set(0,0,1);side.normalize();
+ const normal=new THREE.Vector3().crossVectors(side,tangent).normalize();
+ return {p,tangent,side,normal};
 }
-for(let i=4;i<79;i+=3){
-  const t=i/84,f=frame(t),g=new THREE.SphereGeometry(.28,12,8);g.scale(1.15,.42,.80);
-  const m=new THREE.Mesh(g,mats.belly);m.position.copy(f.p).addScaledVector(f.normal,-.36);m.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),f.tangent);dragon.add(m);
+function ellipsoid(parent,rx,ry,rz,mat,pos){
+ const g=new THREE.SphereGeometry(1,30,18);g.scale(rx,ry,rz);
+ const m=new THREE.Mesh(g,mat);m.position.copy(pos);m.castShadow=true;parent.add(m);return m;
 }
-for(let i=7;i<75;i+=2){
-  const t=i/82,f=frame(t);
-  for(const s of [-1,1]){if((i+s)%3===0)continue;const g=new THREE.SphereGeometry(.16,9,7);g.scale(1.25,.28,.72);const m=new THREE.Mesh(g,mats.body2);m.position.copy(f.p).addScaledVector(f.side,s*.40).addScaledVector(f.normal,.03);m.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),f.tangent);dragon.add(m)}
+function tube(parent,points,r,mat,seg=42,radial=7){
+ const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),seg,r,radial,false),mat);
+ m.castShadow=true;parent.add(m);return m;
 }
-for(let i=8;i<69;i+=4){
-  const t=i/78,f=frame(t),size=.26+.23*Math.sin(Math.PI*t),m=new THREE.Mesh(new THREE.ConeGeometry(size,size*2.3,5),mats.mane);
-  m.position.copy(f.p).addScaledVector(f.normal,.53);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),f.normal);m.rotateX(Math.sin(i*.7)*.20);m.castShadow=true;dragon.add(m);
-}
-const hf=frame(.995),head=new THREE.Group();head.position.copy(hf.p);head.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),hf.tangent);dragon.add(head);
-function ell(rx,ry,rz,mat,x,y,z){const g=new THREE.SphereGeometry(1,28,18);g.scale(rx,ry,rz);const m=new THREE.Mesh(g,mat);m.position.set(x,y,z);m.castShadow=true;head.add(m);return m}
-ell(.70,.56,.58,mats.body2,.34,.05,0);ell(.68,.34,.42,mats.body,.98,-.03,0);ell(.30,.22,.35,mats.body2,1.54,-.02,0);
-for(const z of [-.31,.31]){const b=ell(.32,.11,.11,mats.mane,.55,.34,z);b.rotation.z=z>0?-.22:.22}
-for(const z of [-.40,.40]){ell(.10,.085,.055,mats.eye,.72,.22,z);ell(.045,.06,.022,mats.black,.785,.22,z*1.02)}
-for(const z of [-.19,.19])ell(.055,.045,.035,mats.black,1.78,.04,z);
-ell(.62,.14,.38,mats.belly,1.10,-.28,0);
 
-function tube(points,r,mat,seg=42){const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),seg,r,7,false),mat);m.castShadow=true;head.add(m);return m}
+// ventre segments
+for(let i=10;i<83;i+=3){
+ const t=i/88,f=frame(t),r=radiusAt(t);
+ const g=new THREE.SphereGeometry(.25,12,8);g.scale(1.25,.34,.76);
+ const m=new THREE.Mesh(g,mats.belly);
+ m.position.copy(f.p).addScaledVector(f.normal,-r*.82);
+ m.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),f.tangent);
+ dragon.add(m);
+}
+
+// scales as subtle overlapping petals
+for(let i=18;i<88;i+=3){
+ const t=i/94,f=frame(t),r=radiusAt(t);
+ for(const s of [-1,1]){
+   const g=new THREE.SphereGeometry(.13,9,6);g.scale(1.25,.18,.72);
+   const m=new THREE.Mesh(g,mats.body2);
+   m.position.copy(f.p).addScaledVector(f.side,s*r*.88).addScaledVector(f.normal,.02);
+   m.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),f.tangent);
+   dragon.add(m);
+ }
+}
+
+// dorsal flame crest
+for(let i=16;i<84;i+=4){
+ const t=i/91,f=frame(t),r=radiusAt(t),h=.32+.20*Math.sin(Math.PI*t);
+ const m=new THREE.Mesh(new THREE.ConeGeometry(.17,h,5),mats.mane);
+ m.position.copy(f.p).addScaledVector(f.normal,r+.16);
+ m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),f.normal);
+ m.rotateX(.22*Math.sin(i*.65));m.castShadow=true;dragon.add(m);
+}
+
+// elegant tail plume
+{
+ const f=frame(.012);
+ for(let i=0;i<5;i++){
+   const m=new THREE.Mesh(new THREE.ConeGeometry(.12+i*.022,.7+i*.08,5),i%2?mats.mane:mats.body2);
+   m.position.copy(f.p).addScaledVector(f.tangent,-.42-i*.28).addScaledVector(f.side,(i-2)*.07);
+   m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),f.tangent.clone().negate());
+   m.rotateZ((i-2)*.12);dragon.add(m);
+ }
+}
+
+// head
+const hf=frame(.995);
+const head=new THREE.Group();
+head.position.copy(hf.p);
+head.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),hf.tangent);
+dragon.add(head);
+
+// cranium + elongated muzzle
+ellipsoid(head,.58,.47,.49,mats.body2,new THREE.Vector3(.28,.06,0));
+ellipsoid(head,.63,.28,.35,mats.body,new THREE.Vector3(.88,-.02,0));
+ellipsoid(head,.28,.18,.28,mats.body2,new THREE.Vector3(1.42,-.01,0));
+ellipsoid(head,.54,.11,.31,mats.belly,new THREE.Vector3(.94,-.28,0));
+
+// raised snout / nose bridge
+const bridge=ellipsoid(head,.34,.13,.24,mats.body2,new THREE.Vector3(1.28,.13,0));bridge.rotation.z=-.10;
+
+// brows + eyes
+for(const z of [-.30,.30]){
+ const brow=ellipsoid(head,.28,.09,.09,mats.mane,new THREE.Vector3(.51,.34,z));brow.rotation.z=z>0?-.18:.18;
+ ellipsoid(head,.085,.072,.05,mats.eye,new THREE.Vector3(.67,.22,z*1.12));
+ ellipsoid(head,.036,.052,.018,mats.black,new THREE.Vector3(.73,.22,z*1.14));
+}
+for(const z of [-.15,.15])ellipsoid(head,.045,.036,.028,mats.black,new THREE.Vector3(1.63,.05,z));
+
+// flame eyebrows / cheek flourishes
 for(const z of [-1,1]){
- tube([new THREE.Vector3(.12,.47,z*.34),new THREE.Vector3(-.18,.78,z*.48),new THREE.Vector3(-.62,1.06,z*.54),new THREE.Vector3(-.92,1.36,z*.43)],.075,mats.horn);
- tube([new THREE.Vector3(1.23,-.02,z*.34),new THREE.Vector3(1.65,-.07,z*.67),new THREE.Vector3(1.9,-.25,z*1.03),new THREE.Vector3(1.52,-.48,z*1.38),new THREE.Vector3(.98,-.35,z*1.5)],.025,mats.horn,64);
- tube([new THREE.Vector3(.85,-.35,z*.24),new THREE.Vector3(.65,-.77,z*.34),new THREE.Vector3(.3,-1.02,z*.22)],.035,mats.mane,36);
- const ear=new THREE.Mesh(new THREE.ConeGeometry(.18,.55,5),mats.body2);ear.position.set(.05,.40,z*.49);ear.rotation.z=.82;ear.rotation.x=z*.20;head.add(ear);
+ tube(head,[new THREE.Vector3(.46,.34,z*.27),new THREE.Vector3(.30,.52,z*.43),new THREE.Vector3(.02,.64,z*.50)],.032,mats.mane,30,6);
 }
-for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.ConeGeometry(.20+.035*i,.80+.05*i,5),mats.mane);m.position.set(-.20-i*.16,.38+i*.02,(i-3)*.12);m.rotation.z=.68;m.rotation.x=(i-3)*.08;head.add(m)}
-for(let i=0;i<4;i++)for(const z of [-.22,.22]){const t=new THREE.Mesh(new THREE.ConeGeometry(.045,.18,6),mats.horn);t.position.set(1.12+i*.14,-.35,z);t.rotation.z=Math.PI;head.add(t)}
 
-function cyl(a,b,r,mat){const mid=a.clone().add(b).multiplyScalar(.5),len=a.distanceTo(b),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.82,len,9),mat);m.position.copy(mid);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),b.clone().sub(a).normalize());m.castShadow=true;dragon.add(m)}
-function claw(p,d){const m=new THREE.Mesh(new THREE.ConeGeometry(.055,.34,7),mats.claw);m.position.copy(p).addScaledVector(d,.17);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d);dragon.add(m)}
-function leg(t,s,front=false){const f=frame(t),hip=f.p.clone().addScaledVector(f.side,s*.34),knee=hip.clone().addScaledVector(f.side,s*(front?.54:.46)).add(new THREE.Vector3(0,-.48,0)),ankle=knee.clone().addScaledVector(f.tangent,front?.35:-.2).add(new THREE.Vector3(0,-.50,0));cyl(hip,knee,.12,mats.body2);cyl(knee,ankle,.09,mats.body);for(let k=-1;k<=1;k++){const d=f.tangent.clone().multiplyScalar(.65).addScaledVector(f.side,s*k*.34).add(new THREE.Vector3(0,-.18,0)).normalize();claw(ankle,d)}}
-leg(.27,1);leg(.29,-1);leg(.70,1,true);leg(.72,-1,true);
+// horns: slimmer and swept back
+for(const z of [-1,1]){
+ tube(head,[new THREE.Vector3(.10,.46,z*.30),new THREE.Vector3(-.20,.72,z*.42),new THREE.Vector3(-.58,.97,z*.46),new THREE.Vector3(-.93,1.16,z*.34)],.055,mats.horn,44,7);
+ tube(head,[new THREE.Vector3(-.40,.87,z*.44),new THREE.Vector3(-.70,1.08,z*.68),new THREE.Vector3(-.88,1.22,z*.77)],.035,mats.horn,30,6);
+}
 
-const cloudMat=new THREE.MeshStandardMaterial({color:0xa6c3bd,roughness:.65,transparent:true,opacity:.17});
-for(let i=0;i<18;i++){const a=i/18*Math.PI*2,r=3.4+Math.sin(i*1.7)*.7,p=new THREE.Mesh(new THREE.SphereGeometry(.7+(i%4)*.06,16,10),cloudMat);p.position.set(Math.cos(a)*r,-2.45+Math.sin(i*.9)*.12,Math.sin(a)*r*.55);p.scale.y=.42;scene.add(p)}
-const platform=new THREE.Mesh(new THREE.CylinderGeometry(4.8,5,.18,96),new THREE.MeshStandardMaterial({color:0x182322,roughness:.78,metalness:.15}));platform.position.y=-2.82;platform.receiveShadow=true;scene.add(platform);
-const ring=new THREE.Mesh(new THREE.TorusGeometry(4.15,.018,8,160),new THREE.MeshBasicMaterial({color:0x88d8c7,transparent:true,opacity:.43}));ring.rotation.x=Math.PI/2;ring.position.y=-2.70;scene.add(ring);
+// long whiskers, wider graceful loops
+for(const z of [-1,1]){
+ tube(head,[new THREE.Vector3(1.15,-.02,z*.27),new THREE.Vector3(1.58,-.02,z*.62),new THREE.Vector3(1.95,-.17,z*.98),
+ new THREE.Vector3(1.82,-.42,z*1.38),new THREE.Vector3(1.34,-.56,z*1.66),new THREE.Vector3(.82,-.40,z*1.74)],.018,mats.horn,72,6);
+ tube(head,[new THREE.Vector3(.78,-.31,z*.19),new THREE.Vector3(.63,-.67,z*.31),new THREE.Vector3(.33,-.94,z*.24)],.026,mats.mane,40,6);
+}
 
-const n=420,arr=new Float32Array(n*3);for(let i=0;i<n;i++){arr[i*3]=(Math.random()-.5)*28;arr[i*3+1]=(Math.random()-.5)*15;arr[i*3+2]=(Math.random()-.5)*24}
+// head flame mane
+for(let i=0;i<9;i++){
+ const m=new THREE.Mesh(new THREE.ConeGeometry(.13+.018*i,.54+.045*i,5),mats.mane);
+ m.position.set(-.12-i*.12,.34+i*.015,(i-4)*.10);
+ m.rotation.z=.72;m.rotation.x=(i-4)*.07;head.add(m);
+}
+
+// ears
+for(const z of [-1,1]){
+ const ear=new THREE.Mesh(new THREE.ConeGeometry(.13,.44,5),mats.body2);
+ ear.position.set(.02,.39,z*.43);ear.rotation.z=.86;ear.rotation.x=z*.18;head.add(ear);
+}
+
+// teeth
+for(let i=0;i<3;i++)for(const z of [-.18,.18]){
+ const t=new THREE.Mesh(new THREE.ConeGeometry(.032,.13,6),mats.horn);
+ t.position.set(1.10+i*.15,-.31,z);t.rotation.z=Math.PI;head.add(t);
+}
+
+// legs
+function cylinderBetween(a,b,r,mat){
+ const mid=a.clone().add(b).multiplyScalar(.5),len=a.distanceTo(b);
+ const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.78,len,9),mat);
+ m.position.copy(mid);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),b.clone().sub(a).normalize());
+ m.castShadow=true;dragon.add(m);
+}
+function clawAt(p,d){
+ const m=new THREE.Mesh(new THREE.ConeGeometry(.038,.25,7),mats.claw);
+ m.position.copy(p).addScaledVector(d,.12);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d);dragon.add(m);
+}
+function addLeg(t,s,front=false){
+ const f=frame(t),r=radiusAt(t);
+ const hip=f.p.clone().addScaledVector(f.side,s*r*.78);
+ const knee=hip.clone().addScaledVector(f.side,s*(front?.43:.38)).add(new THREE.Vector3(0,-.38,0));
+ const ankle=knee.clone().addScaledVector(f.tangent,front?.28:-.18).add(new THREE.Vector3(0,-.42,0));
+ cylinderBetween(hip,knee,.085,mats.body2);cylinderBetween(knee,ankle,.063,mats.body);
+ for(let k=-1;k<=1;k++){
+   const d=f.tangent.clone().multiplyScalar(.58).addScaledVector(f.side,s*k*.28).add(new THREE.Vector3(0,-.12,0)).normalize();
+   clawAt(ankle,d);
+ }
+}
+addLeg(.28,1);addLeg(.30,-1);addLeg(.72,1,true);addLeg(.74,-1,true);
+
+// pearl held in front of head
+const pearlGroup=new THREE.Group();
+pearlGroup.position.set(7.55,2.18,.05);
+scene.add(pearlGroup);
+const pearl=new THREE.Mesh(new THREE.SphereGeometry(.44,32,24),mats.pearl);pearlGroup.add(pearl);
+const halo1=new THREE.Mesh(new THREE.TorusGeometry(.68,.018,8,96),new THREE.MeshBasicMaterial({color:0xffe9ad,transparent:true,opacity:.58}));
+halo1.rotation.x=Math.PI/2;pearlGroup.add(halo1);
+const halo2=halo1.clone();halo2.scale.set(.78,.78,.78);halo2.rotation.set(Math.PI/2,.8,.4);pearlGroup.add(halo2);
+const pearlLight=new THREE.PointLight(0xffd98a,8,8,2);pearlGroup.add(pearlLight);
+
+// stylized cloud floor
+const cloudMat=new THREE.MeshPhysicalMaterial({color:0xa7c7bf,roughness:.5,transparent:true,opacity:.13,depthWrite:false});
+for(let i=0;i<24;i++){
+ const a=i/24*Math.PI*2,r=3.8+Math.sin(i*1.5)*.65;
+ const p=new THREE.Mesh(new THREE.SphereGeometry(.65+(i%5)*.07,18,12),cloudMat);
+ p.position.set(Math.cos(a)*r,-2.42+Math.sin(i*.8)*.10,Math.sin(a)*r*.58);p.scale.y=.38;scene.add(p);
+}
+for(let i=0;i<7;i++){
+ const tor=new THREE.Mesh(new THREE.TorusGeometry(.5+i*.08,.035,8,64),new THREE.MeshBasicMaterial({color:0x7db5aa,transparent:true,opacity:.08}));
+ tor.rotation.x=Math.PI/2;tor.position.set(-4.2+i*1.5,-2.34,Math.sin(i)*1.6);scene.add(tor);
+}
+const platform=new THREE.Mesh(new THREE.CylinderGeometry(5.15,5.3,.15,96),new THREE.MeshStandardMaterial({color:0x141d1c,roughness:.82,metalness:.12}));
+platform.position.y=-2.72;platform.receiveShadow=true;scene.add(platform);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(4.45,.016,8,180),new THREE.MeshBasicMaterial({color:0x84d8c8,transparent:true,opacity:.34}));
+ring.rotation.x=Math.PI/2;ring.position.y=-2.63;scene.add(ring);
+
+// dust
+const n=520,arr=new Float32Array(n*3);
+for(let i=0;i<n;i++){arr[i*3]=(Math.random()-.5)*30;arr[i*3+1]=(Math.random()-.5)*16;arr[i*3+2]=(Math.random()-.5)*25}
 const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(arr,3));
-const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xccebe4,size:.025,transparent:true,opacity:.42}));scene.add(dust);
+const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xd5eee8,size:.022,transparent:true,opacity:.38,depthWrite:false}));
+scene.add(dust);
 
+// controls
 document.getElementById('spin').onclick=e=>{controls.autoRotate=!controls.autoRotate;e.currentTarget.textContent=controls.autoRotate?'Dừng xoay':'Tự xoay'};
-document.getElementById('reset').onclick=()=>{camera.position.set(11,6.2,13.5);controls.target.set(0,.65,0);controls.update()};
-document.getElementById('material').onclick=()=>{paletteIndex=(paletteIndex+1)%palettes.length;const p=palettes[paletteIndex];mats.body.color.setHex(p.body);mats.body2.color.setHex(p.body2);mats.belly.color.setHex(p.belly);mats.horn.color.setHex(p.horn);mats.mane.color.setHex(p.mane);mats.claw.color.setHex(p.claw);mats.eye.color.setHex(p.eye);mats.eye.emissive.setHex(p.eye)};
+document.getElementById('reset').onclick=()=>{camera.position.set(11.8,5.8,14.8);controls.target.set(.3,.55,0);controls.update()};
+document.getElementById('material').onclick=()=>{
+ paletteIndex=(paletteIndex+1)%palettes.length;const p=palettes[paletteIndex];
+ mats.body.color.setHex(p.body);mats.body2.color.setHex(p.body2);mats.belly.color.setHex(p.belly);mats.horn.color.setHex(p.horn);
+ mats.mane.color.setHex(p.mane);mats.claw.color.setHex(p.claw);mats.eye.color.setHex(p.eye);mats.eye.emissive.setHex(p.eye);
+ mats.pearl.color.setHex(p.pearl);mats.pearl.emissive.setHex(p.pearl);
+};
 
 const clock=new THREE.Clock();
-function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();dragon.position.y=Math.sin(t*.7)*.08;dragon.rotation.z=.025*Math.sin(t*.42);dust.rotation.y=t*.012;ring.material.opacity=.34+.11*Math.sin(t*1.1);controls.update();renderer.render(scene,camera)}
+function animate(){
+ requestAnimationFrame(animate);
+ const t=clock.getElapsedTime();
+ dragon.position.y=Math.sin(t*.65)*.055;
+ dragon.rotation.z=.018*Math.sin(t*.38);
+ pearlGroup.position.y=2.18+Math.sin(t*1.1)*.07;
+ pearlGroup.rotation.y=t*.22;
+ dust.rotation.y=t*.009;
+ ring.material.opacity=.27+.08*Math.sin(t*.9);
+ controls.update();
+ composer.render();
+}
 animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2))});
+
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ composer.setSize(innerWidth,innerHeight);
+});
+requestAnimationFrame(()=>setTimeout(()=>document.getElementById('loader').classList.add('hide'),250));
 </script>
 </body>
 </html>
