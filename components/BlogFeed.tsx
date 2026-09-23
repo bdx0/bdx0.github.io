@@ -25,7 +25,7 @@ export type BlogFeedPost = {
   tags: string[];
 };
 
-export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
+export default function BlogFeed({\n  posts,\n  embedded = false,\n}: {\n  posts: BlogFeedPost[];\n  embedded?: boolean;\n}) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -53,29 +53,31 @@ export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
 
   return (
     <Box>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: { xs: "flex-start", sm: "center" },
-          justifyContent: "space-between",
-          gap: 2,
-          mb: 2.5,
-        }}
-      >
-        <Box>
-          <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
-            Blog
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Notes, research, and things worth keeping.
-          </Typography>
+      {!embedded && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: { xs: "flex-start", sm: "center" },
+            justifyContent: "space-between",
+            gap: 2,
+            mb: 2.5,
+          }}
+        >
+          <Box>
+            <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
+              Blog
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Notes, research, and things worth keeping.
+            </Typography>
+          </Box>
+          <Chip
+            label={`${filteredPosts.length}/${posts.length}`}
+            size="small"
+            variant="outlined"
+          />
         </Box>
-        <Chip
-          label={`${filteredPosts.length}/${posts.length}`}
-          size="small"
-          variant="outlined"
-        />
-      </Box>
+      )}
 
       <TextField
         fullWidth
@@ -156,7 +158,7 @@ export default function BlogFeed({ posts }: { posts: BlogFeedPost[] }) {
           filteredPosts.map((post, index) => (
             <Box key={post.slug}>
               <Link
-                href={`/blog/${post.slug}`}
+                href={`/writing/${post.slug}`}
                 style={{ color: "inherit", textDecoration: "none" }}
               >
                 <Box
