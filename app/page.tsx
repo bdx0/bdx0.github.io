@@ -1,85 +1,125 @@
-import LinkBehavior from "@/components/LinkBehavior";
+import Link from "next/link";
 import {
-  Card,
-  CardContent,
+  Box,
   Chip,
-  Link as MuiLink, // Import Chip
+  Divider,
   Stack,
   Typography,
 } from "@mui/material";
 
-// Since this is a server component, we can directly import and use the function
 import { getAllContent } from "@/lib/markdown";
 
-async function getPosts() {
-  // Directly call the function instead of using fetch
-  try {
-    const posts = getAllContent("blog");
-    return posts;
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    throw new Error("Failed to fetch posts");
-  }
-}
-
-export default async function HomePage() {
-  const posts = await getPosts();
+export default function HomePage() {
+  const posts = getAllContent("blog");
 
   return (
-    <div className="py-4">
-      <Typography
-        variant="h4"
-        component="h2"
-        align="center"
-        sx={{ marginBottom: "16px" }}
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: { xs: "flex-start", sm: "center" },
+          justifyContent: "space-between",
+          gap: 2,
+          mb: 3,
+        }}
       >
-        Blog Posts
-      </Typography>
+        <Box>
+          <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
+            Blog
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Notes, research, and things worth keeping.
+          </Typography>
+        </Box>
+        <Chip label={`${posts.length} posts`} size="small" variant="outlined" />
+      </Box>
 
-      <div className="space-y-3">
-        {posts.map((post: any) => (
-          <Card key={post.slug} sx={{ marginBottom: "12px" }}>
-            <CardContent>
-              <MuiLink
-                component={LinkBehavior}
-                href={`/${post.slug}`}
-                underline="hover"
-                variant="h6"
-                sx={{ marginBottom: "8px" }}
-              >
-                {post.title}
-              </MuiLink>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ marginBottom: "8px" }}
-              >
-                {post.description}
-              </Typography>
-              <div className="flex justify-between items-center">
+      <Box
+        sx={{
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 3,
+          overflow: "hidden",
+          bgcolor: "background.paper",
+        }}
+      >
+        {posts.map((post: any, index: number) => (
+          <Box key={post.slug}>
+            <Box
+              component={Link}
+              href={`/${post.slug}`}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 140px" },
+                gap: { xs: 1, md: 3 },
+                px: { xs: 2, sm: 2.5 },
+                py: 2,
+                color: "inherit",
+                textDecoration: "none",
+                transition: "background-color 120ms ease",
+                "&:hover": { bgcolor: "action.hover" },
+                "&:focus-visible": {
+                  outline: "2px solid",
+                  outlineColor: "primary.main",
+                  outlineOffset: -2,
+                },
+              }}
+            >
+              <Box sx={{ minWidth: 0 }}>
                 <Typography
-                  variant="caption"
-                  color="text.disabled"
-                  sx={{ textTransform: "uppercase" }}
+                  variant="subtitle1"
+                  sx={{ fontWeight: 700, mb: 0.5 }}
                 >
-                  {new Date(post.publish_date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {post.title}
                 </Typography>
-                {post.tags && post.tags.length > 0 && (
-                  <Stack direction="row" spacing={1}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {post.description}
+                </Typography>
+
+                {Array.isArray(post.tags) && post.tags.length > 0 && (
+                  <Stack
+                    direction="row"
+                    spacing={0.75}
+                    sx={{ mt: 1.25, flexWrap: "wrap", gap: 0.75 }}
+                  >
                     {post.tags.map((tag: string) => (
-                      <Chip key={tag} label={tag} size="small" />
+                      <Chip
+                        key={tag}
+                        label={tag}
+                        size="small"
+                        variant="outlined"
+                        sx={{ height: 22, fontSize: 11 }}
+                      />
                     ))}
                   </Stack>
                 )}
-              </div>
-            </CardContent>
-          </Card>
+              </Box>
+
+              <Typography
+                variant="caption"
+                color="text.disabled"
+                sx={{ pt: 0.25, whiteSpace: "nowrap" }}
+              >
+                {new Date(post.publish_date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </Typography>
+            </Box>
+            {index < posts.length - 1 && <Divider />}
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
