@@ -144,7 +144,7 @@
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";\nimport { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";\nimport { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
 const host = document.getElementById("canvasHost");
 const loading = document.getElementById("loading");
@@ -348,7 +348,7 @@ loader.load(
   },
   err=>{
     console.error(err);
-    fail("File buddha.glb chưa tải được hoặc trình duyệt không đọc được GLB.");
+    fail("Không đọc được buddha.glb: " + (err?.message || String(err)));
   }
 );
 
