@@ -105,57 +105,6 @@ export default function BlogDocsShell({
 
   return (
     <Box>
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 16,
-          marginBottom: 24,
-          padding: "12px 0",
-          borderBottom: "1px solid rgba(127, 127, 127, 0.24)",
-          backgroundColor: "inherit",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              marginBottom: 2,
-              fontSize: 11,
-              lineHeight: 1.2,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              opacity: 0.56,
-            }}
-          >
-            BDX0 / Knowledge
-          </div>
-          <div style={{ fontSize: 18, lineHeight: 1.3, fontWeight: 750 }}>
-            Blog
-          </div>
-        </div>
-
-        <a
-          href="/writing#blog-search"
-          style={{
-            color: "inherit",
-            textDecoration: "none",
-            border: "1px solid rgba(127, 127, 127, 0.35)",
-            borderRadius: 8,
-            padding: "7px 12px",
-            fontSize: 13,
-            lineHeight: 1.2,
-            fontWeight: 650,
-          }}
-        >
-          Search
-        </a>
-      </header>
-
       <Box
         component="details"
         sx={{
@@ -184,10 +133,10 @@ export default function BlogDocsShell({
           display: "grid",
           gridTemplateColumns: {
             xs: "minmax(0, 1fr)",
-            lg: "230px minmax(0, 1fr)",
+            lg: "200px minmax(0, 1fr) 180px",
             xl: "230px minmax(0, 760px) 210px",
           },
-          gap: { xs: 0, lg: 4, xl: 5 },
+          gap: { xs: 0, lg: 3, xl: 5 },
           alignItems: "start",
           justifyContent: "center",
         }}
@@ -213,7 +162,7 @@ export default function BlogDocsShell({
         <Box
           component="aside"
           sx={{
-            display: { xs: "none", xl: toc.length ? "block" : "none" },
+            display: { xs: "none", lg: toc.length ? "block" : "none" },
             position: "sticky",
             top: 92,
             maxHeight: "calc(100vh - 116px)",
