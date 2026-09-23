@@ -52,7 +52,8 @@ export default function HomePage() {
         >
           Software engineer with 9 years of experience optimizing application
           performance and building practical solutions across web, mobile, AI,
-          and infrastructure.
+          and infrastructure, with a focus on making complex technology more
+          accessible and intuitive.
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: 2.5, flexWrap: "wrap", gap: 1.5 }}>
@@ -96,9 +97,9 @@ export default function HomePage() {
           My work spans Python, JavaScript/TypeScript, C/C++, Java, Objective-C,
           Dart, and Go; frontend and mobile work with Next.js and Flutter;
           backend systems with FastAPI, Django, and Gin; and infrastructure with
-          Kubernetes. I&apos;m especially interested in AI, machine learning,
-          Vietnamese language technology, WebRTC, and systems that make complex
-          technology easier to use.
+          Kubernetes. I&apos;m especially interested in AI and machine learning,
+          including Whisper, PyTorch, model fine-tuning, Vietnamese language
+          technology, and WebRTC for real-time communication.
         </Typography>
       </Box>
 
@@ -108,9 +109,11 @@ export default function HomePage() {
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
           I value clean, efficient, maintainable software, continuous learning,
-          and practical problem solving. Outside day-to-day product work, I spend
-          time on personal infrastructure, a Kubernetes homelab, and AI research
-          focused on adapting models and tools for Vietnamese users.
+          and practical problem solving. I use GTD to organize my work and use
+          English at working proficiency. Outside day-to-day product work, I
+          spend time on personal infrastructure, a Kubernetes homelab, and AI
+          research focused on adapting and fine-tuning models for Vietnamese
+          users.
         </Typography>
       </Box>
 
