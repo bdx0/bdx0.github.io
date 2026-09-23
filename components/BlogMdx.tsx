@@ -11,7 +11,7 @@ import type { MDXComponents } from "mdx/types";
 
 import { slugifyHeading } from "@/lib/blog";
 
-function headingText(children: unknown) {
+function headingText(children: unknown): string {
   if (Array.isArray(children)) return children.map(headingText).join("");
   if (children === null || children === undefined) return "";
   if (typeof children === "string" || typeof children === "number") {
