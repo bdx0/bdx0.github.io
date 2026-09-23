@@ -1,44 +1,44 @@
-import { getContentBySlug, getAllContent } from "@/lib/markdown";
-import { useMDXComponents } from "@/mdx-components";
+import { Box, Paper } from "@mui/material";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { notFound } from "next/navigation";
 
-// Function to generate static paths for individual projects
-export async function generateStaticParams() {
-  const projects = getAllContent("projects"); // Assuming 'projects' directory in content/
-  return projects.map((project: any) => ({
+import { getAllContent, getContentBySlug } from "@/lib/markdown";
+import { useMDXComponents } from "@/mdx-components";
+
+export function generateStaticParams() {
+  return getAllContent("projects").map((project: any) => ({
     slug: project.slug,
   }));
 }
 
-import { Container, Box } from '@mui/material';
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const project = await getContentBySlug("projects", slug);
 
-// Page component for rendering a single project
-const ProjectPage = async ({ params }: { params: { slug: string } }) => {
+  if (!project) notFound();
+
   const components = useMDXComponents({});
-  const resolvedParams = await params;
-  const slug = resolvedParams.slug;
-  const project = await getContentBySlug("projects", slug); // Fetch project content
-
-  if (!project) {
-    return <div>Project not found</div>;
-  }
-
-  // Prepare scope for MDXRemote, similar to blog posts
-  const scope = {
-    frontmatter: project?.frontmatter,
-  };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Box>
+    <Box sx={{ maxWidth: 860, mx: "auto" }}>
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 2.25, sm: 3.5, md: 4.5 },
+          borderRadius: 3,
+          bgcolor: "background.paper",
+        }}
+      >
         <MDXRemote
-          source={project?.content}
+          source={project.content}
           components={components}
-          options={{ scope: scope }}
+          options={{ scope: { frontmatter: project.frontmatter } }}
         />
-      </Box>
-    </Container>
+      </Paper>
+    </Box>
   );
-};
-
-export default ProjectPage;
+}
