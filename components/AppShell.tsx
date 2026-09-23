@@ -34,7 +34,7 @@ const drawerWidth = 248;
 
 const navItems = [
   { href: "/", label: "Home", icon: HomeOutlined },
-  { href: "/blog", label: "Blog", icon: ArticleOutlined },
+  { href: "/writing", label: "Blog", icon: ArticleOutlined },
   { href: "/projects", label: "Projects", icon: FolderOutlined },
   { href: "/resume", label: "Resume", icon: DescriptionOutlined },
 ];
@@ -44,9 +44,9 @@ function isActive(pathname: string, href: string) {
     return pathname === "/" || pathname === "/me";
   }
 
-  if (href === "/blog") {
+  if (href === "/writing") {
     return (
-      pathname === "/blog" ||
+      pathname === "/writing" ||
       pathname.startsWith("/tags/") ||
       (!pathname.startsWith("/projects") &&
         !pathname.startsWith("/resume") &&
