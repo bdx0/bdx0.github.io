@@ -5,6 +5,7 @@ import {
   DescriptionOutlined,
   FolderOutlined,
   HomeOutlined,
+  ScienceOutlined,
   Menu as MenuIcon,
   SettingsOutlined,
   WorkOutline,
@@ -154,6 +155,30 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </ListItemButton>
           );
         })}
+
+        <ListItemButton
+          component={Link}
+          href="/lab"
+          selected={isActive(pathname, "/lab")}
+          onClick={() => setMobileOpen(false)}
+          sx={{
+            borderRadius: 2,
+            mt: 1.5,
+            minHeight: 42,
+            "&.Mui-selected": { bgcolor: "action.selected" },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 38 }}>
+            <ScienceOutlined fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Lab"
+            primaryTypographyProps={{
+              fontSize: 14,
+              fontWeight: isActive(pathname, "/lab") ? 700 : 500,
+            }}
+          />
+        </ListItemButton>
       </List>
 
       <Box sx={{ mt: "auto", p: 1.25 }}>
