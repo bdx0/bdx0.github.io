@@ -1,5 +1,3 @@
-import type { Components, Theme } from "@mui/material/styles";
-
 export type UiThemeId = "workspace";
 
 export type UiThemeTokens = {
@@ -37,7 +35,6 @@ export type UiThemeDefinition = {
   typography: {
     fontFamily: string;
   };
-  components?: Components<Omit<Theme, "components">>;
 };
 
 declare module "@mui/material/styles" {
