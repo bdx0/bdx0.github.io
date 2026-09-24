@@ -3,7 +3,6 @@
 import {
   ArrowBack,
   ArticleOutlined,
-  DescriptionOutlined,
   FolderOutlined,
   HomeOutlined,
   ScienceOutlined,
@@ -21,7 +20,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Popover,
+  Dialog,
+  DialogContent,
   Toolbar,
   Tooltip,
   Typography,
@@ -65,7 +65,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const { shell, surfaces } = muiTheme.site;
   const drawerWidth = shell.drawerWidth;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
@@ -195,26 +195,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Divider sx={{ mb: 1 }} />
 
         <ListItemButton
-          component={Link}
-          href="/resume"
-          selected={isActive(pathname, "/resume")}
-          onClick={() => setMobileOpen(false)}
+          onClick={() => {
+            setMobileOpen(false);
+            setSettingsOpen(true);
+          }}
           sx={{
             borderRadius: surfaces.navRadius,
             minHeight: 42,
             mb: 0.5,
-            "&.Mui-selected": { bgcolor: "action.selected" },
           }}
         >
           <ListItemIcon sx={{ minWidth: 38 }}>
-            <DescriptionOutlined fontSize="small" />
+            <SettingsOutlined fontSize="small" />
           </ListItemIcon>
           <ListItemText
-            primary="Resume"
-            primaryTypographyProps={{
-              fontSize: 14,
-              fontWeight: isActive(pathname, "/resume") ? 700 : 500,
-            }}
+            primary="Settings"
+            primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
           />
         </ListItemButton>
 
@@ -269,14 +265,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>
             {isBlogRoute ? "Blog" : "BDX0"}
           </Typography>
-          <Tooltip title="Settings">
-            <IconButton
-              onClick={(event) => setSettingsAnchor(event.currentTarget)}
-              aria-label="Open settings"
-            >
-              <SettingsOutlined />
-            </IconButton>
-          </Tooltip>
         </Toolbar>
       </AppBar>
 
@@ -318,17 +306,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Box>
       </Box>
 
-      <Popover
-        open={Boolean(settingsAnchor)}
-        anchorEl={settingsAnchor}
-        onClose={() => setSettingsAnchor(null)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      <Dialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        fullWidth
+        maxWidth="xs"
+        aria-label="Settings"
       >
-        <Box sx={{ p: 2, width: 320, maxWidth: "calc(100vw - 32px)" }}>
+        <DialogContent sx={{ p: { xs: 2, sm: 2.5 } }}>
           <SettingsPanel />
-        </Box>
-      </Popover>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
