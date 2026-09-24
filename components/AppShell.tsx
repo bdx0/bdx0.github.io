@@ -70,6 +70,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const normalizedPathname =
     pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
   const miniAppTitles: Record<string, string> = {
+    "/apps/dau-thau": "Đấu Thầu 360",
     "/apps/yi-jing": "Kinh Dịch",
     "/apps/office": "Office Kit",
     "/apps/buddha": "Phật Thích Ca 3D",
@@ -78,6 +79,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const miniAppTitle = miniAppTitles[normalizedPathname] ?? null;
   const isMiniAppRoute = miniAppTitle !== null;
   const isImmersiveAppRoute = [
+    "/apps/dau-thau",
     "/apps/yi-jing",
     "/apps/buddha",
     "/apps/ly-dragon",
