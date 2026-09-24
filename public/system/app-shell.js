@@ -1,5 +1,5 @@
 (() => {
-  const APPS = [{"id":"yi-jing","name":"Kinh Dịch","description":"Gieo quẻ · Tra 64 quẻ","href":"https://bdx0.github.io/apps/yi-jing/","hostPrefix":"yi-jing","preview":"yi"},{"id":"buddha","name":"Phật Thích Ca 3D","description":"Tượng 3D · Zen halo","href":"https://bdx0.github.io/apps/buddha/","host":"bdx0.github.io","pathPrefix":"/apps/buddha","preview":"buddha"},{"id":"dragon","name":"Rồng thời Lý 3D","description":"Mô hình 3D tương tác","href":"https://bdx0.github.io/apps/ly-dragon/","host":"bdx0.github.io","pathPrefix":"/apps/ly-dragon","preview":"dragon"}];
+  const APPS = [{"id":"yi-jing","name":"Kinh Dịch","description":"Gieo quẻ · Tra 64 quẻ","href":"https://bdx0.github.io/apps/yi-jing","hostPrefix":"yi-jing","preview":"yi"},{"id":"buddha","name":"Phật Thích Ca 3D","description":"Tượng 3D · Zen halo","href":"https://bdx0.github.io/apps/buddha","host":"bdx0.github.io","pathPrefix":"/apps/buddha","preview":"buddha"},{"id":"dragon","name":"Rồng thời Lý 3D","description":"Mô hình 3D tương tác","href":"https://bdx0.github.io/apps/ly-dragon","host":"bdx0.github.io","pathPrefix":"/apps/ly-dragon","preview":"dragon"}];
   const loc = window.location;
   const current = APPS.find((app) => {
     if (app.hostPrefix && loc.hostname.startsWith(app.hostPrefix)) return true;

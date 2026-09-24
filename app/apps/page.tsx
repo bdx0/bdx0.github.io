@@ -9,28 +9,28 @@ export const metadata: Metadata = {
 const apps = [
   {
     id: "yi",
-    href: "/apps/yi-jing/",
+    href: "/apps/yi-jing",
     title: "Kinh Dịch",
     description: "Gieo quẻ 3 đồng xu, tra cứu 64 quẻ và xem quẻ biến.",
     kind: "Tool",
   },
   {
     id: "office",
-    href: "/apps/office/",
+    href: "/apps/office",
     title: "Office Kit",
     description: "Bộ công cụ xử lý văn bản, danh sách, ngày làm việc, phần trăm, mã hóa và JSON.",
     kind: "Utility",
   },
   {
     id: "buddha",
-    href: "/apps/buddha/",
+    href: "/apps/buddha",
     title: "Phật Thích Ca 3D",
     description: "Không gian 3D tương tác với tượng Phật và vòng halo.",
     kind: "3D",
   },
   {
     id: "dragon",
-    href: "/apps/ly-dragon/",
+    href: "/apps/ly-dragon",
     title: "Rồng thời Lý 3D",
     description: "Mô hình 3D tương tác lấy cảm hứng từ hình tượng rồng thời Lý.",
     kind: "3D",
