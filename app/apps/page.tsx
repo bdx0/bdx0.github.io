@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const apps = [
   {
     id: "knowledge",
-    href: "/apps/knowledge/",
+    href: "/apps/knowledge",
     title: "BDX0 Knowledge",
     description: "Blog và knowledge workspace đồng bộ nội dung từ Notion, có tìm kiếm và quyền thành viên.",
     kind: "Knowledge",

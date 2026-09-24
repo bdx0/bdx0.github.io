@@ -42,11 +42,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for app in knowledge dau-thau yi-jing office buddha ly-dragon; do
-            if [ -f "out/apps/${app}.html" ]; then
-              mkdir -p "out/apps/${app}"
-              cp "out/apps/${app}.html" "out/apps/${app}/index.html"
-            fi
+          MINI_APPS=(knowledge dau-thau yi-jing office buddha ly-dragon)
+
+          for app in "${MINI_APPS[@]}"; do
+            source="out/apps/${app}.html"
+            target="out/apps/${app}/index.html"
+
+            test -f "${source}"
+            mkdir -p "out/apps/${app}"
+            cp "${source}" "${target}"
+
+            test -s "${target}"
+            cmp -s "${source}" "${target}"
+            echo "Mini app route ready: /apps/${app} and /apps/${app}/"
           done
 
       - name: Add self-hosted Gautama Buddha model
