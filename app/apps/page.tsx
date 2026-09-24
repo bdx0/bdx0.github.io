@@ -8,6 +8,13 @@ export const metadata: Metadata = {
 
 const apps = [
   {
+    id: "knowledge",
+    href: "/apps/knowledge/",
+    title: "BDX0 Knowledge",
+    description: "Blog và knowledge workspace đồng bộ nội dung từ Notion, có tìm kiếm và quyền thành viên.",
+    kind: "Knowledge",
+  },
+  {
     id: "dau-thau",
     href: "/apps/dau-thau/",
     title: "Đấu Thầu 360",
@@ -45,6 +52,10 @@ const apps = [
 ] as const;
 
 function AppPreview({ id }: { id: (typeof apps)[number]["id"] }) {
+  if (id === "knowledge") {
+    return <Box sx={{height:"100%",bgcolor:"#f4f5f7",p:1.4}}><Box sx={{height:18,borderRadius:1.2,bgcolor:"#fff",border:"1px solid #ddd",mb:1}}/><Box sx={{height:34,width:"72%",borderRadius:1.5,bgcolor:"#171717",mb:1.2}}/><Box sx={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:1}}>{[1,2,3,4].map(n=><Box key={n} sx={{height:45,borderRadius:1.5,bgcolor:"#fff",border:"1px solid #ddd"}}/>)}</Box></Box>;
+  }
+
   if (id === "dau-thau") {
     return (
       <Box sx={{ position: "relative", height: "100%", bgcolor: "#f5f7fb", overflow: "hidden", p: 1.4 }}>
