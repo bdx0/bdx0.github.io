@@ -8,6 +8,13 @@ export const metadata: Metadata = {
 
 const apps = [
   {
+    id: "dau-thau",
+    href: "/apps/dau-thau/",
+    title: "Đấu Thầu 360",
+    description: "Workspace tra cứu pháp luật, sàng lọc nghiệp vụ, quy trình và trợ lý AI cho công tác đấu thầu.",
+    kind: "Legal",
+  },
+  {
     id: "yi",
     href: "/apps/yi-jing",
     title: "Kinh Dịch",
@@ -38,6 +45,35 @@ const apps = [
 ] as const;
 
 function AppPreview({ id }: { id: (typeof apps)[number]["id"] }) {
+  if (id === "dau-thau") {
+    return (
+      <Box sx={{ position: "relative", height: "100%", bgcolor: "#f5f7fb", overflow: "hidden", p: 1.4 }}>
+        <Box sx={{ height: 18, borderRadius: 1.2, bgcolor: "#123b6d", mb: 1 }} />
+        <Box sx={{ display: "grid", gridTemplateColumns: "28% 1fr", gap: 1, height: "calc(100% - 26px)" }}>
+          <Box sx={{ borderRadius: 1.5, bgcolor: "#e8eef6", border: "1px solid #d5deea", p: .8 }}>
+            {[76, 61, 84, 68, 55].map((w) => (
+              <Box key={w} sx={{ width: `${w}%`, height: 7, borderRadius: 9, bgcolor: "#9baec4", mb: .8 }} />
+            ))}
+          </Box>
+          <Box sx={{ display: "grid", gridTemplateRows: "auto 1fr", gap: 1 }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: .7 }}>
+              {[1, 2, 3].map((n) => (
+                <Box key={n} sx={{ height: 31, borderRadius: 1.2, bgcolor: "#fff", border: "1px solid #dfe5ed" }} />
+              ))}
+            </Box>
+            <Box sx={{ borderRadius: 1.5, bgcolor: "#fff", border: "1px solid #dfe5ed", p: 1 }}>
+              <Box sx={{ width: "46%", height: 9, borderRadius: 9, bgcolor: "#1f5c99", mb: 1 }} />
+              {[92, 81, 88, 64].map((w) => (
+                <Box key={w} sx={{ width: `${w}%`, height: 6, borderRadius: 9, bgcolor: "#d3dbe5", mb: .7 }} />
+              ))}
+              <Box sx={{ mt: 1.2, width: "34%", height: 11, borderRadius: 9, bgcolor: "#c78a2b" }} />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+
   if (id === "yi") {
     return (
       <Box sx={{ position: "relative", height: "100%", bgcolor: "#efe3cf", overflow: "hidden" }}>
