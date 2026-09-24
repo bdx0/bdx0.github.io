@@ -54,12 +54,12 @@ type PdfLibApi = {
     load(bytes: ArrayBuffer | Uint8Array): Promise<PdfDocument & {
       copyPages(source: PdfDocument, indexes: number[]): Promise<unknown[]>;
       addPage(page: unknown): void;
-      save(): Promise<Uint8Array>;
+      save(): Promise<Uint8Array<ArrayBuffer>>;
     }>;
     create(): Promise<PdfDocument & {
       copyPages(source: PdfDocument, indexes: number[]): Promise<unknown[]>;
       addPage(page: unknown): void;
-      save(): Promise<Uint8Array>;
+      save(): Promise<Uint8Array<ArrayBuffer>>;
     }>;
   };
 };
