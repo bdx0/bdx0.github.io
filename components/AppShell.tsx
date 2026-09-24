@@ -283,7 +283,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box sx={{ minHeight: "100vh", height: isImmersiveAppRoute ? "100dvh" : "auto", overflow: isImmersiveAppRoute ? "hidden" : "visible", bgcolor: "background.default" }}>
       {!isMiniAppRoute && (
         <AppBar
           position="fixed"
