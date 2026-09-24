@@ -34,6 +34,7 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useTheme as useMuiTheme } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
@@ -130,6 +131,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const muiTheme = useMuiTheme();
+  const desktop = useMediaQuery(muiTheme.breakpoints.up("md"));
   const { shell, surfaces } = muiTheme.site;
   const drawerWidth = shell.drawerWidth;
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -293,6 +295,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             borderBottom: 1,
             borderColor: "divider",
             bgcolor: "background.paper",
+            width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
+            ml: { xs: 0, md: `${drawerWidth}px` },
           }}
         >
         <Toolbar sx={{ minHeight: `${shell.topBarHeight}px !important`, gap: 1 }}>
@@ -317,6 +321,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             edge={pathname === "/" ? "start" : false}
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
+            sx={{ display: { xs: "inline-flex", md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -379,29 +384,53 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Tooltip>
       )}
 
-      <Box component="nav" aria-label="Primary navigation">
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              bgcolor: "background.paper",
-            },
-          }}
-        >
-          {nav}
-        </Drawer>
-      </Box>
+      {!isMiniAppRoute && (
+        <Box component="nav" aria-label="Primary navigation">
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            ModalProps={{ keepMounted: true }}
+            sx={{
+              display: { xs: "block", md: "none" },
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                boxSizing: "border-box",
+                bgcolor: "background.paper",
+              },
+            }}
+          >
+            {nav}
+          </Drawer>
+
+          <Drawer
+            variant="permanent"
+            open={desktop}
+            sx={{
+              display: { xs: "none", md: "block" },
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                boxSizing: "border-box",
+                borderRight: 1,
+                borderColor: "divider",
+                bgcolor: "background.paper",
+              },
+            }}
+          >
+            {nav}
+          </Drawer>
+        </Box>
+      )}
 
       <Box
         component="main"
         sx={{
           minHeight: isImmersiveAppRoute ? "100dvh" : "100vh",
           pt: isImmersiveAppRoute ? 0 : `${shell.topBarHeight}px`,
+          ml: isImmersiveAppRoute ? 0 : { xs: 0, md: `${drawerWidth}px` },
+          width: isImmersiveAppRoute
+            ? "100%"
+            : { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
           overflow: isImmersiveAppRoute ? "hidden" : "visible",
         }}
       >
