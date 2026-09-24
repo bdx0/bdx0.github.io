@@ -12,6 +12,9 @@ const withUiTheme = (uiTheme: UiThemeDefinition) => ({
   typography: {
     fontFamily: uiTheme.typography.fontFamily,
   },
+  shape: {
+    borderRadius: uiTheme.tokens.surfaces.baseRadius,
+  },
 });
 
 // Selenized palette, kept under the historical "solarized" id for compatibility.
