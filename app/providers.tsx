@@ -15,8 +15,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider
       attribute="class"
       defaultTheme="material-light"
-      enableSystem={false}
-      storageKey="color-theme"
+      enableSystem
+      storageKey="theme"
       themes={colorThemeNames}
     >
       <UiThemeProvider>
