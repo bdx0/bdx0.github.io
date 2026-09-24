@@ -9,7 +9,7 @@ export default function BlogHomePage() {
 
   return (
     <BlogDocsShell posts={posts}>
-      <Box sx={{ maxWidth: 760, mx: "auto" }}>
+      <Box sx={{ width: "100%", mx: "auto" }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           justifyContent="space-between"
