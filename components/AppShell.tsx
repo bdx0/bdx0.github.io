@@ -145,13 +145,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     ? `https://bdx0.github.io${normalizedPathname}/`
     : "";
   const isMiniAppRoute = currentMiniApp !== null;
-  const isImmersiveAppRoute = [
-    "/apps/dau-thau",
-    "/apps/yi-jing",
-    "/apps/buddha",
-    "/apps/ly-dragon",
-  ].includes(normalizedPathname);
-  const isWideAppRoute = pathname === "/apps/office" || pathname.startsWith("/apps/office/");
+  const isImmersiveAppRoute = isMiniAppRoute;
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
@@ -290,16 +284,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-      <AppBar
-        position="fixed"
-        color="inherit"
-        elevation={0}
-        sx={{
-          borderBottom: 1,
-          borderColor: "divider",
-          bgcolor: "background.paper",
-        }}
-      >
+      {!isMiniAppRoute && (
+        <AppBar
+          position="fixed"
+          color="inherit"
+          elevation={0}
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            bgcolor: "background.paper",
+          }}
+        >
         <Toolbar sx={{ minHeight: `${shell.topBarHeight}px !important`, gap: 1 }}>
           {pathname !== "/" && (
             <Tooltip title="Back">
@@ -348,7 +343,41 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </Tooltip>
           )}
         </Toolbar>
-      </AppBar>
+        </AppBar>
+      )}
+
+      {isMiniAppRoute && (
+        <Tooltip title="App menu">
+          <IconButton
+            onClick={() => {
+              setAppInfoOpen(false);
+              setAppMenuOpen(true);
+            }}
+            aria-label="App menu"
+            sx={{
+              position: "fixed",
+              top: "max(12px, env(safe-area-inset-top))",
+              right: 14,
+              zIndex: (theme) => theme.zIndex.appBar + 2,
+              width: 52,
+              height: 44,
+              borderRadius: 99,
+              border: 1,
+              borderColor: "divider",
+              bgcolor: "rgba(255,255,255,.88)",
+              color: "rgba(0,0,0,.86)",
+              boxShadow: "0 4px 18px rgba(0,0,0,.16)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,.96)",
+              },
+            }}
+          >
+            <MoreVert />
+          </IconButton>
+        </Tooltip>
+      )}
 
       <Box component="nav" aria-label="Primary navigation">
         <Drawer
@@ -371,8 +400,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <Box
         component="main"
         sx={{
-          minHeight: "100vh",
-          pt: `${shell.topBarHeight}px`,
+          minHeight: isImmersiveAppRoute ? "100dvh" : "100vh",
+          pt: isImmersiveAppRoute ? 0 : `${shell.topBarHeight}px`,
+          overflow: isImmersiveAppRoute ? "hidden" : "visible",
         }}
       >
         <Box
@@ -383,7 +413,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               : isBlogRoute
                 ? shell.blogMaxWidth
                 : shell.contentMaxWidth,
-            height: isImmersiveAppRoute ? `calc(100vh - ${shell.topBarHeight}px)` : "auto",
+            height: isImmersiveAppRoute ? "100dvh" : "auto",
             mx: "auto",
             px: isImmersiveAppRoute ? 0 : shell.paddingX,
             py: isImmersiveAppRoute ? 0 : shell.paddingY,
