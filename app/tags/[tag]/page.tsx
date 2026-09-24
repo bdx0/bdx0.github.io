@@ -37,7 +37,7 @@ export default async function TagPage({
 
   return (
     <BlogDocsShell posts={posts}>
-      <Box sx={{ maxWidth: 760, mx: "auto" }}>
+      <Box sx={{ width: "100%", mx: "auto" }}>
         <Stack
           direction="row"
           spacing={1.25}
