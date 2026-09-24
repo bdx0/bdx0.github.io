@@ -69,7 +69,7 @@ const miniApps: Record<string, MiniAppMeta> = {
     publisher: "BDX0 Apps",
     description: "Không gian đọc, tìm kiếm và khai thác Blog + Knowledge được quản lý bằng Notion.",
     mark: "KN",
-    standaloneUrl: "https://notion-cms.vercel.app/",
+    standaloneUrl: "https://notion-cms-mauve.vercel.app/",
   },
   "/apps/dau-thau": {
     name: "Đấu Thầu 360",
