@@ -527,9 +527,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         onClose={() => setAppMenuOpen(false)}
         PaperProps={{
           sx: {
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            overflow: "hidden",
+            borderTopLeftRadius: 22,
+            borderTopRightRadius: 22,
+            overflowY: appInfoOpen ? "auto" : "hidden",
+            maxHeight: appInfoOpen ? "68dvh" : "min(240px, 34dvh)",
             bgcolor: "background.paper",
           },
         }}
@@ -540,28 +541,28 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               width: "100%",
               maxWidth: 680,
               mx: "auto",
-              px: { xs: 2, sm: 3 },
-              pt: 1.25,
-              pb: "max(20px, env(safe-area-inset-bottom))",
+              px: { xs: 1.5, sm: 2 },
+              pt: 0.9,
+              pb: "max(10px, env(safe-area-inset-bottom))",
             }}
           >
             <Box
               sx={{
-                width: 44,
-                height: 5,
+                width: 36,
+                height: 4,
                 borderRadius: 99,
                 bgcolor: "action.disabledBackground",
                 mx: "auto",
-                mb: 2,
+                mb: 1.25,
               }}
             />
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.1, mb: 1.25 }}>
               <Box
                 sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 2.5,
+                  width: 42,
+                  height: 42,
+                  borderRadius: 2,
                   display: "grid",
                   placeItems: "center",
                   flexShrink: 0,
@@ -569,17 +570,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   border: 1,
                   borderColor: "divider",
                   fontWeight: 800,
-                  fontSize: 18,
+                  fontSize: 15,
                 }}
               >
                 {currentMiniApp.mark}
               </Box>
               <Box sx={{ minWidth: 0, flexGrow: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.15 }}>
                   {currentMiniApp.name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.35 }}>
-                  Mini app of {currentMiniApp.publisher} · v{currentMiniApp.version}
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.2, display: "block" }}>
+                  {currentMiniApp.publisher} · v{currentMiniApp.version}
                 </Typography>
               </Box>
             </Box>
@@ -591,10 +592,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 gap: 1,
                 border: 1,
                 borderColor: "divider",
-                borderRadius: 2.5,
-                px: 1.5,
-                py: 1,
-                mb: 2,
+                borderRadius: 2,
+                px: 1,
+                py: 0.45,
+                mb: 1.25,
                 bgcolor: "action.hover",
               }}
             >
@@ -628,39 +629,45 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-                gap: 1.25,
-                mb: 1.5,
+                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                gap: 0.75,
+                mb: appInfoOpen ? 1.1 : 0,
               }}
             >
               <Button
                 variant="outlined"
                 onClick={() => setAppInfoOpen((value) => !value)}
                 sx={{
-                  minHeight: 96,
-                  borderRadius: 2.5,
+                  minWidth: 0,
+                  minHeight: 62,
+                  borderRadius: 2,
+                  px: 0.5,
                   display: "flex",
                   flexDirection: "column",
-                  gap: 0.75,
+                  gap: 0.35,
                   textTransform: "none",
+                  fontSize: 12,
                 }}
               >
-                <InfoOutlined />
+                <InfoOutlined fontSize="small" />
                 Info
               </Button>
               <Button
                 variant="outlined"
                 onClick={() => window.location.reload()}
                 sx={{
-                  minHeight: 96,
-                  borderRadius: 2.5,
+                  minWidth: 0,
+                  minHeight: 62,
+                  borderRadius: 2,
+                  px: 0.5,
                   display: "flex",
                   flexDirection: "column",
-                  gap: 0.75,
+                  gap: 0.35,
                   textTransform: "none",
+                  fontSize: 12,
                 }}
               >
-                <Refresh />
+                <Refresh fontSize="small" />
                 Reload
               </Button>
               <Button
@@ -669,16 +676,41 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   window.open(currentMiniApp.standaloneUrl, "_blank", "noopener,noreferrer")
                 }
                 sx={{
-                  minHeight: 96,
-                  borderRadius: 2.5,
+                  minWidth: 0,
+                  minHeight: 62,
+                  borderRadius: 2,
+                  px: 0.5,
                   display: "flex",
                   flexDirection: "column",
-                  gap: 0.75,
+                  gap: 0.35,
                   textTransform: "none",
+                  fontSize: 12,
                 }}
               >
-                <OpenInNew />
+                <OpenInNew fontSize="small" />
                 Open
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => {
+                  setAppMenuOpen(false);
+                  router.push("/apps");
+                }}
+                sx={{
+                  minWidth: 0,
+                  minHeight: 62,
+                  borderRadius: 2,
+                  px: 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 0.35,
+                  textTransform: "none",
+                  fontSize: 12,
+                }}
+              >
+                <ExitToApp fontSize="small" />
+                Quit
               </Button>
             </Box>
 
@@ -687,9 +719,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 sx={{
                   border: 1,
                   borderColor: "divider",
-                  borderRadius: 2.5,
-                  p: 1.75,
-                  mb: 1.5,
+                  borderRadius: 2,
+                  p: 1.25,
+                  mb: 0,
                 }}
               >
                 <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
@@ -711,24 +743,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </Box>
             </Collapse>
 
-            <Button
-              fullWidth
-              variant="contained"
-              color="inherit"
-              startIcon={<ExitToApp />}
-              onClick={() => {
-                setAppMenuOpen(false);
-                router.push("/apps");
-              }}
-              sx={{
-                minHeight: 52,
-                borderRadius: 99,
-                textTransform: "none",
-                fontWeight: 800,
-              }}
-            >
-              Quit app
-            </Button>
           </Box>
         )}
       </Drawer>
