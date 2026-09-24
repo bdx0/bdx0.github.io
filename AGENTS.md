@@ -18,7 +18,7 @@ Keep changes small, preserve static-export compatibility, and prefer simplifying
 - Package manager: npm
 - Lockfile: `package-lock.json` is authoritative
 - Main UI system: Material UI 7 + Emotion
-- Theme switching: `next-themes`
+- Theme switching: UI-theme registry + `next-themes` color schemes
 - Content: Markdown and MDX
 - CI runtime: Node.js 20
 
@@ -27,11 +27,13 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 ## Repository map
 
 - `app/layout.tsx` — root layout, metadata, fonts, navbar, footer, and providers.
-- `app/providers.tsx` — `next-themes` provider and MUI theme bridge.
-- `app/MuiThemeWrapper.tsx` — maps the selected theme to a MUI theme and installs `AppRouterCacheProvider`.
-- `app/theme.ts` — Material and Solarized/Selenized theme definitions.
-- `app/page.tsx` — blog index.
-- `app/[slug]/page.tsx` — statically generated blog post route.
+- `app/providers.tsx` — color-scheme provider, UI-theme provider, and MUI bridge.
+- `app/MuiThemeWrapper.tsx` — combines the selected UI theme + color scheme into MUI and installs `AppRouterCacheProvider`.
+- `app/theme.ts` — Material and Selenized color-scheme definitions only.
+- `themes/` — UI-theme registry, tokens, persistence, and per-theme definitions. `workspace` is the packaged current interface.
+- `app/page.tsx` — About/Home page.
+- `app/blog/page.tsx` — canonical blog index.
+- `app/blog/[slug]/page.tsx` — statically generated canonical blog post route.
 - `app/projects/page.tsx` — project index.
 - `app/projects/[slug]/page.tsx` — statically generated project route.
 - `app/tags/[tag]/page.tsx` — statically generated tag pages.
@@ -158,23 +160,31 @@ The HAST logging plugin and related console logging in the resume page are debug
 
 Material UI is the primary UI system.
 
-The active theme path is:
+The theme system has two independent layers:
 
 ```text
-next-themes
-→ app/providers.tsx
-→ app/MuiThemeWrapper.tsx
-→ app/theme.ts
-→ MUI ThemeProvider
+UI theme (themes/registry.ts)
+  → layout + spacing + shape + typography tokens
+
+Color scheme (next-themes → app/theme.ts)
+  → Material or Selenized + light/dark
+
+Both
+  → app/MuiThemeWrapper.tsx
+  → MUI ThemeProvider
 ```
 
-Preserve this chain when working on theme behavior.
+The current interface is the `workspace` UI theme. Preserve this separation when adding themes.
 
+- New interface themes belong under `themes/` and must be registered in `themes/registry.ts`.
+- Do not put shared shell/blog layout constants back into components when they belong in UI-theme tokens.
+- Color-only changes belong in `app/theme.ts`; layout/structure changes belong in a UI theme.
+- `ThemeSelector` exposes Interface, Colors, and Mode as separate controls.
 - Keep `"use client"` limited to components that actually need state, effects, browser APIs, or theme hooks.
 - Prefer MUI primitives for UI that already lives in the MUI design system.
 - Do not introduce another component framework for simple UI changes.
 - `@mui/material-nextjs` and Emotion are part of the MUI/App Router integration; do not remove them merely because application code does not directly import every Emotion package.
-- Shared Markdown styling belongs in `mdx-components.tsx` rather than being reimplemented in every content route.
+- Shared Markdown styling belongs in `mdx-components.tsx` or the blog-specific MDX component map rather than being reimplemented in every content route.
 
 ## Tailwind status
 
@@ -285,8 +295,9 @@ npm run build
 
 Also verify, as relevant:
 
-- homepage blog listing
-- `/[slug]` blog posts
+- Home/About page
+- `/blog` blog listing
+- `/blog/[slug]` blog posts and mobile/desktop MoC
 - `/projects` and `/projects/[slug]`
 - `/tags/[tag]`
 - `/me` route-level MDX
