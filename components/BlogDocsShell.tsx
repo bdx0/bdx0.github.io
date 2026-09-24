@@ -128,6 +128,54 @@ export default function BlogDocsShell({
         <Box sx={{ p: 1 }}>{navigation}</Box>
       </Box>
 
+      {toc.length > 0 && (
+        <Box
+          component="details"
+          open
+          sx={{
+            display: { xs: "block", lg: "none" },
+            mb: 2.5,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            bgcolor: "background.paper",
+            "& summary": {
+              cursor: "pointer",
+              px: 1.75,
+              py: 1.25,
+              fontSize: 14,
+              fontWeight: 700,
+            },
+          }}
+        >
+          <Box component="summary">On this page</Box>
+          <Divider />
+          <Box sx={{ px: 1.75, py: 1 }}>
+            {toc.map((item) => (
+              <Link
+                key={item.id}
+                href={`#${item.id}`}
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: "block",
+                    py: 0.65,
+                    pl: item.level === 3 ? 1.5 : 0,
+                    lineHeight: 1.4,
+                    "&:hover": { color: "text.primary" },
+                  }}
+                >
+                  {item.text}
+                </Typography>
+              </Link>
+            ))}
+          </Box>
+        </Box>
+      )}
+
       <Box
         sx={{
           display: "grid",
