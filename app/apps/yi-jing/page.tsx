@@ -11,7 +11,7 @@ export default function YiJingAppPage() {
     <Box sx={{ width: "100%", height: "100%", bgcolor: "#f5efe5" }}>
       <Box
         component="iframe"
-        src="https://yi-jing-khaki.vercel.app/embed"
+        src="https://yi-jing-khaki.vercel.app/"
         title="Kinh Dịch"
         allow="clipboard-read; clipboard-write"
         sx={{
