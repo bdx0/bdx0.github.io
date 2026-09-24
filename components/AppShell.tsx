@@ -6,7 +6,6 @@ import {
   ArticleOutlined,
   FolderOutlined,
   HomeOutlined,
-  ScienceOutlined,
   Menu as MenuIcon,
   SettingsOutlined,
   WorkOutline,
@@ -211,29 +210,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           );
         })}
 
-        <ListItemButton
-          component={Link}
-          href="/lab"
-          selected={isActive(pathname, "/lab")}
-          onClick={() => setMobileOpen(false)}
-          sx={{
-            borderRadius: surfaces.navRadius,
-            mt: 1.5,
-            minHeight: 42,
-            "&.Mui-selected": { bgcolor: "action.selected" },
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: 38 }}>
-            <ScienceOutlined fontSize="small" />
-          </ListItemIcon>
-          <ListItemText
-            primary="Lab"
-            primaryTypographyProps={{
-              fontSize: 14,
-              fontWeight: isActive(pathname, "/lab") ? 700 : 500,
-            }}
-          />
-        </ListItemButton>
       </List>
 
       <Box sx={{ mt: "auto", p: 1.25 }}>
@@ -312,9 +288,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               ? "Blog"
               : pathname.startsWith("/apps")
                 ? "Apps"
-                : pathname.startsWith("/lab")
-                  ? "Lab"
-                  : "BDX0"}
+                : "BDX0"}
           </Typography>
         </Toolbar>
       </AppBar>

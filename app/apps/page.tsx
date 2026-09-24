@@ -16,14 +16,14 @@ const apps = [
   },
   {
     id: "buddha",
-    href: "/lab/buddha/",
+    href: "/apps/buddha/",
     title: "Phật Thích Ca 3D",
     description: "Không gian 3D tương tác với tượng Phật và vòng halo.",
     kind: "3D",
   },
   {
     id: "dragon",
-    href: "/lab/ly-dragon/",
+    href: "/apps/ly-dragon/",
     title: "Rồng thời Lý 3D",
     description: "Mô hình 3D tương tác lấy cảm hứng từ hình tượng rồng thời Lý.",
     kind: "3D",
@@ -76,7 +76,7 @@ export default function AppsPage() {
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mt: 1.25, maxWidth: 720, lineHeight: 1.7 }}>
           Những ứng dụng nhỏ có thể mở độc lập nhưng vẫn thuộc cùng một hệ thống.
-          Mỗi app giữ giao diện riêng, còn System Shell luôn cho bạn đường về Apps, Lab và Home.
+          Mỗi app giữ giao diện riêng, còn System Shell luôn cho bạn đường về Apps và Home.
         </Typography>
       </Box>
 

@@ -1,5 +1,5 @@
 (() => {
-  const APPS = [{"id":"yi-jing","name":"Kinh Dịch","description":"Gieo quẻ · Tra 64 quẻ","href":"https://yi-jing-khaki.vercel.app/","hostPrefix":"yi-jing","preview":"yi"},{"id":"buddha","name":"Phật Thích Ca 3D","description":"Tượng 3D · Zen halo","href":"https://bdx0.github.io/lab/buddha/","host":"bdx0.github.io","pathPrefix":"/lab/buddha","preview":"buddha"},{"id":"dragon","name":"Rồng thời Lý 3D","description":"Mô hình 3D tương tác","href":"https://bdx0.github.io/lab/ly-dragon/","host":"bdx0.github.io","pathPrefix":"/lab/ly-dragon","preview":"dragon"}];
+  const APPS = [{"id":"yi-jing","name":"Kinh Dịch","description":"Gieo quẻ · Tra 64 quẻ","href":"https://yi-jing-khaki.vercel.app/","hostPrefix":"yi-jing","preview":"yi"},{"id":"buddha","name":"Phật Thích Ca 3D","description":"Tượng 3D · Zen halo","href":"https://bdx0.github.io/apps/buddha/","host":"bdx0.github.io","pathPrefix":"/apps/buddha","preview":"buddha"},{"id":"dragon","name":"Rồng thời Lý 3D","description":"Mô hình 3D tương tác","href":"https://bdx0.github.io/apps/ly-dragon/","host":"bdx0.github.io","pathPrefix":"/apps/ly-dragon","preview":"dragon"}];
   const loc = window.location;
   const current = APPS.find((app) => {
     if (app.hostPrefix && loc.hostname.startsWith(app.hostPrefix)) return true;
@@ -37,7 +37,7 @@
   const nav = document.createElement("nav");
   nav.className = "bdx-system-nav";
   nav.setAttribute("aria-label", "BDX0 system");
-  nav.innerHTML = '<a href="https://bdx0.github.io/apps">All Apps</a><a href="https://bdx0.github.io/lab">Lab</a><a href="https://bdx0.github.io/">Home</a>';
+  nav.innerHTML = '<a href="https://bdx0.github.io/apps">All Apps</a><a href="https://bdx0.github.io/">Home</a>';
 
   const gridButton = document.createElement("button");
   gridButton.className = "bdx-system-gridbtn";

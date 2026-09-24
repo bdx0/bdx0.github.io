@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050b0c">
+<title>Rồng thời Lý 3D — GLB v2</title>
+<style>
+:root{--ink:#f4ead5;--muted:#b7aa93;--glass:rgba(8,14,15,.58);--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:
+radial-gradient(circle at 65% 35%,#17312f 0,#0b1718 32%,#050b0c 72%);
+color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#app{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{position:fixed;z-index:5;top:18px;left:18px;width:min(400px,calc(100vw - 36px));padding:16px 17px;border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(18px);box-shadow:0 18px 60px rgba(0,0,0,.3)}
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#b9d8cf;margin-bottom:6px}
+h1{font-size:clamp(23px,4vw,35px);margin:0 0 7px;letter-spacing:.01em}
+p{font-size:13px;line-height:1.55;margin:0;color:var(--muted)}
+.status{margin-top:9px;font-size:11px;color:#b9d8cf}
+.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+button,.back-link{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.075);color:var(--ink);padding:8px 12px;border-radius:999px;font-weight:650;cursor:pointer;font:inherit;text-decoration:none}
+button:hover,.back-link:hover{background:rgba(255,255,255,.14)}
+.tag{position:fixed;right:15px;bottom:15px;z-index:5;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(5,8,9,.58);font-size:11px;letter-spacing:.08em;color:#d7cdb9}
+.note{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;font-size:11px;color:#a99f8d;white-space:nowrap;opacity:.8}
+.loader{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:#050b0c;transition:opacity .55s ease}
+.loader.hide{opacity:0;pointer-events:none}
+.loader-box{text-align:center}.loader-title{font-size:12px;letter-spacing:.18em;color:#d7e6e1}.loader-sub{font-size:11px;color:#758a84;margin-top:8px}
+.error{color:#ffbd9b}
+@media(max-width:640px){.panel{top:12px;left:12px;width:calc(100vw - 24px);padding:13px 14px}.panel p{font-size:12px}.note{display:none}.tag{font-size:9px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div id="app"></div>
+<div class="loader" id="loader"><div class="loader-box"><div class="loader-title">ĐANG TẢI RỒNG LÝ</div><div class="loader-sub">GLB v2 • parametric model</div></div></div>
+<div class="panel">
+  <div class="eyebrow">Vietnamese dragon study • GLB v2</div>
+  <h1>Rồng thời Lý — 3D</h1>
+  <p>Model GLB được sinh từ bộ JSON tham số riêng của dự án. Đây là bản nền để chúng ta tiếp tục chỉnh từng bộ phận: tổng dáng, đầu, sừng, râu, bờm, chân và vảy.</p>
+  <div class="status" id="status">Đang tải model…</div>
+  <div class="buttons">
+    <a class="back-link" href="/apps">← Back</a>
+    <button id="spin">Dừng xoay</button>
+    <button id="material">Đổi chất liệu</button>
+    <button id="reset">Góc nhìn ban đầu</button>
+  </div>
+</div>
+<div class="tag">GLB • THREE.JS • BLOOM</div>
+<div class="note">Interactive interpretation — not an archaeological reconstruction</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x071012,.024);
+
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,100);
+camera.position.set(11.8,5.8,14.8);
+
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.12;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.getElementById('app').appendChild(renderer.domElement);
+
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.38,.52,.84);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=.05;
+controls.target.set(0,.45,0);
+controls.minDistance=6.5;
+controls.maxDistance=28;
+controls.maxPolarAngle=Math.PI*.84;
+controls.autoRotate=true;
+controls.autoRotateSpeed=.55;
+
+scene.add(new THREE.HemisphereLight(0xcfe9e3,0x18201d,1.45));
+const key=new THREE.DirectionalLight(0xffe1b0,4.1);key.position.set(7,10,7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
+const rim=new THREE.DirectionalLight(0x68e0d2,4.4);rim.position.set(-8,4,-8);scene.add(rim);
+const fill=new THREE.PointLight(0x6ccfc4,12,28,2);fill.position.set(-2,2,7);scene.add(fill);
+const warm=new THREE.PointLight(0xff9e66,9,24,2);warm.position.set(6,-1,4);scene.add(warm);
+
+const stage=new THREE.Group();scene.add(stage);
+const platform=new THREE.Mesh(
+  new THREE.CylinderGeometry(5.2,5.35,.16,96),
+  new THREE.MeshStandardMaterial({color:0x131d1c,roughness:.82,metalness:.12})
+);
+platform.position.y=-2.55;platform.receiveShadow=true;stage.add(platform);
+
+const ring=new THREE.Mesh(
+  new THREE.TorusGeometry(4.45,.016,8,180),
+  new THREE.MeshBasicMaterial({color:0x84d8c8,transparent:true,opacity:.34})
+);
+ring.rotation.x=Math.PI/2;ring.position.y=-2.45;stage.add(ring);
+
+const cloudMat=new THREE.MeshPhysicalMaterial({color:0xa7c7bf,roughness:.5,transparent:true,opacity:.10,depthWrite:false});
+for(let i=0;i<22;i++){
+ const a=i/22*Math.PI*2,r=3.7+Math.sin(i*1.5)*.65;
+ const p=new THREE.Mesh(new THREE.SphereGeometry(.62+(i%5)*.06,16,10),cloudMat);
+ p.position.set(Math.cos(a)*r,-2.27+Math.sin(i*.8)*.10,Math.sin(a)*r*.58);
+ p.scale.y=.38;stage.add(p);
+}
+
+const n=420,arr=new Float32Array(n*3);
+for(let i=0;i<n;i++){arr[i*3]=(Math.random()-.5)*30;arr[i*3+1]=(Math.random()-.5)*16;arr[i*3+2]=(Math.random()-.5)*25}
+const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(arr,3));
+const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xd5eee8,size:.021,transparent:true,opacity:.34,depthWrite:false}));
+scene.add(dust);
+
+const palettes=[
+ {
+   name:'Ngọc',
+   Body:0x3f756b,BodyDetail:0x7fb6a4,Belly:0xd5c48c,Horn:0xe5d5ad,
+   Mane:0x9f743b,Eye:0xffdc71,Black:0x100d08,Claw:0xdcc99b,Pearl:0xffe7aa
+ },
+ {
+   name:'Đồng',
+   Body:0x75573b,BodyDetail:0xb08753,Belly:0xe1c27c,Horn:0xead7ae,
+   Mane:0xbd8134,Eye:0xffd55f,Black:0x100d08,Claw:0xe2cca0,Pearl:0xffd78b
+ },
+ {
+   name:'Đá',
+   Body:0x81857e,BodyDetail:0xb9b9ae,Belly:0xd8d0b7,Horn:0xe4ddca,
+   Mane:0x8c806e,Eye:0xf5c95c,Black:0x171817,Claw:0xdad0b6,Pearl:0xdff7ff
+ }
+];
+let paletteIndex=0;
+let modelRoot=null;
+const modelMaterials=new Set();
+const status=document.getElementById('status');
+const loaderEl=document.getElementById('loader');
+
+function normalizeName(name=''){
+ const n=name.toLowerCase();
+ if(n.includes('bodydetail')) return 'BodyDetail';
+ if(n.includes('body')) return 'Body';
+ if(n.includes('belly')) return 'Belly';
+ if(n.includes('horn')) return 'Horn';
+ if(n.includes('mane')) return 'Mane';
+ if(n.includes('eye')) return 'Eye';
+ if(n.includes('black')) return 'Black';
+ if(n.includes('claw')) return 'Claw';
+ if(n.includes('pearl')) return 'Pearl';
+ return null;
+}
+
+function applyPalette(index){
+ const palette=palettes[index];
+ for(const mat of modelMaterials){
+   const key=normalizeName(mat.name);
+   if(!key || palette[key]===undefined) continue;
+   mat.color?.setHex(palette[key]);
+   if(key==='Eye'||key==='Pearl'){
+     mat.emissive?.setHex(palette[key]);
+     if('emissiveIntensity' in mat) mat.emissiveIntensity=key==='Pearl'?1.05:1.45;
+   }
+   mat.needsUpdate=true;
+ }
+ status.textContent='GLB v2 đã tải • chất liệu '+palette.name;
+}
+
+function fitModel(root){
+ const box=new THREE.Box3().setFromObject(root);
+ const size=box.getSize(new THREE.Vector3());
+ const center=box.getCenter(new THREE.Vector3());
+ const maxDim=Math.max(size.x,size.y,size.z);
+ const targetSize=12.5;
+ const scale=maxDim>0?targetSize/maxDim:1;
+ root.scale.setScalar(scale);
+ root.updateMatrixWorld(true);
+
+ const scaledBox=new THREE.Box3().setFromObject(root);
+ const scaledCenter=scaledBox.getCenter(new THREE.Vector3());
+ root.position.sub(scaledCenter);
+ root.position.y+=.30;
+
+ controls.target.set(0,.35,0);
+ camera.position.set(11.8,5.8,14.8);
+ controls.update();
+}
+
+const gltfLoader=new GLTFLoader();
+gltfLoader.load(
+ './models/rong-thoi-ly-v2.glb',
+ gltf=>{
+   modelRoot=gltf.scene;
+   modelRoot.name='LyDragonGLBv2';
+   modelRoot.traverse(obj=>{
+     if(!obj.isMesh) return;
+     obj.castShadow=true;
+     obj.receiveShadow=true;
+     const list=Array.isArray(obj.material)?obj.material:[obj.material];
+     for(const mat of list){if(mat)modelMaterials.add(mat)}
+   });
+   scene.add(modelRoot);
+   fitModel(modelRoot);
+   applyPalette(0);
+   loaderEl.classList.add('hide');
+ },
+ progress=>{
+   if(progress.total){
+     const pct=Math.round(progress.loaded/progress.total*100);
+     status.textContent='Đang tải GLB… '+pct+'%';
+   }
+ },
+ error=>{
+   console.error(error);
+   status.textContent='Không tải được GLB v2';
+   status.classList.add('error');
+   loaderEl.querySelector('.loader-title').textContent='LỖI TẢI MODEL';
+   loaderEl.querySelector('.loader-sub').textContent=String(error?.message||error);
+ }
+);
+
+document.getElementById('spin').onclick=e=>{
+ controls.autoRotate=!controls.autoRotate;
+ e.currentTarget.textContent=controls.autoRotate?'Dừng xoay':'Tự xoay';
+};
+document.getElementById('material').onclick=()=>{
+ paletteIndex=(paletteIndex+1)%palettes.length;
+ applyPalette(paletteIndex);
+};
+document.getElementById('reset').onclick=()=>{
+ if(modelRoot)fitModel(modelRoot);
+ else{camera.position.set(11.8,5.8,14.8);controls.target.set(0,.35,0);controls.update()}
+};
+
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const t=clock.getElapsedTime();
+ if(modelRoot){
+   modelRoot.position.y=.30+Math.sin(t*.65)*.045;
+   modelRoot.rotation.z=.012*Math.sin(t*.38);
+ }
+ dust.rotation.y=t*.008;
+ ring.material.opacity=.27+.08*Math.sin(t*.9);
+ controls.update();
+ composer.render();
+}
+animate();
+
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ composer.setSize(innerWidth,innerHeight);
+});
+</script>
+<script src="/system/app-shell.js?v=2" defer></script>\n</body>
+</html>
