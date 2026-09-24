@@ -14,6 +14,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -31,7 +32,7 @@ export default function ThemeSelector() {
     setMode(nextMode === "dark" ? "dark" : "light");
   }, [theme]);
 
-  const handleSchemeChange = (event: any) => {
+  const handleSchemeChange = (event: SelectChangeEvent<string>) => {
     const nextScheme = event.target.value;
     setScheme(nextScheme);
     setTheme(`${nextScheme}-${mode}`);
