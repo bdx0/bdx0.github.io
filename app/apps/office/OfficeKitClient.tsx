@@ -1,16 +1,19 @@
 "use client";
 
 import {
+  AccessTimeOutlined,
   ContentCopyOutlined,
   DataObjectOutlined,
   DescriptionOutlined,
   DownloadOutlined,
   EventOutlined,
+  FingerprintOutlined,
   GridOnOutlined,
   LinkOutlined,
   ListAltOutlined,
   PercentOutlined,
   QrCode2Outlined,
+  StraightenOutlined,
   TextFieldsOutlined,
   UploadFileOutlined,
 } from "@mui/icons-material";
@@ -39,6 +42,9 @@ type ToolId =
   | "extract"
   | "date"
   | "percent"
+  | "unit"
+  | "timestamp"
+  | "identity"
   | "pdf"
   | "sheet"
   | "qr"
@@ -97,6 +103,131 @@ declare global {
   }
 }
 
+
+type UnitDefinition = {
+  label: string;
+  toBase: (value: number) => number;
+  fromBase: (value: number) => number;
+};
+
+type UnitGroup = {
+  label: string;
+  units: Record<string, UnitDefinition>;
+};
+
+const linearUnit = (label: string, factor: number): UnitDefinition => ({
+  label,
+  toBase: (value) => value * factor,
+  fromBase: (value) => value / factor,
+});
+
+const UNIT_GROUPS: Record<string, UnitGroup> = {
+  length: {
+    label: "Độ dài",
+    units: {
+      mm: linearUnit("Millimetre (mm)", 0.001),
+      cm: linearUnit("Centimetre (cm)", 0.01),
+      m: linearUnit("Metre (m)", 1),
+      km: linearUnit("Kilometre (km)", 1000),
+      inch: linearUnit("Inch (in)", 0.0254),
+      ft: linearUnit("Foot (ft)", 0.3048),
+      yd: linearUnit("Yard (yd)", 0.9144),
+      mi: linearUnit("Mile (mi)", 1609.344),
+    },
+  },
+  mass: {
+    label: "Khối lượng",
+    units: {
+      mg: linearUnit("Milligram (mg)", 0.000001),
+      g: linearUnit("Gram (g)", 0.001),
+      kg: linearUnit("Kilogram (kg)", 1),
+      tonne: linearUnit("Tonne (t)", 1000),
+      oz: linearUnit("Ounce (oz)", 0.028349523125),
+      lb: linearUnit("Pound (lb)", 0.45359237),
+    },
+  },
+  area: {
+    label: "Diện tích",
+    units: {
+      cm2: linearUnit("cm²", 0.0001),
+      m2: linearUnit("m²", 1),
+      km2: linearUnit("km²", 1_000_000),
+      ha: linearUnit("Hectare (ha)", 10_000),
+      ft2: linearUnit("ft²", 0.09290304),
+      acre: linearUnit("Acre", 4046.8564224),
+    },
+  },
+  volume: {
+    label: "Thể tích",
+    units: {
+      ml: linearUnit("Millilitre (mL)", 0.001),
+      l: linearUnit("Litre (L)", 1),
+      m3: linearUnit("m³", 1000),
+      tsp: linearUnit("Teaspoon (US)", 0.00492892159375),
+      tbsp: linearUnit("Tablespoon (US)", 0.01478676478125),
+      cup: linearUnit("Cup (US)", 0.2365882365),
+      floz: linearUnit("Fluid ounce (US)", 0.0295735295625),
+      gal: linearUnit("Gallon (US)", 3.785411784),
+    },
+  },
+  speed: {
+    label: "Tốc độ",
+    units: {
+      ms: linearUnit("m/s", 1),
+      kmh: linearUnit("km/h", 1 / 3.6),
+      mph: linearUnit("mph", 0.44704),
+      knot: linearUnit("Knot", 0.5144444444444445),
+    },
+  },
+  temperature: {
+    label: "Nhiệt độ",
+    units: {
+      c: {
+        label: "Celsius (°C)",
+        toBase: (value) => value,
+        fromBase: (value) => value,
+      },
+      f: {
+        label: "Fahrenheit (°F)",
+        toBase: (value) => (value - 32) * 5 / 9,
+        fromBase: (value) => value * 9 / 5 + 32,
+      },
+      k: {
+        label: "Kelvin (K)",
+        toBase: (value) => value - 273.15,
+        fromBase: (value) => value + 273.15,
+      },
+    },
+  },
+  data: {
+    label: "Dung lượng dữ liệu",
+    units: {
+      b: linearUnit("Byte (B)", 1),
+      kb: linearUnit("Kilobyte (KB)", 1000),
+      mb: linearUnit("Megabyte (MB)", 1_000_000),
+      gb: linearUnit("Gigabyte (GB)", 1_000_000_000),
+      tb: linearUnit("Terabyte (TB)", 1_000_000_000_000),
+      kib: linearUnit("Kibibyte (KiB)", 1024),
+      mib: linearUnit("Mebibyte (MiB)", 1_048_576),
+      gib: linearUnit("Gibibyte (GiB)", 1_073_741_824),
+    },
+  },
+};
+
+function toLocalDateTimeInput(date: Date) {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function createUuidV4() {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 const tools: Array<{
   id: ToolId;
   label: string;
@@ -108,6 +239,9 @@ const tools: Array<{
   { id: "extract", label: "Extract", detail: "Email · URL · phone", icon: LinkOutlined },
   { id: "date", label: "Dates", detail: "Workdays", icon: EventOutlined },
   { id: "percent", label: "Percent", detail: "VAT & changes", icon: PercentOutlined },
+  { id: "unit", label: "Units", detail: "Metric · imperial", icon: StraightenOutlined },
+  { id: "timestamp", label: "Timestamp", detail: "Unix · ISO · local", icon: AccessTimeOutlined },
+  { id: "identity", label: "UUID / Hash", detail: "UUID v4 · SHA", icon: FingerprintOutlined },
   { id: "pdf", label: "PDF", detail: "Merge & extract", icon: DescriptionOutlined },
   { id: "sheet", label: "Excel / CSV", detail: "Preview & convert", icon: GridOnOutlined },
   { id: "qr", label: "QR", detail: "Create PNG", icon: QrCode2Outlined },
@@ -216,6 +350,21 @@ export default function OfficeKitClient() {
   const [vatAmount, setVatAmount] = useState("");
   const [vatRate, setVatRate] = useState("10");
 
+  const [unitCategory, setUnitCategory] = useState("length");
+  const [unitFrom, setUnitFrom] = useState("m");
+  const [unitTo, setUnitTo] = useState("km");
+  const [unitValue, setUnitValue] = useState("1");
+
+  const [timestampValue, setTimestampValue] = useState("");
+  const [timestampPrecision, setTimestampPrecision] = useState<"seconds" | "milliseconds">("seconds");
+  const [dateTimeValue, setDateTimeValue] = useState("");
+
+  const [uuidCount, setUuidCount] = useState("1");
+  const [uuidOutput, setUuidOutput] = useState("");
+  const [hashInput, setHashInput] = useState("");
+  const [hashAlgorithm, setHashAlgorithm] = useState<"SHA-1" | "SHA-256" | "SHA-384" | "SHA-512">("SHA-256");
+  const [hashOutput, setHashOutput] = useState("");
+
   const [encodeInput, setEncodeInput] = useState("");
   const [encodeOutput, setEncodeOutput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
@@ -262,6 +411,50 @@ export default function OfficeKitClient() {
   }, [dateStart, dateEnd]);
 
   const n = (value: string) => Number(value.replace(/,/g, ""));
+
+  const unitGroup = UNIT_GROUPS[unitCategory];
+  const unitResult = useMemo(() => {
+    const input = Number(unitValue.replace(/,/g, ""));
+    const from = UNIT_GROUPS[unitCategory]?.units[unitFrom];
+    const to = UNIT_GROUPS[unitCategory]?.units[unitTo];
+    if (!Number.isFinite(input) || !from || !to) return "—";
+    const result = to.fromBase(from.toBase(input));
+    return new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 10 }).format(result);
+  }, [unitCategory, unitFrom, unitTo, unitValue]);
+
+  const timestampResult = useMemo(() => {
+    if (!timestampValue.trim()) return null;
+    const value = Number(timestampValue);
+    if (!Number.isFinite(value)) return null;
+    const date = new Date(timestampPrecision === "seconds" ? value * 1000 : value);
+    if (Number.isNaN(date.getTime())) return null;
+    return {
+      iso: date.toISOString(),
+      local: date.toLocaleString("vi-VN"),
+      seconds: Math.floor(date.getTime() / 1000).toString(),
+      milliseconds: date.getTime().toString(),
+    };
+  }, [timestampPrecision, timestampValue]);
+
+  const dateTimeResult = useMemo(() => {
+    if (!dateTimeValue) return null;
+    const date = new Date(dateTimeValue);
+    if (Number.isNaN(date.getTime())) return null;
+    return {
+      seconds: Math.floor(date.getTime() / 1000).toString(),
+      milliseconds: date.getTime().toString(),
+      iso: date.toISOString(),
+    };
+  }, [dateTimeValue]);
+
+  const hashText = async () => {
+    const bytes = new TextEncoder().encode(hashInput);
+    const digest = await crypto.subtle.digest(hashAlgorithm, bytes);
+    setHashOutput(
+      Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join(""),
+    );
+  };
+
   const fmt = (value: number) =>
     Number.isFinite(value)
       ? new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 4 }).format(value)
@@ -696,6 +889,161 @@ export default function OfficeKitClient() {
       );
     }
 
+
+    if (tool === "unit") {
+      const unitKeys = Object.keys(unitGroup.units);
+      const changeCategory = (category: string) => {
+        const keys = Object.keys(UNIT_GROUPS[category].units);
+        setUnitCategory(category);
+        setUnitFrom(keys[0]);
+        setUnitTo(keys[1] ?? keys[0]);
+      };
+      return (
+        <>
+          <ToolHeader title="Unit Converter" description="Chuyển đổi nhanh độ dài, khối lượng, diện tích, thể tích, tốc độ, nhiệt độ và dung lượng dữ liệu." />
+          <Paper variant="outlined" sx={{ p: { xs: 2, md: 2.5 } }}>
+            <Stack spacing={2}>
+              <FormControl fullWidth>
+                <InputLabel id="unit-category-label">Nhóm đơn vị</InputLabel>
+                <Select labelId="unit-category-label" label="Nhóm đơn vị" value={unitCategory} onChange={(event) => changeCategory(event.target.value)}>
+                  {Object.entries(UNIT_GROUPS).map(([id, group]) => <MenuItem key={id} value={id}>{group.label}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
+                <Stack spacing={1.5}>
+                  <TextField label="Giá trị" value={unitValue} onChange={(event) => setUnitValue(event.target.value)} inputMode="decimal" />
+                  <FormControl fullWidth>
+                    <InputLabel id="unit-from-label">Từ</InputLabel>
+                    <Select labelId="unit-from-label" label="Từ" value={unitFrom} onChange={(event) => setUnitFrom(event.target.value)}>
+                      {unitKeys.map((id) => <MenuItem key={id} value={id}>{unitGroup.units[id].label}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                </Stack>
+                <Stack spacing={1.5}>
+                  <TextField label="Kết quả" value={unitResult} InputProps={{ readOnly: true }} />
+                  <FormControl fullWidth>
+                    <InputLabel id="unit-to-label">Sang</InputLabel>
+                    <Select labelId="unit-to-label" label="Sang" value={unitTo} onChange={(event) => setUnitTo(event.target.value)}>
+                      {unitKeys.map((id) => <MenuItem key={id} value={id}>{unitGroup.units[id].label}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                </Stack>
+              </Box>
+              <Stack direction="row" spacing={1}>
+                <Button variant="outlined" onClick={() => {
+                  setUnitFrom(unitTo);
+                  setUnitTo(unitFrom);
+                }}>Đảo chiều</Button>
+                <CopyButton value={unitResult === "—" ? "" : unitResult} />
+              </Stack>
+              {unitCategory === "data" && <Alert severity="info">KB/MB/GB dùng hệ thập phân (1000); KiB/MiB/GiB dùng hệ nhị phân (1024).</Alert>}
+            </Stack>
+          </Paper>
+        </>
+      );
+    }
+
+    if (tool === "timestamp") {
+      const setNow = () => {
+        const now = new Date();
+        setTimestampPrecision("seconds");
+        setTimestampValue(Math.floor(now.getTime() / 1000).toString());
+        setDateTimeValue(toLocalDateTimeInput(now));
+      };
+      return (
+        <>
+          <ToolHeader title="Timestamp" description="Chuyển Unix timestamp ↔ ngày giờ, xem ISO 8601 và thời gian local của trình duyệt." />
+          <Stack spacing={2}>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" alignItems="center">
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>Timestamp → Date</Typography>
+                  <Button size="small" variant="outlined" onClick={setNow}>Lấy thời điểm hiện tại</Button>
+                </Stack>
+                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "minmax(0,1fr) 180px" }, gap: 1.5 }}>
+                  <TextField label="Unix timestamp" value={timestampValue} onChange={(event) => setTimestampValue(event.target.value)} inputMode="numeric" />
+                  <FormControl>
+                    <InputLabel id="timestamp-precision-label">Đơn vị</InputLabel>
+                    <Select labelId="timestamp-precision-label" label="Đơn vị" value={timestampPrecision} onChange={(event) => setTimestampPrecision(event.target.value as "seconds" | "milliseconds")}>
+                      <MenuItem value="seconds">Seconds</MenuItem>
+                      <MenuItem value="milliseconds">Milliseconds</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                {timestampResult ? (
+                  <Stack spacing={1}>
+                    <TextField label="ISO 8601" value={timestampResult.iso} InputProps={{ readOnly: true }} />
+                    <TextField label="Local time" value={timestampResult.local} InputProps={{ readOnly: true }} />
+                    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                      <CopyButton value={timestampResult.iso} />
+                      <Chip label={`${timestampResult.seconds} s`} variant="outlined" />
+                      <Chip label={`${timestampResult.milliseconds} ms`} variant="outlined" />
+                    </Stack>
+                  </Stack>
+                ) : <Alert severity="info">Nhập timestamp hoặc bấm “Lấy thời điểm hiện tại”.</Alert>}
+              </Stack>
+            </Paper>
+
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Stack spacing={2}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Date → Timestamp</Typography>
+                <TextField type="datetime-local" label="Ngày giờ local" value={dateTimeValue} onChange={(event) => setDateTimeValue(event.target.value)} InputLabelProps={{ shrink: true }} />
+                {dateTimeResult && (
+                  <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 1.5 }}>
+                    <TextField label="Unix seconds" value={dateTimeResult.seconds} InputProps={{ readOnly: true }} />
+                    <TextField label="Unix milliseconds" value={dateTimeResult.milliseconds} InputProps={{ readOnly: true }} />
+                    <TextField sx={{ gridColumn: { sm: "1 / -1" } }} label="ISO 8601" value={dateTimeResult.iso} InputProps={{ readOnly: true }} />
+                  </Box>
+                )}
+              </Stack>
+            </Paper>
+          </Stack>
+        </>
+      );
+    }
+
+    if (tool === "identity") {
+      const generateUuids = () => {
+        const count = Math.min(20, Math.max(1, Number(uuidCount) || 1));
+        setUuidOutput(Array.from({ length: count }, () => createUuidV4()).join("\n"));
+      };
+      return (
+        <>
+          <ToolHeader title="UUID / Hash" description="Tạo UUID v4 và tính SHA hash bằng Web Crypto API ngay trên thiết bị." />
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2 }}>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Stack spacing={2}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>UUID v4</Typography>
+                <TextField label="Số lượng (1–20)" value={uuidCount} onChange={(event) => setUuidCount(event.target.value)} inputMode="numeric" />
+                <Button variant="contained" startIcon={<FingerprintOutlined />} onClick={generateUuids}>Tạo UUID</Button>
+                <TextField multiline minRows={7} label="Kết quả" value={uuidOutput} onChange={(event) => setUuidOutput(event.target.value)} />
+                <CopyButton value={uuidOutput} />
+              </Stack>
+            </Paper>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Stack spacing={2}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Hash text</Typography>
+                <FormControl fullWidth>
+                  <InputLabel id="hash-algorithm-label">Thuật toán</InputLabel>
+                  <Select labelId="hash-algorithm-label" label="Thuật toán" value={hashAlgorithm} onChange={(event) => setHashAlgorithm(event.target.value as "SHA-1" | "SHA-256" | "SHA-384" | "SHA-512")}>
+                    <MenuItem value="SHA-1">SHA-1</MenuItem>
+                    <MenuItem value="SHA-256">SHA-256</MenuItem>
+                    <MenuItem value="SHA-384">SHA-384</MenuItem>
+                    <MenuItem value="SHA-512">SHA-512</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField multiline minRows={5} label="Nội dung" value={hashInput} onChange={(event) => setHashInput(event.target.value)} />
+                <Button variant="outlined" onClick={hashText} disabled={!hashInput}>Tính hash</Button>
+                <TextField multiline minRows={3} label="Hex digest" value={hashOutput} InputProps={{ readOnly: true }} />
+                <CopyButton value={hashOutput} />
+                <Alert severity="info">SHA-1 chỉ nên dùng cho tương thích/kiểm tra cũ; không nên dùng cho mục đích bảo mật mới.</Alert>
+              </Stack>
+            </Paper>
+          </Box>
+        </>
+      );
+    }
+
     if (tool === "pdf") {
       return (
         <>
@@ -876,7 +1224,7 @@ export default function OfficeKitClient() {
               Bộ công cụ nhỏ cho công việc hằng ngày. Ưu tiên xử lý ngay trên thiết bị và giữ giao diện thống nhất với BDX0 Workspace.
             </Typography>
           </Box>
-          <Chip label="10 utilities" variant="outlined" />
+          <Chip label="13 utilities" variant="outlined" />
         </Stack>
       </Box>
 
@@ -914,7 +1262,7 @@ export default function OfficeKitClient() {
             </Stack>
             <Divider sx={{ my: 1.5 }} />
             <Typography variant="caption" color="text.secondary" sx={{ px: 1, display: "block", lineHeight: 1.6 }}>
-              Local-first: dữ liệu được xử lý ở phía trình duyệt. PDF, Excel và QR tải thư viện hỗ trợ khi cần.
+              Local-first: dữ liệu được xử lý ở phía trình duyệt. PDF, Excel và QR tải thư viện hỗ trợ khi cần; Units, Timestamp và UUID/Hash dùng Web APIs sẵn có.
             </Typography>
           </Box>
 
