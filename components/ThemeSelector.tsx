@@ -21,6 +21,8 @@ import { useEffect, useState } from "react";
 export default function ThemeSelector() {
   const { theme, setTheme } = useTheme();
   const { uiThemeId, uiTheme, setUiThemeId } = useUiTheme();
+  const availableUiThemes = Object.values(uiThemes);
+  const showUiThemeSelector = availableUiThemes.length > 1;
   const [scheme, setScheme] = useState("material");
   const [mode, setMode] = useState("light");
 
@@ -60,25 +62,31 @@ export default function ThemeSelector() {
         </Typography>
       </div>
 
-      <FormControl fullWidth size="small">
-        <InputLabel id="ui-theme-select-label">Interface</InputLabel>
-        <Select
-          labelId="ui-theme-select-label"
-          id="ui-theme-select"
-          value={uiThemeId}
-          label="Interface"
-          onChange={(event) => setUiThemeId(event.target.value as UiThemeId)}
-        >
-          {Object.values(uiThemes).map((definition) => (
-            <MenuItem key={definition.id} value={definition.id}>
-              {definition.label}
-            </MenuItem>
-          ))}
-        </Select>
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.75 }}>
-          {uiTheme.description}
+      {showUiThemeSelector ? (
+        <FormControl fullWidth size="small">
+          <InputLabel id="ui-theme-select-label">Interface</InputLabel>
+          <Select
+            labelId="ui-theme-select-label"
+            id="ui-theme-select"
+            value={uiThemeId}
+            label="Interface"
+            onChange={(event) => setUiThemeId(event.target.value as UiThemeId)}
+          >
+            {availableUiThemes.map((definition) => (
+              <MenuItem key={definition.id} value={definition.id}>
+                {definition.label}
+              </MenuItem>
+            ))}
+          </Select>
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.75 }}>
+            {uiTheme.description}
+          </Typography>
+        </FormControl>
+      ) : (
+        <Typography variant="caption" color="text.secondary">
+          Interface: {uiTheme.label}. More interface themes will appear here when added.
         </Typography>
-      </FormControl>
+      )}
 
       <FormControl fullWidth size="small">
         <InputLabel id="color-scheme-select-label">Colors</InputLabel>
