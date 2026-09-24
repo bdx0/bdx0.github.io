@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f9">
+<title>Office Kit · BDX0</title>
+<meta name="description" content="Bộ công cụ văn phòng nhỏ: xử lý văn bản, danh sách, trích xuất, ngày làm việc, phần trăm, mã hóa và JSON.">
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#f6f7f9;--panel:#fff;--panel2:#f0f2f5;--text:#17191d;--muted:#6b7280;
+  --line:#dfe3e8;--accent:#3457d5;--accent-soft:#e9edff;--ok:#16845b;--danger:#c14343;
+  --shadow:0 16px 44px rgba(20,27,40,.08)
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#111316;--panel:#181b20;--panel2:#20242a;--text:#f3f4f6;--muted:#9ca3af;--line:#2d323a;--accent:#8fa5ff;--accent-soft:#242d52;--ok:#54c795;--danger:#ef7676;--shadow:0 16px 44px rgba(0,0,0,.26)}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}
+a{color:inherit}
+.shell{min-height:100vh}
+.topbar{position:sticky;top:0;z-index:30;height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(16px)}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:13px;min-width:0}
+.crumbs a{text-decoration:none;font-weight:750}.crumbs span{color:var(--muted)}.crumbs b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;align-items:center;gap:8px}
+.pill,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 11px;cursor:pointer;text-decoration:none;font-weight:700;font-size:12px}
+.btn:hover,.pill:hover{background:var(--panel2)}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn.danger{color:var(--danger)}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);max-width:1440px;margin:auto;min-height:calc(100vh - 58px)}
+.sidebar{position:sticky;top:58px;height:calc(100vh - 58px);padding:20px 14px;border-right:1px solid var(--line);overflow:auto}
+.brand{padding:0 8px 18px}.eyebrow{text-transform:uppercase;letter-spacing:.13em;color:var(--muted);font-size:10px;font-weight:800}.brand h1{font-size:22px;margin:4px 0 7px}.brand p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.nav{display:grid;gap:5px}.nav button{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:transparent;color:var(--muted);padding:10px 11px;border-radius:10px;cursor:pointer}.nav button:hover{background:var(--panel2);color:var(--text)}.nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:800}.ico{width:22px;text-align:center;font-size:16px}
+.privacy{margin-top:18px;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:11px;line-height:1.5}
+.main{padding:34px clamp(18px,4vw,54px) 70px;min-width:0}.hero{max-width:850px;margin-bottom:26px}.hero h2{font-size:clamp(27px,4vw,43px);margin:0 0 8px;letter-spacing:-.03em}.hero p{color:var(--muted);font-size:14px;line-height:1.7;margin:0}
+.tool{display:none;max-width:1000px}.tool.active{display:block}.tool-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:0 0 14px}.tool-head h3{margin:0;font-size:20px}.tool-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.stack{display:grid;gap:12px}
+label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin-bottom:6px}
+textarea,input,select{width:100%;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:11px 12px;outline:none}textarea:focus,input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}
+textarea{min-height:260px;resize:vertical;line-height:1.55}.short{min-height:150px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row.end{justify-content:flex-end}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.stat{padding:6px 9px;border-radius:9px;background:var(--panel2);color:var(--muted);font-size:11px}.stat b{color:var(--text)}
+.result{padding:14px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);min-height:54px;white-space:pre-wrap;word-break:break-word;line-height:1.6}
+.metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.metric{padding:16px;border:1px solid var(--line);border-radius:13px;background:var(--panel)}.metric small{display:block;color:var(--muted);margin-bottom:5px}.metric strong{font-size:23px}
+.toast{position:fixed;right:18px;bottom:18px;z-index:60;background:#15171b;color:#fff;padding:10px 13px;border-radius:10px;font-size:12px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:none}
+.hint{font-size:11px;color:var(--muted);line-height:1.55}
+.mobile-nav{display:none;padding:10px 12px;border-bottom:1px solid var(--line);overflow:auto;gap:7px;background:var(--bg)}.mobile-nav button{white-space:nowrap}
+@media(max-width:820px){
+  .layout{display:block}.sidebar{display:none}.mobile-nav{display:flex;position:sticky;top:58px;z-index:25}.main{padding-top:24px}.grid2{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}.topbar{padding:0 11px}.top-actions .hide-sm{display:none}
+}
+@media(max-width:480px){.metric-grid{grid-template-columns:1fr}.hero h2{font-size:29px}.card{padding:13px}.main{padding-left:12px;padding-right:12px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="crumbs"><a href="/">BDX0</a><span>/</span><a href="/apps">Apps</a><span>/</span><b>Office Kit</b></div>
+    <div class="top-actions">
+      <span class="pill hide-sm">Local-first</span>
+      <a class="pill" href="/apps">← All Apps</a>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav"></div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="eyebrow">Mini app</div>
+        <h1>Office Kit</h1>
+        <p>Các thao tác nhỏ dùng mỗi ngày, gom vào một chỗ.</p>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="privacy">🔒 Nội dung được xử lý ngay trong trình duyệt. App không tải văn bản hay dữ liệu của bạn lên server.</div>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div class="eyebrow">Office utilities</div>
+        <h2>Làm việc vặt nhanh hơn.</h2>
+        <p>Dán nội dung vào, xử lý, copy kết quả. Không tài khoản, không upload, không phụ thuộc dịch vụ ngoài.</p>
+      </section>
+
+      <section class="tool active" id="text">
+        <div class="tool-head"><div><h3>Text Cleaner</h3><p>Dọn văn bản, đổi kiểu chữ và xem thống kê nhanh.</p></div></div>
+        <div class="grid2">
+          <div class="card">
+            <label for="textIn">Văn bản gốc</label>
+            <textarea id="textIn" placeholder="Dán văn bản vào đây…"></textarea>
+            <div class="stats" id="textStats"></div>
+          </div>
+          <div class="card">
+            <label for="textOut">Kết quả</label>
+            <textarea id="textOut" placeholder="Kết quả sẽ xuất hiện ở đây…"></textarea>
+            <div class="row" style="margin-top:10px">
+              <button class="btn primary" data-copy="textOut">Copy</button>
+              <button class="btn" id="downloadText">Tải .txt</button>
+              <button class="btn danger" id="clearText">Xóa</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="row">
+            <button class="btn" data-text-action="clean">Dọn khoảng trắng</button>
+            <button class="btn" data-text-action="blank">Xóa dòng trống</button>
+            <button class="btn" data-text-action="upper">HOA</button>
+            <button class="btn" data-text-action="lower">thường</button>
+            <button class="btn" data-text-action="title">Viết Hoa Từ</button>
+            <button class="btn" data-text-action="sentence">Viết hoa câu</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool" id="list">
+        <div class="tool-head"><div><h3>List Tools</h3><p>Làm sạch, sắp xếp và loại trùng danh sách theo dòng.</p></div></div>
+        <div class="grid2">
+          <div class="card"><label for="listIn">Danh sách</label><textarea id="listIn" placeholder="Mỗi mục một dòng…"></textarea><div class="stats" id="listStats"></div></div>
+          <div class="card"><label for="listOut">Kết quả</label><textarea id="listOut"></textarea><div class="row" style="margin-top:10px"><button class="btn primary" data-copy="listOut">Copy</button><button class="btn" id="listSwap">Đưa kết quả về trái</button></div></div>
+        </div>
+        <div class="card" style="margin-top:14px"><div class="row">
+          <button class="btn" data-list-action="trim">Trim từng dòng</button>
+          <button class="btn" data-list-action="dedupe">Loại trùng</button>
+          <button class="btn" data-list-action="asc">A → Z</button>
+          <button class="btn" data-list-action="desc">Z → A</button>
+          <button class="btn" data-list-action="number">Đánh số</button>
+          <button class="btn" data-list-action="reverse">Đảo thứ tự</button>
+        </div></div>
+      </section>
+
+      <section class="tool" id="extract">
+        <div class="tool-head"><div><h3>Extract</h3><p>Trích email, URL và số điện thoại từ đoạn văn bản dài.</p></div></div>
+        <div class="card stack">
+          <div><label for="extractIn">Nguồn</label><textarea class="short" id="extractIn" placeholder="Dán email, nội dung web, danh sách liên hệ…"></textarea></div>
+          <div class="row">
+            <button class="btn primary" data-extract="email">Email</button>
+            <button class="btn" data-extract="url">URL</button>
+            <button class="btn" data-extract="phone">Số điện thoại</button>
+          </div>
+          <div><label for="extractOut">Kết quả duy nhất</label><textarea class="short" id="extractOut"></textarea></div>
+          <div class="row"><button class="btn primary" data-copy="extractOut">Copy</button><span class="hint" id="extractCount"></span></div>
+        </div>
+      </section>
+
+      <section class="tool" id="date">
+        <div class="tool-head"><div><h3>Date & Workdays</h3><p>Tính khoảng cách ngày và số ngày làm việc thứ Hai–thứ Sáu.</p></div></div>
+        <div class="card stack">
+          <div class="grid2">
+            <div><label for="dateStart">Từ ngày</label><input type="date" id="dateStart"></div>
+            <div><label for="dateEnd">Đến ngày</label><input type="date" id="dateEnd"></div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><small>Chênh lệch</small><strong id="daysDiff">—</strong><div class="hint">ngày</div></div>
+            <div class="metric"><small>Tính cả 2 đầu</small><strong id="daysInclusive">—</strong><div class="hint">ngày lịch</div></div>
+            <div class="metric"><small>Ngày làm việc</small><strong id="workdays">—</strong><div class="hint">Thứ 2–Thứ 6</div></div>
+          </div>
+          <div class="hint">Chưa trừ ngày lễ; công cụ chỉ loại thứ Bảy và Chủ nhật.</div>
+        </div>
+      </section>
+
+      <section class="tool" id="percent">
+        <div class="tool-head"><div><h3>Percent & VAT</h3><p>Tính phần trăm, tăng/giảm và VAT nhanh.</p></div></div>
+        <div class="grid2">
+          <div class="card stack">
+            <div><label for="baseAmount">Số tiền / giá trị</label><input id="baseAmount" inputmode="decimal" placeholder="Ví dụ: 1000000"></div>
+            <div><label for="percentValue">Tỷ lệ %</label><input id="percentValue" inputmode="decimal" value="10"></div>
+            <div class="row"><button class="btn primary" id="calcPercent">Tính</button><button class="btn" id="plusPercent">Cộng %</button><button class="btn" id="minusPercent">Trừ %</button></div>
+            <div class="result" id="percentResult">—</div>
+          </div>
+          <div class="card stack">
+            <div><label for="vatAmount">Giá trị chưa VAT</label><input id="vatAmount" inputmode="decimal" placeholder="Ví dụ: 1000000"></div>
+            <div><label for="vatRate">VAT %</label><input id="vatRate" inputmode="decimal" value="10"></div>
+            <button class="btn primary" id="calcVat">Tính VAT</button>
+            <div class="result" id="vatResult">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool" id="encode">
+        <div class="tool-head"><div><h3>Encode & Slug</h3><p>Slug tiếng Việt, URL encode/decode và Base64 Unicode.</p></div></div>
+        <div class="card stack">
+          <div><label for="encodeIn">Nội dung</label><textarea class="short" id="encodeIn"></textarea></div>
+          <div class="row">
+            <button class="btn primary" data-encode="slug">Tạo slug</button>
+            <button class="btn" data-encode="url-enc">URL encode</button>
+            <button class="btn" data-encode="url-dec">URL decode</button>
+            <button class="btn" data-encode="b64-enc">Base64 encode</button>
+            <button class="btn" data-encode="b64-dec">Base64 decode</button>
+          </div>
+          <div><label for="encodeOut">Kết quả</label><textarea class="short" id="encodeOut"></textarea></div>
+          <button class="btn primary" data-copy="encodeOut">Copy</button>
+        </div>
+      </section>
+
+      <section class="tool" id="json">
+        <div class="tool-head"><div><h3>JSON Tools</h3><p>Kiểm tra, format hoặc minify JSON ngay trên máy.</p></div></div>
+        <div class="grid2">
+          <div class="card"><label for="jsonIn">JSON</label><textarea id="jsonIn" spellcheck="false"></textarea></div>
+          <div class="card"><label for="jsonOut">Kết quả</label><textarea id="jsonOut" spellcheck="false"></textarea><div class="row" style="margin-top:10px"><button class="btn primary" data-copy="jsonOut">Copy</button><span class="hint" id="jsonStatus"></span></div></div>
+        </div>
+        <div class="card" style="margin-top:14px"><div class="row"><button class="btn primary" data-json="format">Format</button><button class="btn" data-json="minify">Minify</button><button class="btn" data-json="validate">Validate</button></div></div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast">Đã copy</div>
+
+<script>
+(function(){
+  var tools=[
+    {id:"text",icon:"Aa",name:"Text Cleaner"},
+    {id:"list",icon:"☷",name:"List Tools"},
+    {id:"extract",icon:"⌁",name:"Extract"},
+    {id:"date",icon:"▣",name:"Date & Workdays"},
+    {id:"percent",icon:"%",name:"Percent & VAT"},
+    {id:"encode",icon:"#",name:"Encode & Slug"},
+    {id:"json",icon:"{}",name:"JSON Tools"}
+  ];
+  var nav=document.getElementById("nav"), mobileNav=document.getElementById("mobileNav");
+  tools.forEach(function(t){
+    var b=document.createElement("button");b.dataset.tool=t.id;b.innerHTML='<span class="ico">'+t.icon+'</span><span>'+t.name+'</span>';nav.appendChild(b);
+    var m=document.createElement("button");m.className="pill";m.dataset.tool=t.id;m.textContent=t.name;mobileNav.appendChild(m);
+  });
+
+  function activate(id){
+    document.querySelectorAll(".tool").forEach(function(el){el.classList.toggle("active",el.id===id)});
+    document.querySelectorAll("[data-tool]").forEach(function(el){el.classList.toggle("active",el.dataset.tool===id)});
+    history.replaceState(null,"","#"+id);
+  }
+  document.addEventListener("click",function(e){
+    var t=e.target.closest("[data-tool]");if(t)activate(t.dataset.tool);
+  });
+  activate((location.hash||"#text").slice(1));
+
+  function toast(msg){
+    var el=document.getElementById("toast");el.textContent=msg||"Đã copy";el.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(function(){el.classList.remove("show")},1500);
+  }
+  function copyFrom(id){
+    var el=document.getElementById(id);navigator.clipboard.writeText(el.value||el.textContent||"").then(function(){toast("Đã copy")});
+  }
+  document.addEventListener("click",function(e){
+    var b=e.target.closest("[data-copy]");if(b)copyFrom(b.dataset.copy);
+  });
+
+  function textStats(){
+    var v=document.getElementById("textIn").value;
+    var words=(v.trim().match(/\S+/g)||[]).length, chars=v.length, lines=v? v.split(/\r?\n/).length:0;
+    document.getElementById("textStats").innerHTML='<span class="stat"><b>'+words+'</b> từ</span><span class="stat"><b>'+chars+'</b> ký tự</span><span class="stat"><b>'+lines+'</b> dòng</span>';
+  }
+  var textIn=document.getElementById("textIn"),textOut=document.getElementById("textOut");
+  textIn.addEventListener("input",textStats);textStats();
+  function sentenceCase(s){return s.toLowerCase().replace(/(^\s*|[.!?]\s+)([a-zà-ỹ])/g,function(_,a,b){return a+b.toUpperCase()})}
+  function titleCase(s){return s.toLowerCase().replace(/(^|\s)(\S)/g,function(_,a,b){return a+b.toUpperCase()})}
+  document.addEventListener("click",function(e){
+    var b=e.target.closest("[data-text-action]");if(!b)return;
+    var s=textIn.value,a=b.dataset.textAction;
+    if(a==="clean")s=s.replace(/[ \t]+/g," ").replace(/ *\n */g,"\n").trim();
+    if(a==="blank")s=s.split(/\r?\n/).filter(function(x){return x.trim()}).join("\n");
+    if(a==="upper")s=s.toUpperCase();
+    if(a==="lower")s=s.toLowerCase();
+    if(a==="title")s=titleCase(s);
+    if(a==="sentence")s=sentenceCase(s);
+    textOut.value=s;
+  });
+  document.getElementById("clearText").onclick=function(){textIn.value="";textOut.value="";textStats()};
+  document.getElementById("downloadText").onclick=function(){
+    var blob=new Blob([textOut.value],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);a.download="office-kit.txt";a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},500);
+  };
+
+  var listIn=document.getElementById("listIn"),listOut=document.getElementById("listOut");
+  function listLines(){return listIn.value.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean)}
+  function listStats(){var a=listLines(),u=new Set(a);document.getElementById("listStats").innerHTML='<span class="stat"><b>'+a.length+'</b> dòng</span><span class="stat"><b>'+u.size+'</b> duy nhất</span>'}
+  listIn.addEventListener("input",listStats);listStats();
+  document.addEventListener("click",function(e){
+    var b=e.target.closest("[data-list-action]");if(!b)return;var a=listLines(),act=b.dataset.listAction;
+    if(act==="dedupe")a=Array.from(new Set(a));
+    if(act==="asc")a.sort(function(x,y){return x.localeCompare(y,"vi")});
+    if(act==="desc")a.sort(function(x,y){return y.localeCompare(x,"vi")});
+    if(act==="reverse")a.reverse();
+    if(act==="number")a=a.map(function(x,i){return (i+1)+". "+x});
+    listOut.value=a.join("\n");
+  });
+  document.getElementById("listSwap").onclick=function(){listIn.value=listOut.value;listStats()};
+
+  document.addEventListener("click",function(e){
+    var b=e.target.closest("[data-extract]");if(!b)return;var s=document.getElementById("extractIn").value,m=[];
+    if(b.dataset.extract==="email")m=s.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)||[];
+    if(b.dataset.extract==="url")m=s.match(/https?:\/\/[^\s<>"']+/gi)||[];
+    if(b.dataset.extract==="phone")m=s.match(/(?:\+?84|0)(?:[\s.-]*\d){8,10}/g)||[];
+    m=Array.from(new Set(m.map(function(x){return x.trim()})));
+    document.getElementById("extractOut").value=m.join("\n");document.getElementById("extractCount").textContent=m.length+" kết quả";
+  });
+
+  var ds=document.getElementById("dateStart"),de=document.getElementById("dateEnd");
+  function dateCalc(){
+    if(!ds.value||!de.value)return;
+    var a=new Date(ds.value+"T00:00:00"),b=new Date(de.value+"T00:00:00"),sign=b>=a?1:-1;
+    var start=sign===1?a:b,end=sign===1?b:a,diff=Math.round((b-a)/86400000),inc=Math.abs(diff)+1,work=0,d=new Date(start);
+    while(d<=end){var day=d.getDay();if(day!==0&&day!==6)work++;d.setDate(d.getDate()+1)}
+    document.getElementById("daysDiff").textContent=diff;
+    document.getElementById("daysInclusive").textContent=inc;
+    document.getElementById("workdays").textContent=work;
+  }
+  var now=new Date(),today=now.toISOString().slice(0,10);ds.value=today;de.value=today;ds.onchange=de.onchange=dateCalc;dateCalc();
+
+  function num(id){var v=(document.getElementById(id).value||"").replace(/,/g,"");return Number(v)}
+  function fmt(n){return Number.isFinite(n)?new Intl.NumberFormat("vi-VN",{maximumFractionDigits:4}).format(n):"Không hợp lệ"}
+  document.getElementById("calcPercent").onclick=function(){var a=num("baseAmount"),p=num("percentValue");document.getElementById("percentResult").textContent=fmt(a*p/100)};
+  document.getElementById("plusPercent").onclick=function(){var a=num("baseAmount"),p=num("percentValue");document.getElementById("percentResult").textContent=fmt(a*(1+p/100))};
+  document.getElementById("minusPercent").onclick=function(){var a=num("baseAmount"),p=num("percentValue");document.getElementById("percentResult").textContent=fmt(a*(1-p/100))};
+  document.getElementById("calcVat").onclick=function(){var a=num("vatAmount"),p=num("vatRate"),vat=a*p/100;document.getElementById("vatResult").textContent="VAT: "+fmt(vat)+"\nTổng: "+fmt(a+vat)};
+
+  function slugify(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")}
+  function b64enc(s){var bytes=new TextEncoder().encode(s),bin="";bytes.forEach(function(b){bin+=String.fromCharCode(b)});return btoa(bin)}
+  function b64dec(s){var bin=atob(s),bytes=Uint8Array.from(bin,function(c){return c.charCodeAt(0)});return new TextDecoder().decode(bytes)}
+  document.addEventListener("click",function(e){
+    var b=e.target.closest("[data-encode]");if(!b)return;var s=document.getElementById("encodeIn").value,o="";
+    try{
+      if(b.dataset.encode==="slug")o=slugify(s);
+      if(b.dataset.encode==="url-enc")o=encodeURIComponent(s);
+      if(b.dataset.encode==="url-dec")o=decodeURIComponent(s);
+      if(b.dataset.encode==="b64-enc")o=b64enc(s);
+      if(b.dataset.encode==="b64-dec")o=b64dec(s.trim());
+    }catch(err){o="Lỗi: "+err.message}
+    document.getElementById("encodeOut").value=o;
+  });
+
+  document.addEventListener("click",function(e){
+    var b=e.target.closest("[data-json]");if(!b)return;var input=document.getElementById("jsonIn").value,out=document.getElementById("jsonOut"),status=document.getElementById("jsonStatus");
+    try{
+      var obj=JSON.parse(input);
+      if(b.dataset.json==="format")out.value=JSON.stringify(obj,null,2);
+      if(b.dataset.json==="minify")out.value=JSON.stringify(obj);
+      if(b.dataset.json==="validate")out.value=input;
+      status.textContent="✓ JSON hợp lệ";status.style.color="var(--ok)";
+    }catch(err){out.value="";status.textContent="✕ "+err.message;status.style.color="var(--danger)"}
+  });
+})();
+</script>
+</body>
+</html>
