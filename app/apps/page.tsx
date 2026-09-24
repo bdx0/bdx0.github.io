@@ -15,6 +15,13 @@ const apps = [
     kind: "Tool",
   },
   {
+    id: "office",
+    href: "/apps/office/",
+    title: "Office Kit",
+    description: "Bộ công cụ xử lý văn bản, danh sách, ngày làm việc, phần trăm, mã hóa và JSON.",
+    kind: "Utility",
+  },
+  {
     id: "buddha",
     href: "/apps/buddha/",
     title: "Phật Thích Ca 3D",
@@ -39,6 +46,27 @@ function AppPreview({ id }: { id: (typeof apps)[number]["id"] }) {
         <Box sx={{ position: "absolute", left: "35%", right: "13%", top: "51%", height: 11, borderRadius: 99, bgcolor: "#725036", opacity: .78 }} />
         <Box sx={{ position: "absolute", left: "35%", right: "13%", top: "64%", height: 18, borderRadius: 1.5, bgcolor: "#fffaf2", border: "1px solid #dfd0b8" }} />
         <Box sx={{ position: "absolute", left: "42%", right: "20%", bottom: "10%", height: 15, borderRadius: 1.5, bgcolor: "#745033" }} />
+      </Box>
+    );
+  }
+
+  if (id === "office") {
+    return (
+      <Box sx={{ position: "relative", height: "100%", bgcolor: "#f6f7f9", overflow: "hidden", p: 1.4 }}>
+        <Box sx={{ height: 18, borderRadius: 1.2, bgcolor: "#fff", border: "1px solid #dfe3e8", mb: 1 }} />
+        <Box sx={{ display: "grid", gridTemplateColumns: "30% 1fr", gap: 1, height: "calc(100% - 26px)" }}>
+          <Box sx={{ borderRadius: 1.5, bgcolor: "#eef1f5", border: "1px solid #dfe3e8", p: .8 }}>
+            {[55, 72, 64, 80, 60].map((w) => <Box key={w} sx={{ width: `${w}%`, height: 6, borderRadius: 9, bgcolor: "#b8c0cc", mb: .7 }} />)}
+          </Box>
+          <Box sx={{ borderRadius: 1.5, bgcolor: "#fff", border: "1px solid #dfe3e8", p: 1 }}>
+            <Box sx={{ width: "42%", height: 9, borderRadius: 9, bgcolor: "#3457d5", mb: 1 }} />
+            <Box sx={{ height: 38, borderRadius: 1, bgcolor: "#f0f2f5", border: "1px solid #e0e4e9", mb: .8 }} />
+            <Box sx={{ display: "flex", gap: .5 }}>
+              <Box sx={{ width: 34, height: 9, borderRadius: 9, bgcolor: "#3457d5" }} />
+              <Box sx={{ width: 29, height: 9, borderRadius: 9, bgcolor: "#cbd1da" }} />
+            </Box>
+          </Box>
+        </Box>
       </Box>
     );
   }
