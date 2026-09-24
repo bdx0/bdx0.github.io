@@ -62,6 +62,15 @@ type MiniAppMeta = {
 };
 
 const miniApps: Record<string, MiniAppMeta> = {
+  "/apps/knowledge": {
+    name: "BDX0 Knowledge",
+    version: "0.3.0",
+    category: "Knowledge workspace",
+    publisher: "BDX0 Apps",
+    description: "Không gian đọc, tìm kiếm và khai thác Blog + Knowledge được quản lý bằng Notion.",
+    mark: "KN",
+    standaloneUrl: "https://notion-cms.vercel.app/",
+  },
   "/apps/dau-thau": {
     name: "Đấu Thầu 360",
     version: "0.3.0",
