@@ -1,43 +1,55 @@
 import Link from "next/link";
-import { Box, Chip, Divider, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 
 import { getAllContent } from "@/lib/markdown";
 
+type ProjectListItem = {
+  slug: string;
+  title?: string;
+  description?: string;
+  status?: string;
+  tech?: string | string[];
+  tags?: string[];
+};
+
+function projectMeta(project: ProjectListItem) {
+  if (Array.isArray(project.tech) && project.tech.length > 0) {
+    return project.tech.slice(0, 3).join(" · ");
+  }
+
+  if (typeof project.tech === "string" && project.tech.trim()) {
+    return project.tech;
+  }
+
+  if (Array.isArray(project.tags) && project.tags.length > 0) {
+    return project.tags.slice(0, 3).join(" · ");
+  }
+
+  return project.status ?? "Project";
+}
+
 export default function ProjectsPage() {
-  const projects = getAllContent("projects");
+  const projects = getAllContent("projects") as ProjectListItem[];
 
   return (
-    <Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: { xs: "flex-start", sm: "center" },
-          gap: 2,
-          mb: 3,
-        }}
-      >
-        <Box>
-          <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
-            Projects
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Things I have built, maintained, or explored.
-          </Typography>
-        </Box>
-        <Chip label={`${projects.length} projects`} size="small" variant="outlined" />
+    <Box sx={{ maxWidth: 960 }}>
+      <Box sx={{ mb: { xs: 3, md: 4 } }}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 750, mb: 0.5 }}>
+          Projects
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Systems, experiments, infrastructure, and selected builds.
+        </Typography>
       </Box>
 
       <Box
         sx={{
-          border: 1,
+          borderTop: 1,
+          borderBottom: 1,
           borderColor: "divider",
-          borderRadius: 3,
-          overflow: "hidden",
-          bgcolor: "background.paper",
         }}
       >
-        {projects.map((project: any, index: number) => (
+        {projects.map((project, index) => (
           <Box key={project.slug}>
             <Link
               href={`/projects/${project.slug}`}
@@ -45,16 +57,58 @@ export default function ProjectsPage() {
             >
               <Box
                 sx={{
-                  px: { xs: 2, sm: 2.5 },
-                  py: 2,
+                  minHeight: 68,
+                  px: { xs: 0.5, sm: 1 },
+                  py: 1.5,
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr auto",
+                    sm: "190px minmax(0, 1fr) 160px auto",
+                  },
+                  gap: { xs: 0.5, sm: 2 },
+                  alignItems: "center",
+                  transition: "background-color 120ms ease",
                   "&:hover": { bgcolor: "action.hover" },
+                  "&:focus-within": { bgcolor: "action.hover" },
                 }}
               >
-                <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-                  {project.title}
+                <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                  {project.title ?? project.slug}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {project.description}
+
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    gridColumn: { xs: "1 / -1", sm: "auto" },
+                    gridRow: { xs: 2, sm: "auto" },
+                    minWidth: 0,
+                  }}
+                >
+                  {project.description ?? "Project notes and implementation details."}
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  color="text.disabled"
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+                    textAlign: "right",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {projectMeta(project)}
+                </Typography>
+
+                <Typography
+                  aria-hidden="true"
+                  variant="body2"
+                  color="text.disabled"
+                  sx={{ gridColumn: { xs: 2, sm: "auto" }, gridRow: { xs: 1, sm: "auto" } }}
+                >
+                  →
                 </Typography>
               </Box>
             </Link>
@@ -62,6 +116,10 @@ export default function ProjectsPage() {
           </Box>
         ))}
       </Box>
+
+      <Typography variant="caption" color="text.disabled" sx={{ display: "block", mt: 1.5 }}>
+        {projects.length} projects
+      </Typography>
     </Box>
   );
 }
