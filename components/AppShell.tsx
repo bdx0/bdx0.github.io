@@ -67,7 +67,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const drawerWidth = shell.drawerWidth;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const isEmbeddedAppRoute = pathname === "/apps/yi-jing" || pathname === "/apps/yi-jing/";
+  const normalizedPathname =
+    pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  const miniAppTitles: Record<string, string> = {
+    "/apps/yi-jing": "Kinh Dịch",
+    "/apps/office": "Office Kit",
+    "/apps/buddha": "Phật Thích Ca 3D",
+    "/apps/ly-dragon": "Rồng thời Lý 3D",
+  };
+  const miniAppTitle = miniAppTitles[normalizedPathname] ?? null;
+  const isMiniAppRoute = miniAppTitle !== null;
+  const isImmersiveAppRoute = [
+    "/apps/yi-jing",
+    "/apps/buddha",
+    "/apps/ly-dragon",
+  ].includes(normalizedPathname);
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
@@ -244,12 +258,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>
             {isBlogRoute
               ? "Blog"
-              : isEmbeddedAppRoute
-                ? "Kinh Dịch"
+              : miniAppTitle
+                ? `Apps / ${miniAppTitle}`
                 : pathname.startsWith("/apps")
                   ? "Apps"
                   : "BDX0"}
           </Typography>
+          {isMiniAppRoute && (
+            <Tooltip title="All Apps">
+              <IconButton component={Link} href="/apps" aria-label="All Apps">
+                <AppsOutlined />
+              </IconButton>
+            </Tooltip>
+          )}
         </Toolbar>
       </AppBar>
 
@@ -281,16 +302,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Box
           sx={{
             width: "100%",
-            maxWidth: isEmbeddedAppRoute
+            maxWidth: isImmersiveAppRoute
               ? "none"
               : isBlogRoute
                 ? shell.blogMaxWidth
                 : shell.contentMaxWidth,
-            height: isEmbeddedAppRoute ? `calc(100vh - ${shell.topBarHeight}px)` : "auto",
+            height: isImmersiveAppRoute ? `calc(100vh - ${shell.topBarHeight}px)` : "auto",
             mx: "auto",
-            px: isEmbeddedAppRoute ? 0 : shell.paddingX,
-            py: isEmbeddedAppRoute ? 0 : shell.paddingY,
-            overflow: isEmbeddedAppRoute ? "hidden" : "visible",
+            px: isImmersiveAppRoute ? 0 : shell.paddingX,
+            py: isImmersiveAppRoute ? 0 : shell.paddingY,
+            overflow: isImmersiveAppRoute ? "hidden" : "visible",
           }}
         >
           {children}
