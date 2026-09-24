@@ -38,6 +38,7 @@ import SettingsPanel from "./SettingsPanel";
 const workItems = [
   { href: "/projects", label: "Projects", icon: FolderOutlined },
   { href: "/blog", label: "Blog", icon: ArticleOutlined },
+  { href: "/apps", label: "Apps", icon: AppsOutlined },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -110,50 +111,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             primaryTypographyProps={{
               fontSize: 14,
               fontWeight: isActive(pathname, "/") ? 700 : 500,
-            }}
-          />
-        </ListItemButton>
-
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            px: 1.5,
-            pt: 2.5,
-            pb: 0.75,
-            color: "text.disabled",
-          }}
-        >
-          <AppsOutlined sx={{ fontSize: 16 }} />
-          <Typography
-            variant="caption"
-            sx={{ fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}
-          >
-            System
-          </Typography>
-        </Box>
-
-        <ListItemButton
-          component={Link}
-          href="/apps"
-          selected={isActive(pathname, "/apps")}
-          onClick={() => setMobileOpen(false)}
-          sx={{
-            borderRadius: surfaces.navRadius,
-            minHeight: 42,
-            pl: 2.25,
-            "&.Mui-selected": { bgcolor: "action.selected" },
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: 34 }}>
-            <AppsOutlined fontSize="small" />
-          </ListItemIcon>
-          <ListItemText
-            primary="Apps"
-            primaryTypographyProps={{
-              fontSize: 14,
-              fontWeight: isActive(pathname, "/apps") ? 700 : 500,
             }}
           />
         </ListItemButton>
