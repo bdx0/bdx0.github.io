@@ -29,8 +29,6 @@ import {
   Paper,
   Select,
   Stack,
-  Tab,
-  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -1213,64 +1211,182 @@ export default function OfficeKitClient() {
     );
   };
 
+  const activeTool = tools.find((item) => item.id === tool) ?? tools[0];
+  const ActiveIcon = activeTool.icon;
+
   return (
-    <Box>
-      <Box sx={{ mb: 3 }}>
-        <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "flex-end" }} gap={2}>
-          <Box>
-            <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: "0.12em" }}>Apps / Utility</Typography>
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 760, mt: 0.25 }}>Office Kit</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, maxWidth: 720, lineHeight: 1.7 }}>
-              Bộ công cụ nhỏ cho công việc hằng ngày. Ưu tiên xử lý ngay trên thiết bị và giữ giao diện thống nhất với BDX0 Workspace.
+    <Paper
+      variant="outlined"
+      sx={{
+        minHeight: { xs: "calc(100dvh - 96px)", lg: 680 },
+        height: { lg: "calc(100dvh - 120px)" },
+        maxHeight: { lg: 980 },
+        overflow: "hidden",
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", lg: "248px minmax(0,1fr)" },
+        bgcolor: "background.paper",
+      }}
+    >
+      <Box
+        component="aside"
+        sx={{
+          display: { xs: "none", lg: "flex" },
+          minHeight: 0,
+          flexDirection: "column",
+          borderRight: 1,
+          borderColor: "divider",
+          bgcolor: "background.default",
+        }}
+      >
+        <Box sx={{ px: 2, pt: 2.25, pb: 1.75 }}>
+          <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: "0.12em" }}>
+            Workspace
+          </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+            <Typography variant="h6" component="h1" sx={{ fontWeight: 800 }}>
+              Office Kit
             </Typography>
-          </Box>
-          <Chip label="13 utilities" variant="outlined" />
-        </Stack>
-      </Box>
+            <Chip label="13" size="small" variant="outlined" />
+          </Stack>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5, lineHeight: 1.55 }}>
+            Local-first utilities
+          </Typography>
+        </Box>
 
-      <Paper variant="outlined" sx={{ overflow: "hidden" }}>
-        <Tabs
-          value={tool}
-          onChange={(_, value: ToolId) => setTool(value)}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{ borderBottom: 1, borderColor: "divider", px: 1 }}
-        >
-          {tools.map(({ id, label, icon: Icon }) => (
-            <Tab key={id} value={id} icon={<Icon fontSize="small" />} iconPosition="start" label={label} sx={{ minHeight: 54 }} />
-          ))}
-        </Tabs>
+        <Divider />
 
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "220px minmax(0,1fr)" } }}>
-          <Box sx={{ display: { xs: "none", lg: "block" }, borderRight: 1, borderColor: "divider", p: 1.25 }}>
-            <Stack spacing={0.5}>
-              {tools.map(({ id, label, detail, icon: Icon }) => (
+        <Box sx={{ p: 1, overflowY: "auto", minHeight: 0, flex: 1 }}>
+          <Stack spacing={0.5}>
+            {tools.map(({ id, label, detail, icon: Icon }) => {
+              const selected = tool === id;
+              return (
                 <Button
                   key={id}
                   onClick={() => setTool(id)}
-                  variant={tool === id ? "contained" : "text"}
-                  color={tool === id ? "primary" : "inherit"}
+                  variant={selected ? "contained" : "text"}
+                  color={selected ? "primary" : "inherit"}
                   startIcon={<Icon fontSize="small" />}
-                  sx={{ justifyContent: "flex-start", textAlign: "left", px: 1.25, py: 1, minHeight: 50 }}
+                  sx={{
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    px: 1.25,
+                    py: 0.9,
+                    minHeight: 48,
+                    width: "100%",
+                    "& .MuiButton-startIcon": { alignSelf: "flex-start", mt: 0.3 },
+                  }}
                 >
-                  <Box>
-                    <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700 }}>{label}</Typography>
-                    <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.68 }}>{detail}</Typography>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700, lineHeight: 1.25 }}>
+                      {label}
+                    </Typography>
+                    <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.65, lineHeight: 1.3 }}>
+                      {detail}
+                    </Typography>
                   </Box>
                 </Button>
-              ))}
-            </Stack>
-            <Divider sx={{ my: 1.5 }} />
-            <Typography variant="caption" color="text.secondary" sx={{ px: 1, display: "block", lineHeight: 1.6 }}>
-              Local-first: dữ liệu được xử lý ở phía trình duyệt. PDF, Excel và QR tải thư viện hỗ trợ khi cần; Units, Timestamp và UUID/Hash dùng Web APIs sẵn có.
+              );
+            })}
+          </Stack>
+        </Box>
+
+        <Box sx={{ p: 1.5, borderTop: 1, borderColor: "divider" }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor: "success.main",
+                flex: "0 0 auto",
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              Xử lý trên thiết bị
+            </Typography>
+          </Stack>
+        </Box>
+      </Box>
+
+      <Box sx={{ minWidth: 0, minHeight: 0, display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: { xs: "flex", lg: "none" },
+            p: 1.5,
+            gap: 1.25,
+            alignItems: "center",
+            borderBottom: 1,
+            borderColor: "divider",
+            bgcolor: "background.default",
+          }}
+        >
+          <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+              Office Kit
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              13 local utilities
             </Typography>
           </Box>
+          <FormControl size="small" sx={{ minWidth: 168, maxWidth: "58%" }}>
+            <InputLabel id="office-tool-label">Công cụ</InputLabel>
+            <Select
+              labelId="office-tool-label"
+              label="Công cụ"
+              value={tool}
+              onChange={(event) => setTool(event.target.value as ToolId)}
+              renderValue={() => activeTool.label}
+            >
+              {tools.map(({ id, label, detail, icon: Icon }) => (
+                <MenuItem key={id} value={id}>
+                  <Icon fontSize="small" sx={{ mr: 1.25, color: "text.secondary" }} />
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 650 }}>{label}</Typography>
+                    <Typography variant="caption" color="text.secondary">{detail}</Typography>
+                  </Box>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
 
-          <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, minWidth: 0 }}>
+        <Box
+          sx={{
+            display: { xs: "none", lg: "flex" },
+            minHeight: 58,
+            px: 2.5,
+            alignItems: "center",
+            gap: 1.25,
+            borderBottom: 1,
+            borderColor: "divider",
+          }}
+        >
+          <ActiveIcon fontSize="small" color="primary" />
+          <Typography variant="subtitle2" sx={{ fontWeight: 750 }}>
+            {activeTool.label}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {activeTool.detail}
+          </Typography>
+          <Box sx={{ flex: 1 }} />
+          <Chip label="Local" size="small" variant="outlined" />
+        </Box>
+
+        <Box
+          component="section"
+          sx={{
+            minWidth: 0,
+            minHeight: 0,
+            flex: 1,
+            overflowY: { xs: "visible", lg: "auto" },
+            p: { xs: 2, sm: 2.5, md: 3 },
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: 980, mx: "auto" }}>
             {renderTool()}
           </Box>
         </Box>
-      </Paper>
-    </Box>
+      </Box>
+    </Paper>
   );
 }
