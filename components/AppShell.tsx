@@ -39,7 +39,7 @@ import {
 import { useTheme as useMuiTheme } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Logo from "./Logo";
 import SettingsPanel from "./SettingsPanel";
@@ -157,6 +157,30 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     : "";
   const isMiniAppRoute = currentMiniApp !== null;
   const isImmersiveAppRoute = isMiniAppRoute;
+
+  useEffect(() => {
+    if (!isImmersiveAppRoute) return;
+
+    const html = document.documentElement;
+    const body = document.body;
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyHeight = body.style.height;
+    const previousOverscroll = body.style.overscrollBehavior;
+
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.height = "100dvh";
+    body.style.overscrollBehavior = "none";
+
+    return () => {
+      html.style.overflow = previousHtmlOverflow;
+      body.style.overflow = previousBodyOverflow;
+      body.style.height = previousBodyHeight;
+      body.style.overscrollBehavior = previousOverscroll;
+    };
+  }, [isImmersiveAppRoute]);
+
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
@@ -305,7 +329,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <Box sx={{ minHeight: "100vh", height: isImmersiveAppRoute ? "100dvh" : "auto", overflow: isImmersiveAppRoute ? "hidden" : "visible", bgcolor: "background.default" }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        height: isImmersiveAppRoute ? "100dvh" : "auto",
+        overflow: isImmersiveAppRoute ? "hidden" : "visible",
+        bgcolor: "background.default",
+        ...(isImmersiveAppRoute && {
+          position: "fixed",
+          inset: 0,
+          width: "100%",
+          maxWidth: "100vw",
+          overscrollBehavior: "none",
+          touchAction: "manipulation",
+        }),
+      }}
+    >
       {!isMiniAppRoute && (
         <AppBar
           position="fixed"
