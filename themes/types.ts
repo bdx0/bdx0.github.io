@@ -23,6 +23,7 @@ export type UiThemeTokens = {
     stickyBottomGap: number;
   };
   surfaces: {
+    baseRadius: number;
     radius: number;
     navRadius: number;
     compactRadius: number;
