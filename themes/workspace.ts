@@ -28,6 +28,7 @@ export const workspaceTheme: UiThemeDefinition = {
       stickyBottomGap: 24,
     },
     surfaces: {
+      baseRadius: 4,
       radius: 2,
       navRadius: 2,
       compactRadius: 1.5,
