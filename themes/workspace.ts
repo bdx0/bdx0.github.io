@@ -25,10 +25,12 @@ export const workspaceTheme: UiThemeDefinition = {
       gapLg: 3,
       gapXl: 5,
       stickyTop: 92,
+      stickyBottomGap: 24,
     },
     surfaces: {
       radius: 2,
-      navRadius: 1.5,
+      navRadius: 2,
+      compactRadius: 1.5,
     },
   },
   typography: {
