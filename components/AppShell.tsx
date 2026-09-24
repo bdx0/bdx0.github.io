@@ -32,7 +32,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import Logo from "./Logo";
-import ThemeSelector from "./ThemeSelector";
+import SettingsPanel from "./SettingsPanel";
 
 
 const workItems = [
@@ -218,19 +218,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           />
         </ListItemButton>
 
-        <ListItemButton
-          onClick={(event) => setSettingsAnchor(event.currentTarget)}
-          sx={{ borderRadius: surfaces.navRadius, minHeight: 42 }}
-        >
-          <ListItemIcon sx={{ minWidth: 38 }}>
-            <SettingsOutlined fontSize="small" />
-          </ListItemIcon>
-          <ListItemText
-            primary="Appearance"
-            primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-          />
-        </ListItemButton>
-
         <Typography
           variant="caption"
           color="text.disabled"
@@ -282,10 +269,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>
             {isBlogRoute ? "Blog" : "BDX0"}
           </Typography>
-          <Tooltip title="Appearance">
+          <Tooltip title="Settings">
             <IconButton
               onClick={(event) => setSettingsAnchor(event.currentTarget)}
-              aria-label="Appearance settings"
+              aria-label="Open settings"
             >
               <SettingsOutlined />
             </IconButton>
@@ -338,8 +325,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Box sx={{ p: 2, width: 280 }}>
-          <ThemeSelector />
+        <Box sx={{ p: 2, width: 320, maxWidth: "calc(100vw - 32px)" }}>
+          <SettingsPanel />
         </Box>
       </Popover>
     </Box>

@@ -14,4 +14,4 @@ The current interface is packaged as the `workspace` UI theme.
 3. Register it in `registry.ts`.
 4. Use theme tokens in shared components instead of hard-coded layout values.
 
-The Appearance control reads the registry automatically, so registered themes become selectable without adding another selector implementation.
+Settings → Appearance reads the registry automatically, so registered themes become selectable without adding another selector implementation.
