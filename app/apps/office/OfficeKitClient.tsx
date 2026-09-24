@@ -291,7 +291,7 @@ function ToolHeader({
   local?: boolean;
 }) {
   return (
-    <Box sx={{ mb: 2.5 }}>
+    <Box sx={{ mb: 1.5 }}>
       <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 0.75 }}>
         <Typography variant="h5" component="h2" sx={{ fontWeight: 750 }}>
           {title}
@@ -721,7 +721,7 @@ export default function OfficeKitClient() {
               <TextField
                 label="Văn bản gốc"
                 multiline
-                minRows={8}
+                minRows={5}
                 fullWidth
                 value={textInput}
                 onChange={(event) => setTextInput(event.target.value)}
@@ -744,7 +744,7 @@ export default function OfficeKitClient() {
               <TextField
                 label="Kết quả"
                 multiline
-                minRows={6}
+                minRows={4}
                 fullWidth
                 value={textOutput}
                 onChange={(event) => setTextOutput(event.target.value)}
@@ -776,7 +776,7 @@ export default function OfficeKitClient() {
           <ToolHeader title="List Tools" description="Chuẩn hóa danh sách theo dòng: loại trùng, sắp xếp, đảo thứ tự hoặc đánh số." />
           <Stack spacing={2}>
             <Paper variant="outlined" sx={{ p: 2 }}>
-              <TextField label="Danh sách" multiline minRows={8} fullWidth value={listInput} onChange={(event) => setListInput(event.target.value)} />
+              <TextField label="Danh sách" multiline minRows={5} fullWidth value={listInput} onChange={(event) => setListInput(event.target.value)} />
               <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
                 <Chip size="small" label={`${rows.length} dòng`} />
                 <Chip size="small" label={`${new Set(rows).size} duy nhất`} />
@@ -790,7 +790,7 @@ export default function OfficeKitClient() {
               <Button variant="outlined" onClick={() => runList("number")}>Đánh số</Button>
             </Stack>
             <Paper variant="outlined" sx={{ p: 2 }}>
-              <TextField label="Kết quả" multiline minRows={7} fullWidth value={listOutput} onChange={(event) => setListOutput(event.target.value)} />
+              <TextField label="Kết quả" multiline minRows={5} fullWidth value={listOutput} onChange={(event) => setListOutput(event.target.value)} />
               <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
                 <CopyButton value={listOutput} />
                 <Button size="small" onClick={() => setListInput(listOutput)} disabled={!listOutput}>Đưa về nguồn</Button>
@@ -807,7 +807,7 @@ export default function OfficeKitClient() {
           <ToolHeader title="Extract" description="Trích nhanh email, URL hoặc số điện thoại ra khỏi một khối văn bản dài." />
           <Stack spacing={2}>
             <Paper variant="outlined" sx={{ p: 2 }}>
-              <TextField label="Nguồn" multiline minRows={8} fullWidth value={extractInput} onChange={(event) => setExtractInput(event.target.value)} />
+              <TextField label="Nguồn" multiline minRows={5} fullWidth value={extractInput} onChange={(event) => setExtractInput(event.target.value)} />
             </Paper>
             <Stack direction="row" spacing={1}>
               <Button variant="outlined" onClick={() => runExtract("email")}>Email</Button>
@@ -815,7 +815,7 @@ export default function OfficeKitClient() {
               <Button variant="outlined" onClick={() => runExtract("phone")}>Điện thoại</Button>
             </Stack>
             <Paper variant="outlined" sx={{ p: 2 }}>
-              <TextField label="Kết quả duy nhất" multiline minRows={6} fullWidth value={extractOutput} onChange={(event) => setExtractOutput(event.target.value)} />
+              <TextField label="Kết quả duy nhất" multiline minRows={4} fullWidth value={extractOutput} onChange={(event) => setExtractOutput(event.target.value)} />
               <Box sx={{ mt: 1.5 }}><CopyButton value={extractOutput} /></Box>
             </Paper>
           </Stack>
@@ -1014,7 +1014,7 @@ export default function OfficeKitClient() {
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>UUID v4</Typography>
                 <TextField label="Số lượng (1–20)" value={uuidCount} onChange={(event) => setUuidCount(event.target.value)} inputMode="numeric" />
                 <Button variant="contained" startIcon={<FingerprintOutlined />} onClick={generateUuids}>Tạo UUID</Button>
-                <TextField multiline minRows={7} label="Kết quả" value={uuidOutput} onChange={(event) => setUuidOutput(event.target.value)} />
+                <TextField multiline minRows={5} label="Kết quả" value={uuidOutput} onChange={(event) => setUuidOutput(event.target.value)} />
                 <CopyButton value={uuidOutput} />
               </Stack>
             </Paper>
@@ -1108,7 +1108,7 @@ export default function OfficeKitClient() {
               )}
             </Paper>
             {sheetRows.length > 0 && (
-              <Paper variant="outlined" sx={{ overflow: "auto" }}>
+              <Paper variant="outlined" sx={{ maxHeight: 320, overflow: "auto" }}>
                 <Box component="table" sx={{ borderCollapse: "collapse", width: "100%", minWidth: 560, "& td": { borderBottom: 1, borderColor: "divider", px: 1.5, py: 1, fontSize: 12, whiteSpace: "nowrap" } }}>
                   <tbody>
                     {sheetRows.map((row, rowIndex) => (
@@ -1126,7 +1126,7 @@ export default function OfficeKitClient() {
             )}
             <Paper variant="outlined" sx={{ p: 2 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>CSV → XLSX</Typography>
-              <TextField multiline minRows={6} fullWidth label="CSV đơn giản (phân tách bằng dấu phẩy)" value={csvInput} onChange={(event) => setCsvInput(event.target.value)} />
+              <TextField multiline minRows={4} fullWidth label="CSV đơn giản (phân tách bằng dấu phẩy)" value={csvInput} onChange={(event) => setCsvInput(event.target.value)} />
               <Button sx={{ mt: 1.5 }} variant="outlined" disabled={!csvInput.trim()} onClick={csvToXlsx}>Tạo XLSX</Button>
             </Paper>
             <Alert severity="info">Excel được xử lý trong trình duyệt. Thư viện SheetJS chỉ được tải khi bạn mở hoặc chuyển đổi file.</Alert>
@@ -1141,7 +1141,7 @@ export default function OfficeKitClient() {
           <ToolHeader title="QR Generator" description="Tạo mã QR từ URL, văn bản hoặc chuỗi bất kỳ rồi lưu thành PNG." />
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "minmax(0,1fr) 300px" }, gap: 2 }}>
             <Paper variant="outlined" sx={{ p: 2 }}>
-              <TextField multiline minRows={7} fullWidth label="Nội dung QR" value={qrText} onChange={(event) => setQrText(event.target.value)} />
+              <TextField multiline minRows={5} fullWidth label="Nội dung QR" value={qrText} onChange={(event) => setQrText(event.target.value)} />
               <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
                 <Button variant="contained" startIcon={<QrCode2Outlined />} onClick={generateQr}>Tạo QR</Button>
                 <Button variant="outlined" startIcon={<DownloadOutlined />} onClick={downloadQr}>PNG</Button>
@@ -1173,7 +1173,7 @@ export default function OfficeKitClient() {
         <>
           <ToolHeader title="Encode & Slug" description="Tạo slug tiếng Việt, URL encode/decode và Base64 Unicode." />
           <Stack spacing={2}>
-            <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={7} fullWidth label="Nội dung" value={encodeInput} onChange={(event) => setEncodeInput(event.target.value)} /></Paper>
+            <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={5} fullWidth label="Nội dung" value={encodeInput} onChange={(event) => setEncodeInput(event.target.value)} /></Paper>
             <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
               <Button variant="outlined" onClick={() => run("slug")}>Slug</Button>
               <Button variant="outlined" onClick={() => run("url-enc")}>URL encode</Button>
@@ -1181,7 +1181,7 @@ export default function OfficeKitClient() {
               <Button variant="outlined" onClick={() => run("b64-enc")}>Base64 encode</Button>
               <Button variant="outlined" onClick={() => run("b64-dec")}>Base64 decode</Button>
             </Stack>
-            <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={6} fullWidth label="Kết quả" value={encodeOutput} onChange={(event) => setEncodeOutput(event.target.value)} /><Box sx={{ mt: 1.5 }}><CopyButton value={encodeOutput} /></Box></Paper>
+            <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={4} fullWidth label="Kết quả" value={encodeOutput} onChange={(event) => setEncodeOutput(event.target.value)} /><Box sx={{ mt: 1.5 }}><CopyButton value={encodeOutput} /></Box></Paper>
           </Stack>
         </>
       );
@@ -1202,10 +1202,10 @@ export default function OfficeKitClient() {
       <>
         <ToolHeader title="JSON Tools" description="Kiểm tra, format hoặc minify JSON ngay trong trình duyệt." />
         <Stack spacing={2}>
-          <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={9} fullWidth label="JSON" value={jsonInput} onChange={(event) => setJsonInput(event.target.value)} /></Paper>
+          <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={4} fullWidth label="JSON" value={jsonInput} onChange={(event) => setJsonInput(event.target.value)} /></Paper>
           <Stack direction="row" spacing={1}><Button variant="outlined" onClick={() => runJson("format")}>Format</Button><Button variant="outlined" onClick={() => runJson("minify")}>Minify</Button><Button variant="outlined" onClick={() => runJson("validate")}>Validate</Button></Stack>
           {jsonStatus && <Alert severity={jsonOutput ? "success" : "error"}>{jsonStatus}</Alert>}
-          <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={7} fullWidth label="Kết quả" value={jsonOutput} onChange={(event) => setJsonOutput(event.target.value)} /><Box sx={{ mt: 1.5 }}><CopyButton value={jsonOutput} /></Box></Paper>
+          <Paper variant="outlined" sx={{ p: 2 }}><TextField multiline minRows={5} fullWidth label="Kết quả" value={jsonOutput} onChange={(event) => setJsonOutput(event.target.value)} /><Box sx={{ mt: 1.5 }}><CopyButton value={jsonOutput} /></Box></Paper>
         </Stack>
       </>
     );
@@ -1218,9 +1218,9 @@ export default function OfficeKitClient() {
     <Paper
       variant="outlined"
       sx={{
-        minHeight: { xs: "calc(100dvh - 96px)", lg: 680 },
-        height: { lg: "calc(100dvh - 120px)" },
-        maxHeight: { lg: 980 },
+        height: "100dvh",
+        minHeight: 0,
+        maxHeight: "100dvh",
         overflow: "hidden",
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "248px minmax(0,1fr)" },
@@ -1238,7 +1238,7 @@ export default function OfficeKitClient() {
           bgcolor: "background.default",
         }}
       >
-        <Box sx={{ px: 2, pt: 2.25, pb: 1.75 }}>
+        <Box sx={{ px: 1.75, pt: 1.5, pb: 1.25 }}>
           <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: "0.12em" }}>
             Workspace
           </Typography>
@@ -1270,8 +1270,8 @@ export default function OfficeKitClient() {
                     justifyContent: "flex-start",
                     textAlign: "left",
                     px: 1.25,
-                    py: 0.9,
-                    minHeight: 48,
+                    py: 0.6,
+                    minHeight: 40,
                     width: "100%",
                     "& .MuiButton-startIcon": { alignSelf: "flex-start", mt: 0.3 },
                   }}
@@ -1353,8 +1353,8 @@ export default function OfficeKitClient() {
         <Box
           sx={{
             display: { xs: "none", lg: "flex" },
-            minHeight: 58,
-            px: 2.5,
+            minHeight: 50,
+            px: 2,
             alignItems: "center",
             gap: 1.25,
             borderBottom: 1,
@@ -1378,11 +1378,11 @@ export default function OfficeKitClient() {
             minWidth: 0,
             minHeight: 0,
             flex: 1,
-            overflowY: { xs: "visible", lg: "auto" },
-            p: { xs: 2, sm: 2.5, md: 3 },
+            overflow: { xs: "auto", md: "hidden" },
+            p: { xs: 1.5, sm: 2, md: 2 },
           }}
         >
-          <Box sx={{ width: "100%", maxWidth: 980, mx: "auto" }}>
+          <Box sx={{ width: "100%", maxWidth: 1040, height: "100%", minHeight: 0, mx: "auto", overflow: "hidden" }}>
             {renderTool()}
           </Box>
         </Box>
