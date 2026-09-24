@@ -164,19 +164,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     const html = document.documentElement;
     const body = document.body;
     const previousHtmlOverflow = html.style.overflow;
+    const previousHtmlHeight = html.style.height;
+    const previousHtmlOverscroll = html.style.overscrollBehavior;
     const previousBodyOverflow = body.style.overflow;
     const previousBodyHeight = body.style.height;
+    const previousBodyPosition = body.style.position;
+    const previousBodyInset = body.style.inset;
+    const previousBodyWidth = body.style.width;
     const previousOverscroll = body.style.overscrollBehavior;
 
     html.style.overflow = "hidden";
+    html.style.height = "100%";
+    html.style.overscrollBehavior = "none";
     body.style.overflow = "hidden";
     body.style.height = "100dvh";
+    body.style.position = "fixed";
+    body.style.inset = "0";
+    body.style.width = "100%";
     body.style.overscrollBehavior = "none";
 
     return () => {
       html.style.overflow = previousHtmlOverflow;
+      html.style.height = previousHtmlHeight;
+      html.style.overscrollBehavior = previousHtmlOverscroll;
       body.style.overflow = previousBodyOverflow;
       body.style.height = previousBodyHeight;
+      body.style.position = previousBodyPosition;
+      body.style.inset = previousBodyInset;
+      body.style.width = previousBodyWidth;
       body.style.overscrollBehavior = previousOverscroll;
     };
   }, [isImmersiveAppRoute]);
