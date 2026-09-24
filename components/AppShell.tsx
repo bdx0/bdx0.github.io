@@ -153,7 +153,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const currentMiniApp = miniApps[normalizedPathname] ?? null;
   const miniAppTitle = currentMiniApp?.name ?? null;
   const miniAppUrl = currentMiniApp
-    ? `https://bdx0.github.io${normalizedPathname}/`
+    ? `https://bdx0.github.io${normalizedPathname}`
     : "";
   const isMiniAppRoute = currentMiniApp !== null;
   const isImmersiveAppRoute = isMiniAppRoute;

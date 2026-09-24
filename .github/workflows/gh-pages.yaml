@@ -38,6 +38,17 @@ jobs:
       - name: Build with Next.js
         run: npm run build
 
+      - name: Add clean-url indexes for mini apps
+        shell: bash
+        run: |
+          set -euo pipefail
+          for app in knowledge dau-thau yi-jing office buddha ly-dragon; do
+            if [ -f "out/apps/${app}.html" ]; then
+              mkdir -p "out/apps/${app}"
+              cp "out/apps/${app}.html" "out/apps/${app}/index.html"
+            fi
+          done
+
       - name: Add self-hosted Gautama Buddha model
         shell: bash
         run: |

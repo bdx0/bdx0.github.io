@@ -16,7 +16,7 @@ const apps = [
   },
   {
     id: "dau-thau",
-    href: "/apps/dau-thau/",
+    href: "/apps/dau-thau",
     title: "Đấu Thầu 360",
     description: "Workspace tra cứu pháp luật, sàng lọc nghiệp vụ, quy trình và trợ lý AI cho công tác đấu thầu.",
     kind: "Legal",
