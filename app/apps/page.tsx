@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const apps = [
   {
     id: "yi",
-    href: "https://yi-jing-khaki.vercel.app/",
+    href: "/apps/yi-jing/",
     title: "Kinh Dịch",
     description: "Gieo quẻ 3 đồng xu, tra cứu 64 quẻ và xem quẻ biến.",
     kind: "Tool",

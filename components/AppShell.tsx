@@ -67,6 +67,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const drawerWidth = shell.drawerWidth;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const isEmbeddedAppRoute = pathname === "/apps/yi-jing" || pathname === "/apps/yi-jing/";
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
@@ -243,9 +244,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>
             {isBlogRoute
               ? "Blog"
-              : pathname.startsWith("/apps")
-                ? "Apps"
-                : "BDX0"}
+              : isEmbeddedAppRoute
+                ? "Kinh Dịch"
+                : pathname.startsWith("/apps")
+                  ? "Apps"
+                  : "BDX0"}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -278,10 +281,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Box
           sx={{
             width: "100%",
-            maxWidth: isBlogRoute ? shell.blogMaxWidth : shell.contentMaxWidth,
+            maxWidth: isEmbeddedAppRoute
+              ? "none"
+              : isBlogRoute
+                ? shell.blogMaxWidth
+                : shell.contentMaxWidth,
+            height: isEmbeddedAppRoute ? `calc(100vh - ${shell.topBarHeight}px)` : "auto",
             mx: "auto",
-            px: shell.paddingX,
-            py: shell.paddingY,
+            px: isEmbeddedAppRoute ? 0 : shell.paddingX,
+            py: isEmbeddedAppRoute ? 0 : shell.paddingY,
+            overflow: isEmbeddedAppRoute ? "hidden" : "visible",
           }}
         >
           {children}
