@@ -84,6 +84,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     "/apps/buddha",
     "/apps/ly-dragon",
   ].includes(normalizedPathname);
+  const isWideAppRoute = pathname === "/apps/office" || pathname.startsWith("/apps/office/");
   const isBlogRoute =
     pathname === "/writing" ||
     pathname.startsWith("/writing/") ||
