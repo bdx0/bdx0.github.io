@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  Box,
-  Divider,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "Dương Bảo Duy",
@@ -18,138 +12,136 @@ const workItems = [
   {
     href: "/projects",
     title: "Projects",
-    description: "Selected systems, experiments, apps, and infrastructure work.",
+    description: "Systems, experiments, infrastructure, and selected builds.",
   },
   {
     href: "/blog",
     title: "Blog",
     description: "Technical notes, research, and things worth keeping.",
   },
+  {
+    href: "/apps",
+    title: "Apps",
+    description: "Small tools, interactive experiments, and working prototypes.",
+  },
 ];
 
 export default function HomePage() {
   return (
-    <Box sx={{ maxWidth: 900 }}>
-      <Box sx={{ mb: 4 }}>
+    <Box sx={{ maxWidth: 920 }}>
+      <Box component="section" aria-labelledby="profile-heading" sx={{ mb: { xs: 4, md: 5 } }}>
         <Typography
           variant="overline"
-          color="text.secondary"
-          sx={{ letterSpacing: "0.12em" }}
+          color="text.disabled"
+          sx={{ letterSpacing: "0.1em" }}
         >
-          About me
+          Profile
         </Typography>
+
         <Typography
+          id="profile-heading"
           component="h1"
-          variant="h3"
-          sx={{ fontWeight: 750, mt: 0.5, mb: 1.5 }}
+          variant="h4"
+          sx={{ fontWeight: 750, mt: 0.5, mb: 1.25 }}
         >
           Dương Bảo Duy
         </Typography>
+
         <Typography
-          variant="h6"
+          variant="body1"
           color="text.secondary"
-          sx={{ maxWidth: 760, lineHeight: 1.6, fontWeight: 400 }}
+          sx={{ maxWidth: 760, lineHeight: 1.75 }}
         >
-          Software engineer with 9 years of experience optimizing application
-          performance and building practical solutions across web, mobile, AI,
-          and infrastructure, with a focus on making complex technology more
-          accessible and intuitive.
+          Software engineer focused on performance, AI, distributed systems,
+          and practical software across web, mobile, and infrastructure.
         </Typography>
 
-        <Stack direction="row" spacing={1.5} sx={{ mt: 2.5, flexWrap: "wrap", gap: 1.5 }}>
-          <Link href="/resume" style={{ color: "inherit", textDecoration: "none" }}>
-            <Paper
-              variant="outlined"
-              sx={{
-                px: 2,
-                py: 1.25,
-                borderRadius: 2,
-                "&:hover": { bgcolor: "action.hover" },
-              }}
-            >
-              <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                View resume →
-              </Typography>
-            </Paper>
-          </Link>
-        </Stack>
+        <Box
+          sx={{
+            mt: 2.5,
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "120px 1fr" },
+            columnGap: 2,
+            rowGap: 1,
+            maxWidth: 760,
+          }}
+        >
+          <Typography variant="body2" color="text.disabled">
+            Focus
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Performance · AI/ML · distributed systems · developer tools
+          </Typography>
+
+          <Typography variant="body2" color="text.disabled">
+            Stack
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            TypeScript · Python · Go · Next.js · Flutter · Kubernetes
+          </Typography>
+        </Box>
       </Box>
 
-      <Divider sx={{ mb: 4 }} />
+      <Divider sx={{ mb: { xs: 3, md: 4 } }} />
 
-      <Box component="section" sx={{ mb: 4 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 1.5 }}>
-          My journey
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-          I hold a Bachelor&apos;s degree in Mathematics &amp; Computer Science
-          from Ho Chi Minh University of Science. Over the years I&apos;ve worked
-          with companies including VNG Corp and Rever Corp, and have also worked
-          independently as an AI researcher across several domains.
-        </Typography>
-      </Box>
-
-      <Box component="section" sx={{ mb: 4 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 1.5 }}>
-          Technical focus
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-          My work spans Python, JavaScript/TypeScript, C/C++, Java, Objective-C,
-          Dart, and Go; frontend and mobile work with Next.js and Flutter;
-          backend systems with FastAPI, Django, and Gin; and infrastructure with
-          Kubernetes. I&apos;m especially interested in AI and machine learning,
-          including Whisper, PyTorch, model fine-tuning, Vietnamese language
-          technology, and WebRTC for real-time communication.
-        </Typography>
-      </Box>
-
-      <Box component="section" sx={{ mb: 4 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 1.5 }}>
-          What drives me
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-          I value clean, efficient, maintainable software, continuous learning,
-          and practical problem solving. I use GTD to organize my work and use
-          English at working proficiency. Outside day-to-day product work, I
-          spend time on personal infrastructure, a Kubernetes homelab, and AI
-          research focused on adapting and fine-tuning models for Vietnamese
-          users.
-        </Typography>
-      </Box>
-
-      <Box component="section">
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 0.75 }}>
+      <Box component="section" aria-labelledby="work-heading">
+        <Typography
+          id="work-heading"
+          variant="h6"
+          component="h2"
+          sx={{ fontWeight: 750, mb: 0.5 }}
+        >
           Work
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Explore what I build and what I write.
+          What I build, write, and experiment with.
         </Typography>
 
-        <Paper
-          variant="outlined"
-          sx={{ borderRadius: 3, overflow: "hidden", bgcolor: "background.paper" }}
+        <Box
+          sx={{
+            borderTop: 1,
+            borderBottom: 1,
+            borderColor: "divider",
+          }}
         >
           {workItems.map((item, index) => (
             <Box key={item.href}>
               <Link href={item.href} style={{ color: "inherit", textDecoration: "none" }}>
                 <Box
                   sx={{
-                    px: { xs: 2, sm: 2.5 },
-                    py: 2,
+                    minHeight: 64,
+                    px: { xs: 0.5, sm: 1 },
+                    py: 1.5,
                     display: "grid",
-                    gridTemplateColumns: { xs: "1fr", sm: "180px 1fr auto" },
-                    gap: { xs: 0.75, sm: 2 },
+                    gridTemplateColumns: { xs: "1fr auto", sm: "150px 1fr auto" },
+                    gap: { xs: 0.5, sm: 2 },
                     alignItems: "center",
+                    transition: "background-color 120ms ease",
                     "&:hover": { bgcolor: "action.hover" },
+                    "&:focus-within": { bgcolor: "action.hover" },
                   }}
                 >
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 700 }}>
                     {item.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      gridColumn: { xs: "1 / -1", sm: "auto" },
+                      gridRow: { xs: 2, sm: "auto" },
+                    }}
+                  >
                     {item.description}
                   </Typography>
-                  <Typography variant="body2" color="text.disabled">
+
+                  <Typography
+                    aria-hidden="true"
+                    variant="body2"
+                    color="text.disabled"
+                    sx={{ gridColumn: { xs: 2, sm: "auto" }, gridRow: { xs: 1, sm: "auto" } }}
+                  >
                     →
                   </Typography>
                 </Box>
@@ -157,7 +149,48 @@ export default function HomePage() {
               {index < workItems.length - 1 && <Divider />}
             </Box>
           ))}
-        </Paper>
+        </Box>
+      </Box>
+
+      <Box
+        component="section"
+        aria-labelledby="resume-heading"
+        sx={{
+          mt: { xs: 4, md: 5 },
+          pt: 2.5,
+          borderTop: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Link href="/resume" style={{ color: "inherit", textDecoration: "none" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: 2,
+              py: 0.75,
+              "&:hover .resume-title": { textDecoration: "underline" },
+            }}
+          >
+            <Box>
+              <Typography
+                id="resume-heading"
+                className="resume-title"
+                variant="body2"
+                sx={{ fontWeight: 700 }}
+              >
+                Resume
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Experience, education, and detailed technical background.
+              </Typography>
+            </Box>
+            <Typography variant="body2" color="text.disabled">
+              →
+            </Typography>
+          </Box>
+        </Link>
       </Box>
     </Box>
   );
