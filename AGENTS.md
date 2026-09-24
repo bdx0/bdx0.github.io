@@ -26,10 +26,13 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 
 ## Repository map
 
-- `app/layout.tsx` — root layout, metadata, fonts, navbar, footer, and providers.
+- `app/layout.tsx` — root HTML shell, metadata, fonts, and mounting point for providers + `AppShell`.
+- `components/AppShell.tsx` — primary SPA/workspace shell: responsive navigation, persistent desktop sidebar, top bar, route framing, settings, and immersive mini-app handling.
 - `app/providers.tsx` — color-scheme provider, UI-theme provider, and MUI bridge.
 - `app/MuiThemeWrapper.tsx` — combines the selected UI theme + color scheme into MUI and installs `AppRouterCacheProvider`.
 - `app/theme.ts` — Material and Selenized color-scheme definitions only.
+- `themes/workspace.ts` — workspace layout/design tokens such as shell dimensions, content widths, blog columns, spacing, and radii.
+- `themes/types.ts` — shared UI-theme token types and MUI theme augmentation.
 - `themes/` — UI-theme registry, tokens, persistence, and per-theme definitions. `workspace` is the packaged current interface.
 - `app/page.tsx` — About/Home page.
 - `app/blog/page.tsx` — canonical blog index.
