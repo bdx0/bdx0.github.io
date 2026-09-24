@@ -20,10 +20,12 @@ export type UiThemeTokens = {
     gapLg: number;
     gapXl: number;
     stickyTop: number;
+    stickyBottomGap: number;
   };
   surfaces: {
     radius: number;
     navRadius: number;
+    compactRadius: number;
   };
 };
 
