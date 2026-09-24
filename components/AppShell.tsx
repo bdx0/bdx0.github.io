@@ -154,12 +154,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     pathname === "/blog" ||
     pathname.startsWith("/blog/") ||
     pathname.startsWith("/tags/");
+  const sectionTitle = isBlogRoute
+    ? "Blog"
+    : pathname.startsWith("/projects")
+      ? "Projects"
+      : pathname.startsWith("/apps")
+        ? "Apps"
+        : pathname.startsWith("/resume")
+          ? "Resume"
+          : pathname === "/" || pathname === "/me"
+            ? "Home"
+            : "BDX0";
 
   const nav = (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box
         sx={{
-          height: 64,
+          height: shell.topBarHeight,
           px: 2.25,
           display: "flex",
           alignItems: "center",
@@ -326,13 +337,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>
-            {isBlogRoute
-              ? "Blog"
-              : miniAppTitle
-                ? `Apps / ${miniAppTitle}`
-                : pathname.startsWith("/apps")
-                  ? "Apps"
-                  : "BDX0"}
+            {sectionTitle}
           </Typography>
           {isMiniAppRoute && (
             <Tooltip title="App menu">
