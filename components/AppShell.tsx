@@ -4,15 +4,23 @@ import {
   AppsOutlined,
   ArrowBack,
   ArticleOutlined,
+  ContentCopyOutlined,
+  ExitToApp,
   FolderOutlined,
   HomeOutlined,
+  InfoOutlined,
   Menu as MenuIcon,
+  MoreVert,
+  OpenInNew,
+  Refresh,
   SettingsOutlined,
   WorkOutline,
 } from "@mui/icons-material";
 import {
   AppBar,
   Box,
+  Button,
+  Collapse,
   Divider,
   Drawer,
   IconButton,
@@ -22,6 +30,7 @@ import {
   ListItemText,
   Dialog,
   DialogContent,
+  Snackbar,
   Toolbar,
   Tooltip,
   Typography,
@@ -40,6 +49,64 @@ const workItems = [
   { href: "/blog", label: "Blog", icon: ArticleOutlined },
   { href: "/apps", label: "Apps", icon: AppsOutlined },
 ];
+
+type MiniAppMeta = {
+  name: string;
+  version: string;
+  category: string;
+  publisher: string;
+  description: string;
+  mark: string;
+  standaloneUrl: string;
+};
+
+const miniApps: Record<string, MiniAppMeta> = {
+  "/apps/dau-thau": {
+    name: "Đấu Thầu 360",
+    version: "0.3.0",
+    category: "Legal workspace",
+    publisher: "BDX0 Apps",
+    description: "Tra cứu pháp luật, sàng lọc nghiệp vụ, quy trình và trợ lý AI cho công tác đấu thầu.",
+    mark: "ĐT",
+    standaloneUrl: "https://dau-thau-law-portal.vercel.app/",
+  },
+  "/apps/yi-jing": {
+    name: "Kinh Dịch",
+    version: "0.1.0",
+    category: "Tool",
+    publisher: "BDX0 Apps",
+    description: "Gieo quẻ, tra cứu 64 quẻ và xem quẻ biến.",
+    mark: "☯",
+    standaloneUrl: "https://yi-jing-khaki.vercel.app/",
+  },
+  "/apps/office": {
+    name: "Office Kit",
+    version: "0.1.0",
+    category: "Utility",
+    publisher: "BDX0 Apps",
+    description: "Bộ công cụ nhỏ phục vụ xử lý công việc văn phòng.",
+    mark: "OK",
+    standaloneUrl: "https://bdx0.github.io/apps/office/",
+  },
+  "/apps/buddha": {
+    name: "Phật Thích Ca 3D",
+    version: "0.1.0",
+    category: "3D",
+    publisher: "BDX0 Apps",
+    description: "Không gian 3D tương tác với tượng Phật và vòng halo.",
+    mark: "佛",
+    standaloneUrl: "https://bdx0.github.io/embedded/buddha/",
+  },
+  "/apps/ly-dragon": {
+    name: "Rồng thời Lý 3D",
+    version: "0.1.0",
+    category: "3D",
+    publisher: "BDX0 Apps",
+    description: "Mô hình 3D tương tác lấy cảm hứng từ hình tượng rồng thời Lý.",
+    mark: "龍",
+    standaloneUrl: "https://bdx0.github.io/embedded/ly-dragon/",
+  },
+};
 
 function isActive(pathname: string, href: string) {
   if (href === "/") {
@@ -67,17 +134,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const drawerWidth = shell.drawerWidth;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [appMenuOpen, setAppMenuOpen] = useState(false);
+  const [appInfoOpen, setAppInfoOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const normalizedPathname =
     pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
-  const miniAppTitles: Record<string, string> = {
-    "/apps/dau-thau": "Đấu Thầu 360",
-    "/apps/yi-jing": "Kinh Dịch",
-    "/apps/office": "Office Kit",
-    "/apps/buddha": "Phật Thích Ca 3D",
-    "/apps/ly-dragon": "Rồng thời Lý 3D",
-  };
-  const miniAppTitle = miniAppTitles[normalizedPathname] ?? null;
-  const isMiniAppRoute = miniAppTitle !== null;
+  const currentMiniApp = miniApps[normalizedPathname] ?? null;
+  const miniAppTitle = currentMiniApp?.name ?? null;
+  const miniAppUrl = currentMiniApp
+    ? `https://bdx0.github.io${normalizedPathname}/`
+    : "";
+  const isMiniAppRoute = currentMiniApp !== null;
   const isImmersiveAppRoute = [
     "/apps/dau-thau",
     "/apps/yi-jing",
@@ -268,9 +335,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   : "BDX0"}
           </Typography>
           {isMiniAppRoute && (
-            <Tooltip title="All Apps">
-              <IconButton component={Link} href="/apps" aria-label="All Apps">
-                <AppsOutlined />
+            <Tooltip title="App menu">
+              <IconButton
+                onClick={() => {
+                  setAppInfoOpen(false);
+                  setAppMenuOpen(true);
+                }}
+                aria-label="App menu"
+              >
+                <MoreVert />
               </IconButton>
             </Tooltip>
           )}
@@ -320,6 +393,225 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </Box>
       </Box>
+
+      <Drawer
+        anchor="bottom"
+        open={appMenuOpen && isMiniAppRoute}
+        onClose={() => setAppMenuOpen(false)}
+        PaperProps={{
+          sx: {
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            overflow: "hidden",
+            bgcolor: "background.paper",
+          },
+        }}
+      >
+        {currentMiniApp && (
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 680,
+              mx: "auto",
+              px: { xs: 2, sm: 3 },
+              pt: 1.25,
+              pb: "max(20px, env(safe-area-inset-bottom))",
+            }}
+          >
+            <Box
+              sx={{
+                width: 44,
+                height: 5,
+                borderRadius: 99,
+                bgcolor: "action.disabledBackground",
+                mx: "auto",
+                mb: 2,
+              }}
+            />
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 2.5,
+                  display: "grid",
+                  placeItems: "center",
+                  flexShrink: 0,
+                  bgcolor: "action.selected",
+                  border: 1,
+                  borderColor: "divider",
+                  fontWeight: 800,
+                  fontSize: 18,
+                }}
+              >
+                {currentMiniApp.mark}
+              </Box>
+              <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                  {currentMiniApp.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.35 }}>
+                  Mini app of {currentMiniApp.publisher} · v{currentMiniApp.version}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 2.5,
+                px: 1.5,
+                py: 1,
+                mb: 2,
+                bgcolor: "action.hover",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  flexGrow: 1,
+                  minWidth: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  fontFamily: "monospace",
+                }}
+              >
+                {miniAppUrl}
+              </Typography>
+              <Tooltip title="Copy link">
+                <IconButton
+                  size="small"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(miniAppUrl);
+                    setCopied(true);
+                  }}
+                  aria-label="Copy app link"
+                >
+                  <ContentCopyOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: 1.25,
+                mb: 1.5,
+              }}
+            >
+              <Button
+                variant="outlined"
+                onClick={() => setAppInfoOpen((value) => !value)}
+                sx={{
+                  minHeight: 96,
+                  borderRadius: 2.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 0.75,
+                  textTransform: "none",
+                }}
+              >
+                <InfoOutlined />
+                Info
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => window.location.reload()}
+                sx={{
+                  minHeight: 96,
+                  borderRadius: 2.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 0.75,
+                  textTransform: "none",
+                }}
+              >
+                <Refresh />
+                Reload
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  window.open(currentMiniApp.standaloneUrl, "_blank", "noopener,noreferrer")
+                }
+                sx={{
+                  minHeight: 96,
+                  borderRadius: 2.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 0.75,
+                  textTransform: "none",
+                }}
+              >
+                <OpenInNew />
+                Open
+              </Button>
+            </Box>
+
+            <Collapse in={appInfoOpen}>
+              <Box
+                sx={{
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: 2.5,
+                  p: 1.75,
+                  mb: 1.5,
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
+                  App info
+                </Typography>
+                <Box sx={{ display: "grid", gridTemplateColumns: "96px 1fr", rowGap: 0.75 }}>
+                  <Typography variant="body2" color="text.secondary">Name</Typography>
+                  <Typography variant="body2">{currentMiniApp.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">Version</Typography>
+                  <Typography variant="body2">{currentMiniApp.version}</Typography>
+                  <Typography variant="body2" color="text.secondary">Type</Typography>
+                  <Typography variant="body2">{currentMiniApp.category}</Typography>
+                  <Typography variant="body2" color="text.secondary">Publisher</Typography>
+                  <Typography variant="body2">{currentMiniApp.publisher}</Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1.25, lineHeight: 1.6 }}>
+                  {currentMiniApp.description}
+                </Typography>
+              </Box>
+            </Collapse>
+
+            <Button
+              fullWidth
+              variant="contained"
+              color="inherit"
+              startIcon={<ExitToApp />}
+              onClick={() => {
+                setAppMenuOpen(false);
+                router.push("/apps");
+              }}
+              sx={{
+                minHeight: 52,
+                borderRadius: 99,
+                textTransform: "none",
+                fontWeight: 800,
+              }}
+            >
+              Quit app
+            </Button>
+          </Box>
+        )}
+      </Drawer>
+
+      <Snackbar
+        open={copied}
+        autoHideDuration={1800}
+        onClose={() => setCopied(false)}
+        message="Đã sao chép đường dẫn ứng dụng"
+      />
 
       <Dialog
         open={settingsOpen}
