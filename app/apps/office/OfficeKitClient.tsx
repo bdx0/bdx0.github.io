@@ -1218,9 +1218,9 @@ export default function OfficeKitClient() {
     <Paper
       variant="outlined"
       sx={{
-        height: "100dvh",
+        height: "100%",
         minHeight: 0,
-        maxHeight: "100dvh",
+        maxHeight: "100%",
         overflow: "hidden",
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "248px minmax(0,1fr)" },
@@ -1378,7 +1378,7 @@ export default function OfficeKitClient() {
             minWidth: 0,
             minHeight: 0,
             flex: 1,
-            overflow: { xs: "auto", md: "hidden" },
+            overflow: "hidden",
             p: { xs: 1.5, sm: 2, md: 2 },
           }}
         >
