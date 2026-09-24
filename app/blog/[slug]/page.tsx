@@ -71,7 +71,7 @@ export default async function BlogPostPage({
 
   return (
     <BlogDocsShell posts={posts} currentSlug={slug} toc={toc}>
-      <Box sx={{ maxWidth: 760, mx: "auto" }}>
+      <Box sx={{ width: "100%", mx: "auto" }}>
         <Stack
           direction="row"
           spacing={0.75}
