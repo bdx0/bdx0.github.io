@@ -1,12 +1,14 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { MuiThemeWrapper } from "./MuiThemeWrapper"; // Import MuiThemeWrapper
-import themes from "./theme"; // Import themes
+
+import colorSchemes from "./theme";
+import { MuiThemeWrapper } from "./MuiThemeWrapper";
+import { UiThemeProvider } from "@/themes/UiThemeProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const themeNames = Object.keys(themes).flatMap((themeName) =>
-    ["light", "dark"].map((mode) => `${themeName}-${mode}`)
+  const colorThemeNames = Object.keys(colorSchemes).flatMap((schemeName) =>
+    ["light", "dark"].map((mode) => `${schemeName}-${mode}`),
   );
 
   return (
@@ -15,9 +17,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="material-light"
       enableSystem
       storageKey="theme"
-      themes={themeNames}
+      themes={colorThemeNames}
     >
-      <MuiThemeWrapper>{children}</MuiThemeWrapper>
+      <UiThemeProvider>
+        <MuiThemeWrapper>{children}</MuiThemeWrapper>
+      </UiThemeProvider>
     </ThemeProvider>
   );
 }

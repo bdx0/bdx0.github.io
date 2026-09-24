@@ -1,76 +1,109 @@
 "use client";
 
-import themes from "@/app/theme";
+import colorSchemes from "@/app/theme";
+import { useUiTheme } from "@/themes/UiThemeProvider";
+import { uiThemes } from "@/themes/registry";
+import type { UiThemeId } from "@/themes/types";
 import {
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function ThemeSelector() {
   const { theme, setTheme } = useTheme();
-  const [style, setStyle] = useState("material");
+  const { uiThemeId, uiTheme, setUiThemeId } = useUiTheme();
+  const [scheme, setScheme] = useState("material");
   const [mode, setMode] = useState("light");
 
-  const availableStyles = Object.keys(themes);
-
   useEffect(() => {
-    if (theme) {
-      const [style, mode] = theme.split("-");
-      setStyle(style);
-      setMode(mode);
-    }
+    if (!theme) return;
+
+    const [nextScheme, nextMode] = theme.split("-");
+    setScheme(nextScheme || "material");
+    setMode(nextMode === "dark" ? "dark" : "light");
   }, [theme]);
 
-  const handleStyleChange = (event: any) => {
-    const newStyle = event.target.value;
-    setStyle(newStyle);
-    setTheme(`${newStyle}-${mode}`);
+  const handleSchemeChange = (event: SelectChangeEvent<string>) => {
+    const nextScheme = event.target.value;
+    setScheme(nextScheme);
+    setTheme(`${nextScheme}-${mode}`);
   };
 
   const handleModeChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newMode: string | null
+    _event: React.MouseEvent<HTMLElement>,
+    nextMode: string | null,
   ) => {
-    if (newMode !== null) {
-      setMode(newMode);
-      setTheme(`${style}-${newMode}`);
-    }
+    if (!nextMode) return;
+
+    setMode(nextMode);
+    setTheme(`${scheme}-${nextMode}`);
   };
 
   return (
-    <div>
-      <Typography variant="h6" gutterBottom>
-        Select Theme
-      </Typography>
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel id="style-select-label">Style</InputLabel>
+    <Stack spacing={2}>
+      <div>
+        <Typography variant="h6" sx={{ mb: 0.5 }}>
+          Appearance
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Interface themes control layout and component styling. Colors and mode
+          can be changed independently.
+        </Typography>
+      </div>
+
+      <FormControl fullWidth size="small">
+        <InputLabel id="ui-theme-select-label">Interface</InputLabel>
         <Select
-          labelId="style-select-label"
-          id="style-select"
-          value={style}
-          label="Style"
-          onChange={handleStyleChange}
+          labelId="ui-theme-select-label"
+          id="ui-theme-select"
+          value={uiThemeId}
+          label="Interface"
+          onChange={(event) => setUiThemeId(event.target.value as UiThemeId)}
         >
-          {availableStyles.map((styleName) => (
-            <MenuItem key={styleName} value={styleName}>
-              {styleName}
+          {Object.values(uiThemes).map((definition) => (
+            <MenuItem key={definition.id} value={definition.id}>
+              {definition.label}
+            </MenuItem>
+          ))}
+        </Select>
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.75 }}>
+          {uiTheme.description}
+        </Typography>
+      </FormControl>
+
+      <FormControl fullWidth size="small">
+        <InputLabel id="color-scheme-select-label">Colors</InputLabel>
+        <Select
+          labelId="color-scheme-select-label"
+          id="color-scheme-select"
+          value={scheme}
+          label="Colors"
+          onChange={handleSchemeChange}
+        >
+          {Object.keys(colorSchemes).map((schemeName) => (
+            <MenuItem key={schemeName} value={schemeName}>
+              {schemeName === "solarized" ? "Selenized" : "Material"}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
+
       <ToggleButtonGroup
         value={mode}
         exclusive
         onChange={handleModeChange}
-        aria-label="theme mode"
+        aria-label="color mode"
         fullWidth
+        size="small"
       >
         <ToggleButton value="light" aria-label="light mode">
           Light
@@ -79,6 +112,6 @@ export default function ThemeSelector() {
           Dark
         </ToggleButton>
       </ToggleButtonGroup>
-    </div>
+    </Stack>
   );
 }

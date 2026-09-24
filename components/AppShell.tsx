@@ -26,6 +26,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useTheme as useMuiTheme } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -33,7 +34,6 @@ import { useState } from "react";
 import Logo from "./Logo";
 import ThemeSelector from "./ThemeSelector";
 
-const drawerWidth = 248;
 
 const workItems = [
   { href: "/projects", label: "Projects", icon: FolderOutlined },
@@ -61,6 +61,9 @@ function isActive(pathname: string, href: string) {
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const muiTheme = useMuiTheme();
+  const { shell, surfaces } = muiTheme.site;
+  const drawerWidth = shell.drawerWidth;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsAnchor, setSettingsAnchor] = useState<HTMLElement | null>(null);
   const isBlogRoute =
@@ -94,7 +97,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           selected={isActive(pathname, "/")}
           onClick={() => setMobileOpen(false)}
           sx={{
-            borderRadius: 2,
+            borderRadius: surfaces.navRadius,
             minHeight: 44,
             "&.Mui-selected": { bgcolor: "action.selected" },
           }}
@@ -142,7 +145,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               selected={selected}
               onClick={() => setMobileOpen(false)}
               sx={{
-                borderRadius: 2,
+                borderRadius: surfaces.navRadius,
                 mb: 0.5,
                 minHeight: 42,
                 pl: 2.25,
@@ -169,7 +172,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           selected={isActive(pathname, "/lab")}
           onClick={() => setMobileOpen(false)}
           sx={{
-            borderRadius: 2,
+            borderRadius: surfaces.navRadius,
             mt: 1.5,
             minHeight: 42,
             "&.Mui-selected": { bgcolor: "action.selected" },
@@ -197,7 +200,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           selected={isActive(pathname, "/resume")}
           onClick={() => setMobileOpen(false)}
           sx={{
-            borderRadius: 2,
+            borderRadius: surfaces.navRadius,
             minHeight: 42,
             mb: 0.5,
             "&.Mui-selected": { bgcolor: "action.selected" },
@@ -217,7 +220,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <ListItemButton
           onClick={(event) => setSettingsAnchor(event.currentTarget)}
-          sx={{ borderRadius: 2, minHeight: 42 }}
+          sx={{ borderRadius: surfaces.navRadius, minHeight: 42 }}
         >
           <ListItemIcon sx={{ minWidth: 38 }}>
             <SettingsOutlined fontSize="small" />
@@ -251,7 +254,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           bgcolor: "background.paper",
         }}
       >
-        <Toolbar sx={{ minHeight: "56px !important", gap: 1 }}>
+        <Toolbar sx={{ minHeight: `${shell.topBarHeight}px !important`, gap: 1 }}>
           {pathname !== "/" && (
             <Tooltip title="Back">
               <IconButton
@@ -312,16 +315,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         component="main"
         sx={{
           minHeight: "100vh",
-          pt: "56px",
+          pt: `${shell.topBarHeight}px`,
         }}
       >
         <Box
           sx={{
             width: "100%",
-            maxWidth: isBlogRoute ? 1520 : 1120,
+            maxWidth: isBlogRoute ? shell.blogMaxWidth : shell.contentMaxWidth,
             mx: "auto",
-            px: { xs: 2, sm: 3, lg: 4 },
-            py: { xs: 2.5, md: 4 },
+            px: shell.paddingX,
+            py: shell.paddingY,
           }}
         >
           {children}
