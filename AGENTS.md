@@ -32,7 +32,7 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 - `app/providers.tsx` — color-scheme provider, UI-theme provider, and MUI bridge.
 - `app/MuiThemeWrapper.tsx` — combines the selected UI theme + color scheme into MUI and installs `AppRouterCacheProvider`.
 - `app/theme.ts` — Material and Selenized color-scheme definitions only.
-- `themes/workspace.ts` — workspace layout/design tokens such as shell dimensions, content widths, blog columns, spacing, and radii.
+- `themes/workspace.ts` — the full Workspace interface definition: shell, navigation, density, Blog, mobile behavior, surfaces, and typography.
 - `themes/types.ts` — shared UI-theme token types and MUI theme augmentation.
 - `themes/` — UI-theme registry, tokens, persistence, and per-theme definitions. `workspace` is the packaged current interface.
 - `app/page.tsx` — About/Home page.
@@ -175,7 +175,7 @@ The theme system has two independent layers:
 
 ```text
 UI theme (themes/registry.ts)
-  → layout + spacing + shape + typography tokens
+  → shell + navigation + density + mobile + surfaces + typography + reader tokens
 
 Color scheme (next-themes → app/theme.ts)
   → Material or Selenized + light/dark
@@ -188,14 +188,14 @@ Both
 The current interface is the `workspace` UI theme. Preserve this separation when adding themes.
 
 - New interface themes belong under `themes/` and must be registered in `themes/registry.ts`.
-- Do not put shared shell/blog layout constants back into components when they belong in UI-theme tokens.
+- Do not put shared shell/blog layout or behavior constants back into components when they belong in UI-theme tokens. Treat variant labels as real rendering branches, not documentation-only settings.
 - Color-only changes belong in `app/theme.ts`; layout/structure changes belong in a UI theme.
-- `ThemeSelector` exposes Interface, Colors, and Mode as separate controls.
+- Settings → Appearance exposes Interface when multiple UI themes are registered; Colors and Mode remain independent.
 - Keep `"use client"` limited to components that actually need state, effects, browser APIs, or theme hooks.
 - Prefer MUI primitives for UI that already lives in the MUI design system.
 - Do not introduce another component framework for simple UI changes.
 - `@mui/material-nextjs` and Emotion are part of the MUI/App Router integration; do not remove them merely because application code does not directly import every Emotion package.
-- Shared Markdown styling belongs in `mdx-components.tsx` or the blog-specific MDX component map rather than being reimplemented in every content route.
+- Shared Markdown styling belongs in `mdx-components.tsx` or the blog-specific MDX component map rather than being reimplemented in every content route. Blog reader variables are set in the themed client layout and inherited by server-rendered MDX.
 
 ## Tailwind status
 

@@ -10,7 +10,7 @@ export type ColorMode = 'light' | 'dark';
 const withUiTheme = (uiTheme: UiThemeDefinition) => ({
   site: uiTheme.tokens,
   typography: {
-    fontFamily: uiTheme.typography.fontFamily,
+    fontFamily: uiTheme.tokens.typography.fontFamily,
   },
   shape: {
     borderRadius: uiTheme.tokens.surfaces.baseRadius,

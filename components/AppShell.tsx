@@ -141,8 +141,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const muiTheme = useMuiTheme();
   const desktop = useMediaQuery(muiTheme.breakpoints.up("md"));
-  const { shell, surfaces } = muiTheme.site;
+  const { shell, surfaces, navigation, density, mobile } = muiTheme.site;
   const drawerWidth = shell.drawerWidth;
+  const selectedNavSx = {
+    "&.Mui-selected": {
+      bgcolor: navigation.selectedStyle === "filled" ? "action.selected" : "transparent",
+      border: navigation.selectedStyle === "outlined" ? 1 : undefined,
+      borderColor: "divider",
+    },
+  };
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
@@ -211,7 +218,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <Divider />
 
-      <List sx={{ px: 1.25, py: 1.5 }}>
+      <List sx={{ px: 1.25, py: density.mode === "compact" ? 1 : 1.5 }}>
         <ListItemButton
           component={Link}
           href="/"
@@ -219,41 +226,50 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           onClick={() => setMobileOpen(false)}
           sx={{
             borderRadius: surfaces.navRadius,
-            minHeight: 44,
-            "&.Mui-selected": { bgcolor: "action.selected" },
+            minHeight: navigation.itemHeight + 2,
+            ...selectedNavSx,
           }}
         >
-          <ListItemIcon sx={{ minWidth: 38 }}>
-            <HomeOutlined fontSize="small" />
-          </ListItemIcon>
+          {navigation.showIcons && (
+            <ListItemIcon sx={{ minWidth: navigation.iconWidth }}>
+              <HomeOutlined fontSize="small" />
+            </ListItemIcon>
+          )}
           <ListItemText
             primary="Home"
             primaryTypographyProps={{
-              fontSize: 14,
+              fontSize: navigation.itemFontSize,
               fontWeight: isActive(pathname, "/") ? 700 : 500,
             }}
           />
         </ListItemButton>
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            px: 1.5,
-            pt: 2.5,
-            pb: 0.75,
-            color: "text.disabled",
-          }}
-        >
-          <WorkOutline sx={{ fontSize: 16 }} />
-          <Typography
-            variant="caption"
-            sx={{ fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}
+        {navigation.style === "grouped" && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              px: 1.5,
+              pt: navigation.sectionGap,
+              pb: 0.75,
+              color: "text.disabled",
+            }}
           >
-            Work
-          </Typography>
-        </Box>
+            {navigation.showIcons && <WorkOutline sx={{ fontSize: 16 }} />}
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: navigation.sectionFontSize,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              Work
+            </Typography>
+          </Box>
+        )}
 
         {workItems.map(({ href, label, icon: Icon }) => {
           const selected = isActive(pathname, href);
@@ -268,18 +284,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               sx={{
                 borderRadius: surfaces.navRadius,
                 mb: 0.5,
-                minHeight: 42,
+                minHeight: navigation.itemHeight,
                 pl: 2.25,
-                "&.Mui-selected": { bgcolor: "action.selected" },
+                ...selectedNavSx,
               }}
             >
-              <ListItemIcon sx={{ minWidth: 34 }}>
-                <Icon fontSize="small" />
-              </ListItemIcon>
+              {navigation.showIcons && (
+                <ListItemIcon sx={{ minWidth: navigation.iconWidth - 4 }}>
+                  <Icon fontSize="small" />
+                </ListItemIcon>
+              )}
               <ListItemText
                 primary={label}
                 primaryTypographyProps={{
-                  fontSize: 14,
+                  fontSize: navigation.itemFontSize,
                   fontWeight: selected ? 700 : 500,
                 }}
               />
@@ -299,16 +317,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }}
           sx={{
             borderRadius: surfaces.navRadius,
-            minHeight: 42,
+            minHeight: navigation.itemHeight,
             mb: 0.5,
           }}
         >
-          <ListItemIcon sx={{ minWidth: 38 }}>
-            <SettingsOutlined fontSize="small" />
-          </ListItemIcon>
+          {navigation.showIcons && (
+            <ListItemIcon sx={{ minWidth: navigation.iconWidth }}>
+              <SettingsOutlined fontSize="small" />
+            </ListItemIcon>
+          )}
           <ListItemText
             primary="Settings"
-            primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+            primaryTypographyProps={{
+              fontSize: navigation.itemFontSize,
+              fontWeight: 500,
+            }}
           />
         </ListItemButton>
 
@@ -343,7 +366,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           color="inherit"
           elevation={0}
           sx={{
-            borderBottom: 1,
+            display: { xs: "flex", md: shell.variant === "sidebar-only" ? "none" : "flex" },
+            borderBottom: surfaces.showBorders ? 1 : 0,
             borderColor: "divider",
             bgcolor: "background.paper",
             width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
@@ -433,13 +457,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Box component="nav" aria-label="Primary navigation">
           <Drawer
             variant="temporary"
+            anchor={mobile.navigation === "bottom-sheet" ? "bottom" : "left"}
             open={mobileOpen}
             onClose={() => setMobileOpen(false)}
             ModalProps={{ keepMounted: true }}
             sx={{
               display: { xs: "block", md: "none" },
               "& .MuiDrawer-paper": {
-                width: drawerWidth,
+                width: mobile.navigation === "bottom-sheet" ? "100%" : drawerWidth,
+                maxHeight: mobile.navigation === "bottom-sheet" ? "85dvh" : undefined,
+                borderTopLeftRadius: mobile.navigation === "bottom-sheet" ? 16 : 0,
+                borderTopRightRadius: mobile.navigation === "bottom-sheet" ? 16 : 0,
                 boxSizing: "border-box",
                 bgcolor: "background.paper",
               },
@@ -456,9 +484,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 boxSizing: "border-box",
-                borderRight: 1,
+                borderRight: surfaces.showBorders ? 1 : 0,
                 borderColor: "divider",
                 bgcolor: "background.paper",
+                boxShadow: surfaces.style === "elevated" ? 2 : "none",
               },
             }}
           >
@@ -473,7 +502,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           height: "100%",
           minHeight: 0,
           boxSizing: "border-box",
-          pt: isImmersiveAppRoute ? 0 : `${shell.topBarHeight}px`,
+          pt: isImmersiveAppRoute
+            ? 0
+            : {
+                xs: `${shell.topBarHeight}px`,
+                md: shell.variant === "sidebar-only" ? 0 : `${shell.topBarHeight}px`,
+              },
           ml: isImmersiveAppRoute ? 0 : { xs: 0, md: `${drawerWidth}px` },
           width: isImmersiveAppRoute
             ? "100%"
@@ -740,17 +774,37 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         message="Đã sao chép đường dẫn ứng dụng"
       />
 
-      <Dialog
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        fullWidth
-        maxWidth="xs"
-        aria-label="Settings"
-      >
-        <DialogContent sx={{ p: { xs: 2, sm: 2.5 } }}>
-          <SettingsPanel />
-        </DialogContent>
-      </Dialog>
+      {mobile.settings === "dialog" || desktop ? (
+        <Dialog
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          fullWidth
+          maxWidth="xs"
+          aria-label="Settings"
+        >
+          <DialogContent sx={{ p: { xs: 2, sm: 2.5 } }}>
+            <SettingsPanel />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer
+          anchor="bottom"
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          PaperProps={{
+            sx: {
+              borderTopLeftRadius: surfaces.baseRadius * 4,
+              borderTopRightRadius: surfaces.baseRadius * 4,
+              maxHeight: "85dvh",
+              overflowY: "auto",
+            },
+          }}
+        >
+          <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
+            <SettingsPanel />
+          </Box>
+        </Drawer>
+      )}
     </Box>
   );
 }
