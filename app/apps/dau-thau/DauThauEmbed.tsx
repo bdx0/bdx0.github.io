@@ -42,8 +42,9 @@ export default function DauThauEmbed() {
       sx={{
         position: "relative",
         width: "100%",
-        height: "100dvh",
-        minHeight: "100dvh",
+        height: "100%",
+        minHeight: 0,
+        maxHeight: "100%",
         overflow: "hidden",
         bgcolor: "#f4f7fa",
       }}
