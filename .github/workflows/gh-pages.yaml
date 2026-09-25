@@ -63,6 +63,31 @@ jobs:
             echo "Mini app route ready: /apps/${app} and /apps/${app}/"
           done
 
+      # Generate from the checked-out JSON in this deployment itself. Commits made by
+      # GITHUB_TOKEN in the separate model workflow do not trigger another Pages run.
+      - name: Setup Python for Ly dragon
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: tools/ly-dragon/requirements.txt
+
+      - name: Install Ly dragon generator dependencies
+        run: pip install -r tools/ly-dragon/requirements.txt
+
+      - name: Generate Ly dragon GLB for Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          MODEL_FILE="out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb"
+          mkdir -p "$(dirname "$MODEL_FILE")"
+          python tools/ly-dragon/generator/build.py \\
+            --spec tools/ly-dragon/spec/ly-dragon.spec.v2.json \\
+            --out "$MODEL_FILE"
+          test -s "$MODEL_FILE"
+          test "$(head -c 4 "$MODEL_FILE")" = "glTF"
+          echo "Ly dragon GLB ready for /apps/ly-dragon"
+
       - name: Add self-hosted Gautama Buddha model
         shell: bash
         run: |
