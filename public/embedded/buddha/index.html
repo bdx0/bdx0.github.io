@@ -80,8 +80,7 @@
 <script type="importmap">
 {
   "imports":{
-    "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
-    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+    "three":"./vendor/three.module.js"
   }
 }
 </script>
@@ -111,7 +110,7 @@
 </div>
 
 <div id="loading">
-  <div><div class="spinner"></div><div>Đang tải tượng 3D từ site…</div><div id="progress">0%</div></div>
+  <div><div class="spinner"></div><div>Đang khởi tạo bộ dựng 3D nội bộ…</div><div id="progress">0%</div></div>
 </div>
 <div id="errorBox"><div class="inner"><h2>Không thể tải model 3D</h2><p id="errorText"></p></div></div>
 
@@ -136,10 +135,10 @@
 
 <script type="module">
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
-import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+import { GLTFLoader } from "./vendor/GLTFLoader.js";
+import { OrbitControls } from "./vendor/OrbitControls.js";
+import { DRACOLoader } from "./vendor/DRACOLoader.js";
+import { MeshoptDecoder } from "./vendor/meshopt_decoder.module.js";
 
 const host = document.getElementById("canvasHost");
 const loading = document.getElementById("loading");
@@ -382,7 +381,7 @@ function frameModel(root){
 
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/libs/draco/");
+dracoLoader.setDecoderPath("./vendor/draco/");
 loader.setDRACOLoader(dracoLoader);
 loader.setMeshoptDecoder(MeshoptDecoder);
 async function loadBuddhaModel(){
