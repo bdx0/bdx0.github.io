@@ -385,41 +385,95 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/libs/draco/");
 loader.setDRACOLoader(dracoLoader);
 loader.setMeshoptDecoder(MeshoptDecoder);
-loader.load(
-  "./buddha.glb",
-  gltf=>{
-    model = gltf.scene;
-    scene.add(model);
+async function loadBuddhaModel(){
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 20000);
 
-    model.traverse(node=>{
-      if(!node.isMesh) return;
-      node.castShadow = true;
-      node.receiveShadow = true;
-      if(Array.isArray(node.material)){
-        originalMaterials.set(node.uuid, node.material.map(m=>m.clone()));
-      }else if(node.material){
-        originalMaterials.set(node.uuid, node.material.clone());
-      }
+  try{
+    const response = await fetch("/embedded/buddha/buddha.glb?v=20260925-2", {
+      cache:"no-store",
+      signal:controller.signal
     });
 
-    frameModel(model);
-    applyIvory();
-    addHaloToModel(model);
-    renderer.render(scene,camera);
-    loading.classList.add("hide");
-  },
-  event=>{
-    if(event.total){
-      progress.textContent = Math.min(100, Math.round(event.loaded / event.total * 100)) + "%";
-    }else{
-      progress.textContent = Math.round(event.loaded / 1024) + " KB";
+    if(!response.ok){
+      throw new Error("HTTP " + response.status + " khi tải buddha.glb");
     }
-  },
-  err=>{
-    console.error(err);
-    fail("Không đọc được buddha.glb: " + (err?.message || String(err)));
+
+    const total = Number(response.headers.get("content-length")) || 0;
+    let buffer;
+
+    if(response.body && response.body.getReader){
+      const reader = response.body.getReader();
+      const chunks = [];
+      let received = 0;
+
+      while(true){
+        const {done,value} = await reader.read();
+        if(done) break;
+        chunks.push(value);
+        received += value.byteLength;
+
+        if(total){
+          progress.textContent = Math.min(100, Math.round(received / total * 100)) + "%";
+        }else{
+          progress.textContent = Math.round(received / 1024) + " KB";
+        }
+      }
+
+      buffer = new Uint8Array(received);
+      let offset = 0;
+      for(const chunk of chunks){
+        buffer.set(chunk, offset);
+        offset += chunk.byteLength;
+      }
+      buffer = buffer.buffer;
+    }else{
+      buffer = await response.arrayBuffer();
+      progress.textContent = "100%";
+    }
+
+    clearTimeout(timeout);
+
+    loader.parse(
+      buffer,
+      "/embedded/buddha/",
+      gltf=>{
+        model = gltf.scene;
+        scene.add(model);
+
+        model.traverse(node=>{
+          if(!node.isMesh) return;
+          node.castShadow = true;
+          node.receiveShadow = true;
+          if(Array.isArray(node.material)){
+            originalMaterials.set(node.uuid, node.material.map(m=>m.clone()));
+          }else if(node.material){
+            originalMaterials.set(node.uuid, node.material.clone());
+          }
+        });
+
+        frameModel(model);
+        applyIvory();
+        addHaloToModel(model);
+        renderer.render(scene,camera);
+        progress.textContent = "100%";
+        loading.classList.add("hide");
+      },
+      err=>{
+        console.error(err);
+        fail("Không đọc được buddha.glb: " + (err?.message || String(err)));
+      }
+    );
+  }catch(err){
+    clearTimeout(timeout);
+    const message = err?.name === "AbortError"
+      ? "Tải buddha.glb quá 20 giây nên đã dừng."
+      : (err?.message || String(err));
+    fail("Không tải được model: " + message);
   }
-);
+}
+
+loadBuddhaModel();
 
 materialBtn.addEventListener("click",()=>{
   whiteMode ? applyOriginal() : applyIvory();
