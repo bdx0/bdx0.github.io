@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050b0c">
-<title>Rồng thời Lý 3D — GLB v2</title>
+<title>Rồng thời Lý 3D — GLB v2.1</title>
 <style>
 :root{--ink:#f4ead5;--muted:#b7aa93;--glass:rgba(8,14,15,.58);--line:rgba(255,255,255,.12)}
 *{box-sizing:border-box}
@@ -33,19 +33,20 @@ button:hover,.back-link:hover{background:rgba(255,255,255,.14)}
 </head>
 <body>
 <div id="app"></div>
-<div class="loader" id="loader"><div class="loader-box"><div class="loader-title">ĐANG TẢI RỒNG LÝ</div><div class="loader-sub">GLB v2 • parametric model</div></div></div>
+<div class="loader" id="loader"><div class="loader-box"><div class="loader-title">ĐANG TẢI RỒNG LÝ</div><div class="loader-sub">GLB v2.1 • redesigned silhouette</div></div></div>
 <div class="panel">
-  <div class="eyebrow">Vietnamese dragon study • GLB v2</div>
+  <div class="eyebrow">Vietnamese dragon study • GLB v2.1</div>
   <h1>Rồng thời Lý — 3D</h1>
-  <p>Model GLB được sinh từ bộ JSON tham số riêng của dự án. Đây là bản nền để chúng ta tiếp tục chỉnh từng bộ phận: tổng dáng, đầu, sừng, râu, bờm, chân và vảy.</p>
+  <p>V2.1: thân mảnh, đường uốn chữ S sâu hơn, đầu và mõm gọn hơn, râu thanh cùng mào lá lửa uốn cong. Bấm “Xem v2 cũ” để đối chiếu trực tiếp.</p>
   <div class="status" id="status">Đang tải model…</div>
   <div class="buttons">
     <button id="spin">Dừng xoay</button>
     <button id="material">Đổi chất liệu</button>
+    <button id="compare">Xem v2 cũ</button>
     <button id="reset">Góc nhìn ban đầu</button>
   </div>
 </div>
-<div class="tag">GLB • THREE.JS • BLOOM</div>
+<div class="tag">V2.1 • GLB • THREE.JS</div>
 <div class="note">Interactive interpretation — not an archaeological reconstruction</div>
 
 <script type="module">
@@ -142,6 +143,11 @@ const palettes=[
 let paletteIndex=0;
 let modelRoot=null;
 const modelMaterials=new Set();
+const modelVersions=[
+ {label:"v2.1 mới",url:"./models/rong-thoi-ly-v2.1.glb?v=2.1.0"},
+ {label:"v2 cũ",url:"./models/rong-thoi-ly-v2.glb"}
+];
+let versionIndex=0,loadSequence=0,modelBaseY=0;
 const status=document.getElementById('status');
 const loaderEl=document.getElementById('loader');
 
@@ -171,7 +177,7 @@ function applyPalette(index){
    }
    mat.needsUpdate=true;
  }
- status.textContent='GLB v2 đã tải • chất liệu '+palette.name;
+ status.textContent='Đang xem '+modelVersions[versionIndex].label+' • chất liệu '+palette.name;
 }
 
 function fitModel(root){
@@ -195,48 +201,81 @@ function fitModel(root){
 }
 
 const gltfLoader=new GLTFLoader();
-gltfLoader.load(
- './models/rong-thoi-ly-v2.glb',
- gltf=>{
-   modelRoot=gltf.scene;
-   modelRoot.name='LyDragonGLBv2';
-   modelRoot.traverse(obj=>{
+function loadVersion(index){
+ const requested=++loadSequence;
+ versionIndex=index;
+ const selection=modelVersions[index];
+ status.classList.remove('error');
+ status.textContent='Đang tải '+selection.label+'…';
+ loaderEl.querySelector('.loader-title').textContent='ĐANG TẢI RỒNG LÝ';
+ loaderEl.querySelector('.loader-sub').textContent=selection.label+' • parametric model';
+ loaderEl.classList.remove('hide');
+ gltfLoader.load(
+  selection.url,
+  gltf=>{
+   if(requested!==loadSequence) return;
+   const next=gltf.scene;
+   next.name='LyDragonGLB'+selection.label;
+   const nextMaterials=new Set();
+   next.traverse(obj=>{
      if(!obj.isMesh) return;
      obj.castShadow=true;
      obj.receiveShadow=true;
      const list=Array.isArray(obj.material)?obj.material:[obj.material];
-     for(const mat of list){if(mat)modelMaterials.add(mat)}
+     for(const mat of list){if(mat)nextMaterials.add(mat)}
    });
+   if(modelRoot){
+     const stale=modelRoot;
+     scene.remove(stale);
+     const previousMaterials=new Set();
+     stale.traverse(obj=>{
+       if(!obj.isMesh) return;
+       obj.geometry?.dispose();
+       const list=Array.isArray(obj.material)?obj.material:[obj.material];
+       list.forEach(m=>{if(m)previousMaterials.add(m)});
+     });
+     previousMaterials.forEach(m=>m.dispose());
+   }
+   modelRoot=next;
+   modelMaterials.clear();
+   nextMaterials.forEach(mat=>modelMaterials.add(mat));
    scene.add(modelRoot);
    fitModel(modelRoot);
-   applyPalette(0);
+   modelBaseY=modelRoot.position.y;
+   applyPalette(paletteIndex);
+   document.getElementById('compare').textContent=index===0?'Xem v2 cũ':'Xem v2.1 mới';
    loaderEl.classList.add('hide');
- },
- progress=>{
+  },
+  progress=>{
+   if(requested!==loadSequence) return;
    if(progress.total){
      const pct=Math.round(progress.loaded/progress.total*100);
-     status.textContent='Đang tải GLB… '+pct+'%';
+     status.textContent='Đang tải '+selection.label+'… '+pct+'%';
    }
- },
- error=>{
+  },
+  error=>{
+   if(requested!==loadSequence) return;
    console.error(error);
-   status.textContent='Không tải được GLB v2';
+   status.textContent='Không tải được '+selection.label;
    status.classList.add('error');
    loaderEl.querySelector('.loader-title').textContent='LỖI TẢI MODEL';
    loaderEl.querySelector('.loader-sub').textContent=String(error?.message||error);
- }
-);
+  }
+ );
+}
+loadVersion(0);
 
 document.getElementById('spin').onclick=e=>{
  controls.autoRotate=!controls.autoRotate;
  e.currentTarget.textContent=controls.autoRotate?'Dừng xoay':'Tự xoay';
 };
+document.getElementById('compare').onclick=()=>loadVersion(versionIndex===0?1:0);
 document.getElementById('material').onclick=()=>{
  paletteIndex=(paletteIndex+1)%palettes.length;
  applyPalette(paletteIndex);
 };
 document.getElementById('reset').onclick=()=>{
- if(modelRoot)fitModel(modelRoot);
+ if(modelRoot){fitModel(modelRoot);modelBaseY=modelRoot.position.y;}
  else{camera.position.set(11.8,5.8,14.8);controls.target.set(0,.35,0);controls.update()}
 };
 
@@ -245,7 +284,7 @@ function animate(){
  requestAnimationFrame(animate);
  const t=clock.getElapsedTime();
  if(modelRoot){
-   modelRoot.position.y=.30+Math.sin(t*.65)*.045;
+   modelRoot.position.y=modelBaseY+Math.sin(t*.65)*.045;
    modelRoot.rotation.z=.012*Math.sin(t*.38);
  }
  dust.rotation.y=t*.008;
