@@ -107,7 +107,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          MODEL_DIR="out/embedded/buddha"
+          MODEL_DIR="out/embedded/buddha/models"
           MODEL_FILE="${MODEL_DIR}/buddha.glb"
           MODEL_URL="https://zenodo.org/api/records/21411042/files/40d93bdf1adff502187afac506be4b15_normalized-0.500.glb/content"
 
