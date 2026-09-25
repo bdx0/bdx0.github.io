@@ -218,7 +218,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <Divider />
 
-      <List sx={{ px: 1.25, py: 1.5 }}>
+      <List sx={{ px: 1.25, py: density.mode === "compact" ? 1 : 1.5 }}>
         <ListItemButton
           component={Link}
           href="/"
