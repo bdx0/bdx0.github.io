@@ -81,8 +81,8 @@ jobs:
           set -euo pipefail
           MODEL_FILE="out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb"
           mkdir -p "$(dirname "$MODEL_FILE")"
-          python tools/ly-dragon/generator/build.py \\
-            --spec tools/ly-dragon/spec/ly-dragon.spec.v2.json \\
+          python tools/ly-dragon/generator/build.py \
+            --spec tools/ly-dragon/spec/ly-dragon.spec.v2.json \
             --out "$MODEL_FILE"
           test -s "$MODEL_FILE"
           test "$(head -c 4 "$MODEL_FILE")" = "glTF"
