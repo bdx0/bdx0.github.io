@@ -169,7 +169,7 @@ export default function BlogDocsLayout({
         "--blog-h3-xs-size": `${typography.blogHeading3.xs}px`,
         "--blog-h3-md-size": `${typography.blogHeading3.md}px`,
         "--blog-code-size": `${typography.blogCodeSize}px`,
-        "--blog-block-spacing": density.articleBlockSpacing,
+        "--blog-block-spacing": `${density.articleBlockSpacing * 8}px`,
       }}
     >
       <Box
