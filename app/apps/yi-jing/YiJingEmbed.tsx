@@ -18,6 +18,7 @@ export default function YiJingEmbed() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const lastMotionRef = useRef<{ x: number; y: number; z: number } | null>(null);
   const lastShakeAtRef = useRef(0);
+  const motionEventSeenRef = useRef(false);
   const [motionStatus, setMotionStatus] = useState<MotionStatus>("idle");
 
   const postToApp = useCallback((message: Record<string, unknown>) => {
@@ -55,6 +56,7 @@ export default function YiJingEmbed() {
 
     lastMotionRef.current = null;
     lastShakeAtRef.current = 0;
+    motionEventSeenRef.current = false;
     setMotionStatus("active");
     publishStatus("active");
   }, [publishStatus]);
@@ -63,6 +65,7 @@ export default function YiJingEmbed() {
     if (motionStatus !== "active") return;
 
     const handleMotion = (event: DeviceMotionEvent) => {
+      motionEventSeenRef.current = true;
       const acceleration = event.accelerationIncludingGravity ?? event.acceleration;
       if (!acceleration) return;
       if (acceleration.x == null && acceleration.y == null && acceleration.z == null) return;
@@ -91,6 +94,18 @@ export default function YiJingEmbed() {
     window.addEventListener("devicemotion", handleMotion);
     return () => window.removeEventListener("devicemotion", handleMotion);
   }, [motionStatus, postToApp]);
+
+  useEffect(() => {
+    if (motionStatus !== "active") return;
+
+    const timer = window.setTimeout(() => {
+      if (motionEventSeenRef.current) return;
+      setMotionStatus("unavailable");
+      publishStatus("unavailable");
+    }, 2500);
+
+    return () => window.clearTimeout(timer);
+  }, [motionStatus, publishStatus]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
