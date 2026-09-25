@@ -30,19 +30,19 @@ jobs:
 
       - name: Generate GLB
         run: |
-          mkdir -p public/lab/ly-dragon/models
+          mkdir -p public/embedded/ly-dragon/models
           python tools/ly-dragon/generator/build.py \
             --spec tools/ly-dragon/spec/ly-dragon.spec.v2.json \
-            --out public/lab/ly-dragon/models/rong-thoi-ly-v2.glb
+            --out public/embedded/ly-dragon/models/rong-thoi-ly-v2.glb
 
       - name: Commit generated model
         run: |
-          if [ -z "$(git status --porcelain -- public/lab/ly-dragon/models/rong-thoi-ly-v2.glb)" ]; then
+          if [ -z "$(git status --porcelain -- public/embedded/ly-dragon/models/rong-thoi-ly-v2.glb)" ]; then
             echo "Model is already up to date."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/lab/ly-dragon/models/rong-thoi-ly-v2.glb
+          git add public/embedded/ly-dragon/models/rong-thoi-ly-v2.glb
           git commit -m "Build Ly dragon GLB from spec"
           git push
