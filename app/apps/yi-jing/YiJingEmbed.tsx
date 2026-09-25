@@ -21,6 +21,7 @@ export default function YiJingEmbed() {
   const lastShakeAtRef = useRef(0);
   const motionEventSeenRef = useRef(false);
   const [motionStatus, setMotionStatus] = useState<MotionStatus>("idle");
+  const [motionPromptOpen, setMotionPromptOpen] = useState(false);
 
   const postToApp = useCallback((message: Record<string, unknown>) => {
     iframeRef.current?.contentWindow?.postMessage(message, APP_ORIGIN);
@@ -37,6 +38,7 @@ export default function YiJingEmbed() {
       return;
     }
 
+    setMotionPromptOpen(false);
     setMotionStatus("requesting");
     const MotionEvent = DeviceMotionEvent as DeviceMotionEventConstructorWithPermission;
 
@@ -126,6 +128,17 @@ export default function YiJingEmbed() {
       if (!event.data || typeof event.data !== "object") return;
 
       const message = event.data as { type?: string };
+
+      if (message.type === "yi-jing:motion-enable-request") {
+        if (motionStatus === "active") {
+          publishStatus("active");
+        } else {
+          setMotionPromptOpen(true);
+          publishStatus(motionStatus);
+        }
+        return;
+      }
+
       if (message.type === "yi-jing:motion-status-request") {
         publishStatus(motionStatus);
       }
@@ -148,25 +161,59 @@ export default function YiJingEmbed() {
 
   return (
     <Box sx={{ width: "100%", height: "100%", bgcolor: "#f5efe5", position: "relative" }}>
-      <Button
-        type="button"
-        variant={motionStatus === "active" ? "outlined" : "contained"}
-        size="small"
-        disabled={motionStatus === "requesting" || motionStatus === "unavailable"}
-        onClick={requestMotion}
-        sx={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-          zIndex: 2,
-          minHeight: 38,
-          borderRadius: 999,
-          textTransform: "none",
-          boxShadow: 2,
-        }}
-      >
-        {label}
-      </Button>
+      {motionPromptOpen ? (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 3,
+            display: "grid",
+            placeItems: "center",
+            bgcolor: "rgba(30, 24, 18, .28)",
+            backdropFilter: "blur(2px)",
+            p: 2,
+          }}
+        >
+          <Box
+            sx={{
+              width: "min(92vw, 360px)",
+              bgcolor: "background.paper",
+              borderRadius: 3,
+              boxShadow: 8,
+              p: 2.25,
+              textAlign: "center",
+            }}
+          >
+            <Box sx={{ fontSize: 36, mb: 1 }}>📱</Box>
+            <Box sx={{ fontWeight: 800, mb: .75 }}>Cho phép lắc để gieo quẻ</Box>
+            <Box sx={{ fontSize: 14, color: "text.secondary", mb: 2 }}>
+              Sau khi cho phép, chỉ cần lắc nhẹ hoặc xoay cổ tay. Mỗi cử chỉ gieo 1 hào.
+            </Box>
+            <Button
+              type="button"
+              variant="contained"
+              fullWidth
+              disabled={motionStatus === "requesting" || motionStatus === "unavailable"}
+              onClick={requestMotion}
+              sx={{ minHeight: 46, borderRadius: 999, textTransform: "none", fontWeight: 800 }}
+            >
+              {label}
+            </Button>
+            <Button
+              type="button"
+              variant="text"
+              fullWidth
+              onClick={() => {
+                setMotionPromptOpen(false);
+                publishStatus("unavailable");
+              }}
+              sx={{ mt: .75, textTransform: "none" }}
+            >
+              Gieo bằng nút
+            </Button>
+          </Box>
+        </Box>
+      ) : null}
 
       <Box
         ref={iframeRef}
