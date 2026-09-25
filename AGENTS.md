@@ -48,7 +48,9 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 - `lib/markdown.ts` — filesystem content discovery/front matter parsing and build-time resume fetch.
 - `content/blog/` — legacy blog material during CMS migration; do not add or edit canonical blog body here unless the user explicitly requests an export/snapshot.
 - `content/projects/` — project content.
-- `public/` — static assets and standalone demos such as `public/lab/ly-dragon/index.html`.
+- `public/embedded/ly-dragon/index.html` — canonical standalone dragon viewer, embedded from `app/apps/ly-dragon/page.tsx`.
+- `tools/ly-dragon/spec/ly-dragon.spec.v2.1.json` and `generator/build.py` — editable model and procedural GLB generator. The Pages workflow builds the current GLB into `out/embedded/ly-dragon/models/`.
+- `public/lab/ly-dragon/index.html` — redirect only; do not edit it as the active viewer.
 - `.github/workflows/gh-pages.yaml` — GitHub Pages build/deploy workflow.
 - `Dockerfile`, `docker-compose.yml`, `justfile` — optional development tooling; GitHub Pages remains the production target.
 
@@ -244,7 +246,7 @@ The root layout loads JetBrains Mono and Tektur through `next/font/google`.
 
 `public/fonts/` also contains older local font files. Do not assume they are active without finding a source reference.
 
-Do not delete standalone public pages or demos (for example `public/lab/ly-dragon/index.html`) as part of normal blog refactoring.
+Do not delete standalone public pages or demos as part of normal blog refactoring. The old dragon Lab URL is a redirect; the canonical 3D viewer is `public/embedded/ly-dragon/index.html`.
 
 ## GitHub Pages deployment
 
