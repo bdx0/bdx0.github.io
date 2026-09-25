@@ -51,7 +51,10 @@ export const blogMdxComponents: MDXComponents = {
         mt: 5,
         mb: 1.5,
         pt: 0.5,
-        fontSize: { xs: 23, md: 26 },
+        fontSize: {
+          xs: "var(--blog-h2-xs-size, 23px)",
+          md: "var(--blog-h2-md-size, 26px)",
+        },
         lineHeight: 1.3,
         fontWeight: 720,
         letterSpacing: "-0.015em",
@@ -69,7 +72,10 @@ export const blogMdxComponents: MDXComponents = {
       sx={{
         mt: 3.5,
         mb: 1,
-        fontSize: { xs: 18, md: 20 },
+        fontSize: {
+          xs: "var(--blog-h3-xs-size, 18px)",
+          md: "var(--blog-h3-md-size, 20px)",
+        },
         lineHeight: 1.4,
         fontWeight: 700,
         scrollMarginTop: 24,
@@ -93,9 +99,9 @@ export const blogMdxComponents: MDXComponents = {
       component="p"
       variant="body1"
       sx={{
-        my: 1.5,
-        fontSize: 16,
-        lineHeight: 1.8,
+        my: "var(--blog-block-spacing, 12px)",
+        fontSize: "var(--blog-body-size, 16px)",
+        lineHeight: "var(--blog-body-line-height, 1.8)",
         color: "text.primary",
       }}
       {...props}
@@ -211,7 +217,7 @@ export const blogMdxComponents: MDXComponents = {
         borderRadius: 2,
         bgcolor: "action.hover",
         fontFamily: "var(--font-jetbrains-mono), monospace",
-        fontSize: 13.5,
+        fontSize: "var(--blog-code-size, 13.5px)",
         lineHeight: 1.7,
       }}
       {...props}
