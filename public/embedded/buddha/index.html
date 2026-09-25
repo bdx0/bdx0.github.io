@@ -3,570 +3,379 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Đức Phật Thích Ca — 3D Zen Halo</title>
-<meta name="description" content="Tượng Gautama Buddha 3D tự host, chất liệu trắng ngà và vòng halo phát sáng.">
+<meta name="theme-color" content="#15130f">
+<title>Phật Thích Ca — Zen 3D</title>
+<meta name="description" content="Tượng Phật 3D và vòng hào quang lơ lửng phía sau lưng.">
 <style>
-  :root{
-    color-scheme:dark;
-    --bg:#15130f;
-    --panel:rgba(27,24,19,.74);
-    --line:rgba(255,240,205,.14);
-    --text:#f5efe5;
-    --muted:#bdb3a3;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-  body{color:var(--text)}
-  #stage{
-    position:fixed;inset:0;
-    background:
-      radial-gradient(circle at 50% 40%,rgba(255,224,154,.12),transparent 33%),
-      radial-gradient(circle at 50% 72%,rgba(123,101,71,.13),transparent 34%),
-      linear-gradient(180deg,#211d17 0%,#12110e 100%);
-  }
-  #canvasHost{position:absolute;inset:0;z-index:2}
-  #canvasHost canvas{display:block;width:100%;height:100%;touch-action:none}
-
-  .hud{
-    position:fixed;left:14px;right:14px;top:14px;z-index:10;
-    display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
-    pointer-events:none
-  }
-  .card,.tools,.credit{
-    pointer-events:auto;background:var(--panel);backdrop-filter:blur(16px);
-    border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.24)
-  }
-  .card{padding:12px 14px;border-radius:16px;max-width:min(560px,calc(100vw - 28px))}
-  .card b{display:block;font:600 20px/1.2 Georgia,"Times New Roman",serif;letter-spacing:.01em}
-  .card small{display:block;margin-top:5px;color:var(--muted);line-height:1.4}
-  .tools{display:flex;gap:7px;padding:7px;border-radius:14px;flex-wrap:wrap;justify-content:flex-end}
-  button,.back-link{
-    border:1px solid rgba(255,238,198,.15);background:rgba(255,250,240,.08);color:var(--text);
-    padding:9px 11px;border-radius:10px;font:600 13px/1 system-ui,sans-serif;text-decoration:none;cursor:pointer;
-    transition:background .18s ease,border-color .18s ease
-  }
-  button:hover,.back-link:hover{background:rgba(255,250,240,.14);border-color:rgba(255,238,198,.25)}
-  button.active{background:rgba(255,225,145,.18);border-color:rgba(255,225,145,.38);color:#fff7df}
-
-  .credit{
-    position:fixed;left:14px;bottom:14px;z-index:10;border-radius:13px;padding:9px 11px;
-    font-size:11px;line-height:1.45;color:var(--muted);max-width:min(660px,calc(100vw - 28px))
-  }
-  .credit a{color:#ead9ad;text-decoration:none}
-  .credit a:hover{text-decoration:underline}
-
-  #loading,#errorBox{
-    position:fixed;inset:0;z-index:30;display:grid;place-items:center;
-    background:linear-gradient(180deg,#1c1913,#100f0c);color:#e8dcc8
-  }
-  #loading.hide{opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease}
-  #errorBox{display:none;padding:24px;text-align:center}
-  #errorBox.show{display:grid}
-  .inner{max-width:620px;background:rgba(34,29,22,.9);border:1px solid var(--line);border-radius:18px;padding:22px}
-  .spinner{
-    width:42px;height:42px;margin:0 auto 12px;border-radius:50%;
-    border:3px solid rgba(255,229,168,.14);border-top-color:#eac977;animation:spin 1s linear infinite
-  }
-  #progress{margin-top:7px;color:#aa9d89;font-size:12px;text-align:center}
-  #diagnostics{
-    position:fixed;z-index:40;right:12px;bottom:12px;width:min(520px,calc(100vw - 24px));
-    background:rgba(27,24,19,.97);border:1px solid rgba(255,233,175,.35);
-    color:#f5efe5;border-radius:12px;padding:10px;box-shadow:0 12px 36px rgba(0,0,0,.4)
-  }
-  #diagnostics summary{cursor:pointer;font:600 13px system-ui,sans-serif}
-  #diagnostics pre{white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;max-height:36vh;font:12px/1.5 monospace;color:#dfd1b7}
-  #diagnostics[hidden]{display:none}
-  @keyframes spin{to{transform:rotate(360deg)}}
-
-  @media(max-width:760px){
-    .hud{left:10px;right:10px;top:10px;flex-direction:column}
-    .tools{align-self:flex-end;max-width:100%}
-    .card b{font-size:18px}
-    .credit{left:10px;bottom:10px;max-width:calc(100vw - 20px);padding:7px 9px}
-  }
+:root{color-scheme:dark;--ink:#f5efe5;--muted:#bdb3a3;--glass:rgba(27,24,19,.74);--line:rgba(255,240,205,.14)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 40%,#30271a 0,#1b1813 35%,#100f0c 85%);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#app{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{position:fixed;z-index:5;top:16px;left:16px;width:min(400px,calc(100vw - 32px));padding:15px 17px;border:1px solid var(--line);border-radius:18px;background:var(--glass);backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.26)}
+.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#ead9ad;margin-bottom:6px}
+h1{font:600 clamp(21px,3vw,29px)/1.2 Georgia,"Times New Roman",serif;margin:0 0 7px}
+p{font-size:12px;line-height:1.5;margin:0;color:var(--muted)}
+.status{margin-top:10px;font-size:12px;color:#ead9ad;min-height:18px}
+.status.error{color:#ffc3a5}
+.buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+button{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:var(--ink);padding:9px 12px;border-radius:999px;font:600 12px/1.2 system-ui,sans-serif;cursor:pointer}
+button:hover{background:rgba(255,255,255,.16)}
+button.active{background:rgba(255,220,143,.20);border-color:rgba(255,225,150,.40)}
+.tag{position:fixed;right:15px;bottom:15px;z-index:5;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--glass);font-size:10px;color:#e0d0b0}
+.credit{position:fixed;left:15px;bottom:15px;z-index:5;max-width:min(570px,calc(100vw - 30px));font-size:10px;line-height:1.5;color:#ac9d87;background:rgba(18,15,12,.62);padding:7px 10px;border-radius:10px}
+.credit a{color:#ead9ad;text-decoration:none}
+.loader{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:#15130f;transition:opacity .45s ease,visibility .45s ease}
+.loader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.loader-box{text-align:center;padding:20px;max-width:min(480px,100vw)}
+.loader-title{font-size:12px;letter-spacing:.18em;color:#ead9ad}
+.loader-sub{font-size:12px;color:#a99c85;margin-top:10px;line-height:1.5;overflow-wrap:anywhere}
+#diagnostics{position:fixed;z-index:20;right:12px;bottom:60px;width:min(520px,calc(100vw - 24px));background:rgba(27,24,19,.97);border:1px solid rgba(255,233,175,.35);border-radius:12px;padding:10px}
+#diagnostics[hidden]{display:none}
+#diagnostics summary{cursor:pointer;font:600 12px system-ui,sans-serif}
+#diagnostics pre{white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;max-height:38vh;font:11px/1.5 monospace;color:#e0d1b7}
+@media(max-width:640px){.panel{top:10px;left:10px;width:calc(100vw - 20px);padding:12px}.tag{right:10px;bottom:10px;font-size:9px}.credit{left:10px;bottom:10px;right:100px;font-size:9px}.buttons button{min-height:36px}}
 </style>
-<script type="importmap">
-{
-  "imports":{
-    "three":"./vendor/three.module.js"
-  }
-}
-</script>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 </head>
 <body>
-<div id="stage">
-  <div id="canvasHost"></div>
-</div>
-
-<div class="hud">
-  <div class="card">
-    <b>Đức Phật Thích Ca — Zen 3D</b>
-    <small>Model GLB được phục vụ trực tiếp từ bdx0.github.io • kéo để xoay • chụm/cuộn để zoom.</small>
-  </div>
-  <div class="tools">
-    <button id="materialBtn" class="active">Tượng trắng</button>
-    <button id="haloBtn" class="active">Halo</button>
-    <button id="spinBtn">Tự xoay</button>
-    <button id="resetBtn">Chính diện</button>
+<div id="app"></div>
+<div class="loader" id="loader">
+  <div class="loader-box">
+    <div class="loader-title" id="loaderTitle">ĐANG TẢI TƯỢNG PHẬT</div>
+    <div class="loader-sub" id="loaderSub">Đang khởi tạo bộ dựng 3D…</div>
   </div>
 </div>
-
-<div class="credit">
-  3D scan: <a href="https://zenodo.org/records/21411042" target="_blank" rel="noopener">Gautama Buddha — Scan-the-World</a>,
-  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>.
-  Material trắng ngà và halo là phần trình bày của BDX0 Apps.
+<div class="panel">
+  <div class="eyebrow">Buddha study • self-hosted GLB</div>
+  <h1>Phật Thích Ca — Zen 3D</h1>
+  <p>Tượng trắng ngà với vòng hào quang lơ lửng phía sau lưng. Kéo để xoay, chụm hoặc cuộn để phóng to.</p>
+  <div class="status" id="status" role="status" aria-live="polite">Đang khởi tạo…</div>
+  <div class="buttons">
+    <button id="spin">Tự xoay</button>
+    <button id="material" class="active">Tượng trắng</button>
+    <button id="halo" class="active">Halo</button>
+    <button id="reset">Góc nhìn ban đầu</button>
+  </div>
 </div>
-
-<div id="loading">
-  <div><div class="spinner"></div><div>Đang khởi tạo bộ dựng 3D nội bộ…</div><div id="progress">0%</div></div>
-</div>
-<div id="errorBox"><div class="inner"><h2>Không thể tải model 3D</h2><p id="errorText"></p><p>Nhật ký kỹ thuật nằm ở góc dưới màn hình.</p></div></div>
-<details id="diagnostics" hidden>
-  <summary>Nhật ký tải Buddha 3D</summary>
-  <pre id="diagnosticLog" aria-live="polite"></pre>
-</details>
+<div class="credit">3D scan: <a href="https://zenodo.org/records/21411042" target="_blank" rel="noopener">Gautama Buddha — Scan-the-World</a> • <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></div>
+<div class="tag">GLB • THREE.JS</div>
+<details id="diagnostics" hidden><summary>Nhật ký tải Buddha 3D</summary><pre id="diagnosticLog" aria-live="polite"></pre></details>
 
 <script>
 (function(){
-  const loading=document.getElementById("loading");
-  const box=document.getElementById("errorBox");
-  const errorText=document.getElementById("errorText");
-  const diagnostics=document.getElementById("diagnostics");
-  const logEl=document.getElementById("diagnosticLog");
-  const logs=[];
+  const loader=document.getElementById('loader');
+  const loaderTitle=document.getElementById('loaderTitle');
+  const loaderSub=document.getElementById('loaderSub');
+  const status=document.getElementById('status');
+  const diagnostics=document.getElementById('diagnostics');
+  const logEl=document.getElementById('diagnosticLog');
+  const history=[];
   const start=Date.now();
 
-  if(new URLSearchParams(location.search).has("debug")) diagnostics.hidden=false;
+  if(new URLSearchParams(location.search).has('debug')) diagnostics.hidden=false;
+
   window.__buddhaLog=function(step,detail){
-    const line=((Date.now()-start)/1000).toFixed(1)+"s | "+step+(detail?" | "+detail:"");
-    logs.push(line);
-    if(logs.length>60) logs.shift();
-    logEl.textContent=logs.join("\n");
-    console.info("[Buddha]",line);
+    const line=((Date.now()-start)/1000).toFixed(1)+'s | '+step+(detail?' | '+detail:'');
+    history.push(line);
+    if(history.length>60) history.shift();
+    logEl.textContent=history.join('\n');
+    console.info('[Buddha]',line);
   };
   window.__buddhaFail=function(message){
-    window.__buddhaLog("ERROR",message);
-    loading.classList.add("hide");
-    errorText.textContent=message;
-    box.classList.add("show");
+    window.__buddhaLog('ERROR',message);
+    loaderTitle.textContent='LỖI KHỞI TẠO 3D';
+    loaderSub.textContent=message;
+    status.textContent=message;
+    status.classList.add('error');
     diagnostics.hidden=false;
     diagnostics.open=true;
   };
-  window.__buddhaModuleStarted=false;
-  window.__buddhaModuleReady=function(){
-    window.__buddhaModuleStarted=true;
+
+  window.__buddhaReady=function(){
     clearTimeout(bootstrapTimer);
-    window.__buddhaLog("ES modules loaded","Three.js and dependencies available");
+    window.__buddhaLog('Module ready','Three.js local imports loaded');
   };
-  window.addEventListener("error",function(e){
-    const target=e.target;
-    if(target && target!==window && target.src){
-      window.__buddhaFail("Resource failed: "+target.src);
-    }else{
-      window.__buddhaFail("JavaScript: "+(e.message||"unknown")+" @ "+(e.filename||"")+":"+(e.lineno||0));
-    }
+
+  window.addEventListener('error',function(event){
+    const target=event.target;
+    const message=target && target!==window && target.src
+      ? 'Resource failed: '+target.src
+      : 'JavaScript: '+(event.message||'unknown')+' @ '+(event.filename||'')+':'+(event.lineno||0);
+    window.__buddhaFail(message);
   },true);
-  window.addEventListener("unhandledrejection",function(e){
-    window.__buddhaFail("Promise: "+String(e.reason?.message||e.reason||"unknown"));
+  window.addEventListener('unhandledrejection',function(event){
+    window.__buddhaFail('Promise: '+String(event.reason?.message||event.reason||'unknown'));
   });
   const bootstrapTimer=setTimeout(function(){
-    if(!window.__buddhaModuleStarted){
-      window.__buddhaFail("Module khởi tạo quá 15 giây. Kiểm tra đường dẫn JS trong nhật ký/Network.");
-    }
+    window.__buddhaFail('Bộ dựng 3D không khởi tạo trong 15 giây. Kiểm tra Nhật ký/Network.');
   },15000);
-  window.__buddhaLog("HTML ready","Waiting for local ES modules");
+  window.__buddhaLog('HTML ready','Waiting for local Three.js modules');
 })();
 </script>
 
 <script type="module">
-import * as THREE from "three";
-import { GLTFLoader } from "./vendor/loaders/GLTFLoader.js";
-import { OrbitControls } from "./vendor/controls/OrbitControls.js";
-import { DRACOLoader } from "./vendor/loaders/DRACOLoader.js";
-import { MeshoptDecoder } from "./vendor/libs/meshopt_decoder.module.js";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-window.__buddhaModuleReady();
-const logStep = window.__buddhaLog;
-const host = document.getElementById("canvasHost");
-const loading = document.getElementById("loading");
-const progress = document.getElementById("progress");
-const errorBox = document.getElementById("errorBox");
-const errorText = document.getElementById("errorText");
-const materialBtn = document.getElementById("materialBtn");
-const haloBtn = document.getElementById("haloBtn");
-const spinBtn = document.getElementById("spinBtn");
-const resetBtn = document.getElementById("resetBtn");
+window.__buddhaReady();
+const log=window.__buddhaLog;
+const fail=window.__buddhaFail;
+const loaderEl=document.getElementById('loader');
+const loaderTitle=document.getElementById('loaderTitle');
+const loaderSub=document.getElementById('loaderSub');
+const status=document.getElementById('status');
+const spinBtn=document.getElementById('spin');
+const materialBtn=document.getElementById('material');
+const haloBtn=document.getElementById('halo');
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, .01, 100);
-camera.position.set(0, 2.25, 6.6);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.01,100);
+camera.position.set(0,2.25,6.6);
 
-const renderer = new THREE.WebGLRenderer({
-  antialias:true,
-  alpha:true,
-  powerPreference:"high-performance"
-});
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.8));
-renderer.setSize(innerWidth, innerHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-host.appendChild(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.8));
+renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.getElementById('app').appendChild(renderer.domElement);
+log('Renderer ready','WebGL context created');
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = .055;
-controls.enablePan = false;
-controls.minDistance = 3.7;
-controls.maxDistance = 10;
-controls.minPolarAngle = Math.PI * .22;
-controls.maxPolarAngle = Math.PI * .70;
-controls.target.set(0, 1.8, 0);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=.055;
+controls.enablePan=false;
+controls.minDistance=3.7;
+controls.maxDistance=10;
+controls.minPolarAngle=Math.PI*.22;
+controls.maxPolarAngle=Math.PI*.70;
+controls.target.set(0,1.8,0);
+controls.autoRotate=false;
+controls.autoRotateSpeed=.55;
 controls.update();
 
-scene.add(new THREE.HemisphereLight(0xfff7e8, 0x5f554a, 2.15));
-
-const key = new THREE.DirectionalLight(0xfff0ce, 4.6);
-key.position.set(4.5, 7.5, 5.5);
-key.castShadow = true;
-key.shadow.mapSize.set(1024, 1024);
-key.shadow.camera.left = -4;
-key.shadow.camera.right = 4;
-key.shadow.camera.top = 6;
-key.shadow.camera.bottom = -1;
+scene.add(new THREE.HemisphereLight(0xfff7e8,0x5f554a,2.15));
+const key=new THREE.DirectionalLight(0xfff0ce,4.6);
+key.position.set(4.5,7.5,5.5);
+key.castShadow=true;
+key.shadow.mapSize.set(1024,1024);
+key.shadow.camera.left=-4;
+key.shadow.camera.right=4;
+key.shadow.camera.top=6;
+key.shadow.camera.bottom=-1;
 scene.add(key);
-
-const fill = new THREE.DirectionalLight(0xdde7ff, 1.35);
-fill.position.set(-4, 3.5, 4.5);
+const fill=new THREE.DirectionalLight(0xdde7ff,1.35);
+fill.position.set(-4,3.5,4.5);
 scene.add(fill);
-
-const rim = new THREE.PointLight(0xffce72, 2.2, 12, 2);
-rim.position.set(0, 4.4, -2.5);
+const rim=new THREE.PointLight(0xffce72,2.2,12,2);
+rim.position.set(0,4.4,-2.5);
 scene.add(rim);
 
-const floor = new THREE.Mesh(
-  new THREE.CircleGeometry(4.2, 96),
-  new THREE.MeshStandardMaterial({
-    color:0x28231d,
-    roughness:.96,
-    metalness:0,
-    transparent:true,
-    opacity:.68
-  })
+const stage=new THREE.Group();
+scene.add(stage);
+const floor=new THREE.Mesh(
+  new THREE.CircleGeometry(4.2,96),
+  new THREE.MeshStandardMaterial({color:0x28231d,roughness:.96,metalness:0,transparent:true,opacity:.68})
 );
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -.015;
-floor.receiveShadow = true;
-scene.add(floor);
+floor.rotation.x=-Math.PI/2;
+floor.position.y=-.015;
+floor.receiveShadow=true;
+stage.add(floor);
 
-let model = null;
-let haloGroup = null;
-let autoSpin = false;
-let whiteMode = true;
-let homeCamera = null;
-const originalMaterials = new Map();
-
-function fail(message){
-  window.__buddhaFail(message);
-}
+let modelRoot=null;
+let haloGroup=null;
+let haloBaseY=0;
+let whiteMode=true;
+let homeCamera=null;
+const originalMaterials=new Map();
+const modelUrl='./models/buddha.glb?v=1.0.0';
 
 function ivoryFrom(source){
-  const material = new THREE.MeshStandardMaterial({
-    color:0xf1eee5,
-    roughness:.56,
-    metalness:.015,
-    side:source?.side ?? THREE.FrontSide,
-    transparent:source?.transparent ?? false,
-    opacity:source?.opacity ?? 1
+  const material=new THREE.MeshStandardMaterial({
+    color:0xf1eee5,roughness:.56,metalness:.015,
+    side:source?.side??THREE.FrontSide,
+    transparent:source?.transparent??false,
+    opacity:source?.opacity??1
   });
   if(source?.normalMap){
-    material.normalMap = source.normalMap;
-    material.normalScale.copy(source.normalScale || new THREE.Vector2(1,1));
+    material.normalMap=source.normalMap;
+    material.normalScale.copy(source.normalScale||new THREE.Vector2(1,1));
   }
   if(source?.aoMap){
-    material.aoMap = source.aoMap;
-    material.aoMapIntensity = .55;
+    material.aoMap=source.aoMap;
+    material.aoMapIntensity=.55;
   }
   return material;
 }
 
-function applyIvory(){
-  if(!model) return;
-  model.traverse(node=>{
-    if(!node.isMesh) return;
-    const saved = originalMaterials.get(node.uuid);
-    if(Array.isArray(saved)){
-      node.material = saved.map(m=>ivoryFrom(m));
-    }else if(saved){
-      node.material = ivoryFrom(saved);
-    }
+function applyMaterial(useWhite){
+  if(!modelRoot) return;
+  modelRoot.traverse(obj=>{
+    if(!obj.isMesh) return;
+    const saved=originalMaterials.get(obj.uuid);
+    if(!saved) return;
+    const materials=Array.isArray(saved)?saved:[saved];
+    const next=materials.map(mat=>useWhite?ivoryFrom(mat):mat.clone());
+    const current=Array.isArray(obj.material)?obj.material:[obj.material];
+    current.forEach(mat=>{if(mat&&!materials.includes(mat))mat.dispose()});
+    obj.material=Array.isArray(saved)?next:next[0];
   });
-  whiteMode = true;
-  materialBtn.classList.add("active");
-  materialBtn.textContent = "Tượng trắng";
+  whiteMode=useWhite;
+  materialBtn.textContent=useWhite?'Tượng trắng':'Màu gốc';
+  materialBtn.classList.toggle('active',useWhite);
 }
 
-function applyOriginal(){
-  if(!model) return;
-  model.traverse(node=>{
-    if(!node.isMesh) return;
-    const saved = originalMaterials.get(node.uuid);
-    if(Array.isArray(saved)){
-      node.material = saved.map(m=>m.clone());
-    }else if(saved){
-      node.material = saved.clone();
-    }
-  });
-  whiteMode = false;
-  materialBtn.classList.remove("active");
-  materialBtn.textContent = "Màu gốc";
+function fitModel(root){
+  let box=new THREE.Box3().setFromObject(root);
+  const size=box.getSize(new THREE.Vector3());
+  const scale=4.25/(Math.max(size.x,size.y,size.z)||1);
+  root.scale.setScalar(scale);
+  root.updateMatrixWorld(true);
+  box=new THREE.Box3().setFromObject(root);
+  const center=box.getCenter(new THREE.Vector3());
+  root.position.set(-center.x,-box.min.y,-center.z);
+  root.updateMatrixWorld(true);
+
+  box=new THREE.Box3().setFromObject(root);
+  const height=box.getSize(new THREE.Vector3()).y;
+  const targetY=Math.max(1.2,height*.48);
+  const distance=Math.max(5.3,height*1.42);
+  camera.position.set(0,targetY+.22,distance);
+  controls.target.set(0,targetY,0);
+  controls.minDistance=Math.max(3.3,distance*.58);
+  controls.maxDistance=distance*1.75;
+  controls.update();
+  homeCamera={position:camera.position.clone(),target:controls.target.clone(),rotation:root.rotation.clone()};
 }
 
 function addHaloToModel(root){
   root.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(root);
+  const size=box.getSize(new THREE.Vector3());
+  const center=box.getCenter(new THREE.Vector3());
+  const anchor=new THREE.Vector3(center.x,box.min.y+size.y*.83,center.z-size.z*.68);
+  const radius=size.y*.255/Math.max(root.scale.x,1e-6);
 
-  const box = new THREE.Box3().setFromObject(root);
-  const size = box.getSize(new THREE.Vector3());
-  const center = box.getCenter(new THREE.Vector3());
+  haloGroup=new THREE.Group();
+  haloGroup.name='BuddhaHalo';
+  haloGroup.position.copy(root.worldToLocal(anchor));
+  haloBaseY=haloGroup.position.y;
 
-  // Float the halo clearly behind the statue while keeping its center
-  // aimed toward the head / upper-back area.
-  const haloWorld = new THREE.Vector3(
-    center.x,
-    box.min.y + size.y * .83,
-    center.z - size.z * .68
-  );
-  const haloLocal = root.worldToLocal(haloWorld.clone());
-
-  const worldRadius = size.y * .255;
-  const localRadius = worldRadius / Math.max(root.scale.x, 1e-6);
-
-  haloGroup = new THREE.Group();
-  haloGroup.name = "BuddhaHalo";
-  haloGroup.position.copy(haloLocal);
-
-  const glow = new THREE.Mesh(
-    new THREE.RingGeometry(localRadius * .72, localRadius * 1.12, 128),
-    new THREE.MeshBasicMaterial({
-      color:0xffc95f,
-      transparent:true,
-      opacity:.16,
-      side:THREE.DoubleSide,
-      depthWrite:false,
-      blending:THREE.AdditiveBlending
-    })
-  );
-
-  const outer = new THREE.Mesh(
-    new THREE.RingGeometry(localRadius * .88, localRadius, 160),
-    new THREE.MeshBasicMaterial({
-      color:0xffe9a8,
-      transparent:true,
-      opacity:.95,
-      side:THREE.DoubleSide,
-      depthWrite:false,
-      blending:THREE.AdditiveBlending
-    })
-  );
-
-  const innerGlow = new THREE.Mesh(
-    new THREE.RingGeometry(localRadius * .82, localRadius * .91, 160),
-    new THREE.MeshBasicMaterial({
-      color:0xffd574,
-      transparent:true,
-      opacity:.34,
-      side:THREE.DoubleSide,
-      depthWrite:false,
-      blending:THREE.AdditiveBlending
-    })
-  );
-
-  glow.renderOrder = 1;
-  innerGlow.renderOrder = 2;
-  outer.renderOrder = 3;
-  haloGroup.add(glow, innerGlow, outer);
-
-  // Because this group is a child of the Buddha root, it inherits every
-  // translation, scale and rotation of the statue.
+  const bands=[
+    {inner:.72,outer:1.12,color:0xffc95f,opacity:.16},
+    {inner:.82,outer:.91,color:0xffd574,opacity:.34},
+    {inner:.88,outer:1,color:0xffe9a8,opacity:.95}
+  ];
+  for(const band of bands){
+    const mesh=new THREE.Mesh(
+      new THREE.RingGeometry(radius*band.inner,radius*band.outer,160),
+      new THREE.MeshBasicMaterial({
+        color:band.color,transparent:true,opacity:band.opacity,
+        side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending
+      })
+    );
+    mesh.renderOrder=1;
+    haloGroup.add(mesh);
+  }
   root.add(haloGroup);
 }
 
-function frameModel(root){
-  let box = new THREE.Box3().setFromObject(root);
-  const size = box.getSize(new THREE.Vector3());
-  const largest = Math.max(size.x, size.y, size.z) || 1;
-  const scale = 4.25 / largest;
-  root.scale.setScalar(scale);
+const gltfLoader=new GLTFLoader();
+const dracoLoader=new DRACOLoader();
+dracoLoader.setDecoderPath('./vendor/libs/draco/');
+gltfLoader.setDRACOLoader(dracoLoader);
+gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+let loadComplete=false;
+const modelTimer=setTimeout(()=>{
+  if(!loadComplete) fail('Tải hoặc giải mã model quá 30 giây.');
+},30000);
 
-  box = new THREE.Box3().setFromObject(root);
-  const center = box.getCenter(new THREE.Vector3());
-  root.position.x -= center.x;
-  root.position.z -= center.z;
-  root.position.y -= box.min.y;
-
-  box = new THREE.Box3().setFromObject(root);
-  const finalSize = box.getSize(new THREE.Vector3());
-  const yTarget = Math.max(1.2, finalSize.y * .48);
-  const z = Math.max(5.3, finalSize.y * 1.42);
-
-  camera.position.set(0, yTarget + .22, z);
-  controls.target.set(0, yTarget, 0);
-  controls.minDistance = Math.max(3.3, z * .58);
-  controls.maxDistance = z * 1.75;
-  controls.update();
-
-  homeCamera = {
-    position:camera.position.clone(),
-    target:controls.target.clone(),
-    rotation:root.rotation.clone()
-  };
-}
-
-const loader = new GLTFLoader();
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("./vendor/libs/draco/");
-loader.setDRACOLoader(dracoLoader);
-loader.setMeshoptDecoder(MeshoptDecoder);
-async function loadBuddhaModel(){
-  const controller = new AbortController();
-  const timeout = setTimeout(()=>controller.abort(), 20000);
-
-  try{
-    logStep("GLB request","/embedded/buddha/buddha.glb");
-    progress.textContent = "Đang tải GLB…";
-    const response = await fetch("/embedded/buddha/buddha.glb?v=20260925-4", {
-      cache:"no-store",
-      signal:controller.signal
-    });
-
-    if(!response.ok){
-      throw new Error("HTTP " + response.status + " khi tải buddha.glb");
-    }
-
-    const total = Number(response.headers.get("content-length")) || 0;
-    logStep("GLB response","HTTP "+response.status+", bytes="+(total||"unknown"));
-    let buffer;
-
-    if(response.body && response.body.getReader){
-      const reader = response.body.getReader();
-      const chunks = [];
-      let received = 0;
-
-      while(true){
-        const {done,value} = await reader.read();
-        if(done) break;
-        chunks.push(value);
-        received += value.byteLength;
-
-        if(total){
-          progress.textContent = Math.min(100, Math.round(received / total * 100)) + "%";
-        }else{
-          progress.textContent = Math.round(received / 1024) + " KB";
-        }
-      }
-
-      buffer = new Uint8Array(received);
-      let offset = 0;
-      for(const chunk of chunks){
-        buffer.set(chunk, offset);
-        offset += chunk.byteLength;
-      }
-      buffer = buffer.buffer;
-    }else{
-      buffer = await response.arrayBuffer();
-      progress.textContent = "100%";
-    }
-
-    clearTimeout(timeout);
-    logStep("GLB received","bytes="+buffer.byteLength);
-    progress.textContent="Đang giải mã 3D…";
-    const parseTimer = setTimeout(()=>fail("Giải mã model quá 30 giây."),30000);
-
-    loader.parse(
-      buffer,
-      "/embedded/buddha/",
-      gltf=>{
-        clearTimeout(parseTimer);
-        logStep("GLB parsed","scene ready");
-        model = gltf.scene;
-        scene.add(model);
-
-        model.traverse(node=>{
-          if(!node.isMesh) return;
-          node.castShadow = true;
-          node.receiveShadow = true;
-          if(Array.isArray(node.material)){
-            originalMaterials.set(node.uuid, node.material.map(m=>m.clone()));
-          }else if(node.material){
-            originalMaterials.set(node.uuid, node.material.clone());
-          }
+function loadModel(){
+  status.classList.remove('error');
+  status.textContent='Đang tải model…';
+  loaderSub.textContent='Đang tải GLB từ mini app…';
+  log('GLB request',modelUrl);
+  gltfLoader.load(
+    modelUrl,
+    gltf=>{
+      loadComplete=true;
+      clearTimeout(modelTimer);
+      try{
+        modelRoot=gltf.scene;
+        stage.add(modelRoot);
+        modelRoot.traverse(obj=>{
+          if(!obj.isMesh) return;
+          obj.castShadow=true;
+          obj.receiveShadow=true;
+          originalMaterials.set(obj.uuid,Array.isArray(obj.material)?obj.material.map(m=>m.clone()):obj.material?.clone());
         });
-
-        frameModel(model);
-        applyIvory();
-        addHaloToModel(model);
-        renderer.render(scene,camera);
-        progress.textContent = "100%";
-        loading.classList.add("hide");
-        logStep("Render ready","Buddha and halo visible");
-      },
-      err=>{
-        clearTimeout(parseTimer);
-        console.error(err);
-        fail("Không đọc được buddha.glb: " + (err?.message || String(err)));
+        fitModel(modelRoot);
+        applyMaterial(true);
+        addHaloToModel(modelRoot);
+        status.textContent='Tượng trắng ngà • Halo bật';
+        loaderEl.classList.add('hide');
+        log('Render ready','GLB parsed, statue and halo mounted');
+      }catch(error){
+        fail('Không thể dựng tượng: '+String(error?.message||error));
       }
-    );
-  }catch(err){
-    clearTimeout(timeout);
-    const message = err?.name === "AbortError"
-      ? "Tải buddha.glb quá 20 giây nên đã dừng."
-      : (err?.message || String(err));
-    fail("Không tải được model: " + message);
-  }
+    },
+    event=>{
+      if(loadComplete) return;
+      const info=event.total?Math.min(100,Math.round(event.loaded/event.total*100))+'%':Math.round(event.loaded/1024)+' KB';
+      status.textContent='Đang tải model… '+info;
+      loaderSub.textContent='GLB • '+info;
+    },
+    error=>{
+      loadComplete=true;
+      clearTimeout(modelTimer);
+      console.error(error);
+      fail('Không tải được model: '+String(error?.message||error));
+    }
+  );
 }
+loadModel();
 
-loadBuddhaModel();
-
-materialBtn.addEventListener("click",()=>{
-  whiteMode ? applyOriginal() : applyIvory();
-});
-
-haloBtn.addEventListener("click",()=>{
+spinBtn.onclick=()=>{
+  controls.autoRotate=!controls.autoRotate;
+  spinBtn.textContent=controls.autoRotate?'Dừng xoay':'Tự xoay';
+  spinBtn.classList.toggle('active',controls.autoRotate);
+};
+materialBtn.onclick=()=>applyMaterial(!whiteMode);
+haloBtn.onclick=()=>{
   if(!haloGroup) return;
-  haloGroup.visible = !haloGroup.visible;
-  haloBtn.classList.toggle("active", haloGroup.visible);
-});
-
-spinBtn.addEventListener("click",()=>{
-  autoSpin = !autoSpin;
-  spinBtn.classList.toggle("active", autoSpin);
-  spinBtn.textContent = autoSpin ? "Dừng xoay" : "Tự xoay";
-});
-
-resetBtn.addEventListener("click",()=>{
-  if(!homeCamera || !model) return;
+  haloGroup.visible=!haloGroup.visible;
+  haloBtn.classList.toggle('active',haloGroup.visible);
+  status.textContent=haloGroup.visible?'Halo bật':'Halo tắt';
+};
+document.getElementById('reset').onclick=()=>{
+  if(!homeCamera||!modelRoot) return;
   camera.position.copy(homeCamera.position);
   controls.target.copy(homeCamera.target);
-  model.rotation.copy(homeCamera.rotation);
+  modelRoot.rotation.copy(homeCamera.rotation);
   controls.update();
-});
+};
 
-addEventListener("resize",()=>{
-  camera.aspect = innerWidth / innerHeight;
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1,1.8));
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.8));
 });
 
+const clock=new THREE.Clock();
 function animate(){
   requestAnimationFrame(animate);
-  if(autoSpin && model) model.rotation.y += .0032;
+  const time=clock.getElapsedTime();
+  if(haloGroup) haloGroup.position.y=haloBaseY+Math.sin(time*1.4)*.008;
   controls.update();
   renderer.render(scene,camera);
 }
-
 animate();
 </script>
 </body>
