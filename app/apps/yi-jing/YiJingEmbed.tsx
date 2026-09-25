@@ -5,8 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const APP_URL = "https://yi-jing-khaki.vercel.app/";
 const APP_ORIGIN = "https://yi-jing-khaki.vercel.app";
-const SHAKE_THRESHOLD = 10;
-const ROTATION_THRESHOLD = 75;
+const ROTATION_THRESHOLD = 55;
+const ROTATION_AXIS_THRESHOLD = 28;
 const SHAKE_COOLDOWN_MS = 1000;
 
 type MotionStatus = "idle" | "requesting" | "active" | "denied" | "unavailable";
@@ -69,40 +69,26 @@ export default function YiJingEmbed() {
 
     const handleMotion = (event: DeviceMotionEvent) => {
       motionEventSeenRef.current = true;
-      const acceleration = event.accelerationIncludingGravity ?? event.acceleration;
-      if (!acceleration) return;
-      if (acceleration.x == null && acceleration.y == null && acceleration.z == null) return;
-
-      const current = {
-        x: acceleration.x ?? 0,
-        y: acceleration.y ?? 0,
-        z: acceleration.z ?? 0,
-      };
-      const previous = lastMotionRef.current;
-      lastMotionRef.current = current;
-      if (!previous) return;
-
-      const delta =
-        Math.abs(current.x - previous.x) +
-        Math.abs(current.y - previous.y) +
-        Math.abs(current.z - previous.z);
       const rotation = event.rotationRate;
-      const rotationMagnitude = rotation
-        ? Math.abs(rotation.alpha ?? 0) +
-          Math.abs(rotation.beta ?? 0) +
-          Math.abs(rotation.gamma ?? 0)
-        : 0;
+      if (!rotation) return;
+
+      const alpha = Math.abs(rotation.alpha ?? 0);
+      const beta = Math.abs(rotation.beta ?? 0);
+      const gamma = Math.abs(rotation.gamma ?? 0);
+      const rotationMagnitude = alpha + beta + gamma;
+      const dominantAxis = Math.max(alpha, beta, gamma);
       const now = Date.now();
 
-      const gentleMotionDetected =
-        delta >= SHAKE_THRESHOLD || rotationMagnitude >= ROTATION_THRESHOLD;
+      const wristTurnDetected =
+        rotationMagnitude >= ROTATION_THRESHOLD &&
+        dominantAxis >= ROTATION_AXIS_THRESHOLD;
 
-      if (!gentleMotionDetected || now - lastShakeAtRef.current < SHAKE_COOLDOWN_MS) return;
+      if (!wristTurnDetected || now - lastShakeAtRef.current < SHAKE_COOLDOWN_MS) return;
 
       lastShakeAtRef.current = now;
       postToApp({
         type: "yi-jing:shake",
-        motion: rotationMagnitude >= ROTATION_THRESHOLD ? "wrist" : "acceleration",
+        motion: "wrist",
       });
     };
 
@@ -150,14 +136,14 @@ export default function YiJingEmbed() {
 
   const label =
     motionStatus === "active"
-      ? "📱 Lắc nhẹ: bật"
+      ? "📱 Xoay cổ tay: bật"
       : motionStatus === "requesting"
         ? "Đang bật cảm biến…"
         : motionStatus === "denied"
           ? "Lắc: chưa cấp quyền"
           : motionStatus === "unavailable"
             ? "Lắc: không khả dụng"
-            : "📱 Bật lắc nhẹ";
+            : "📱 Bật cảm biến";
 
   return (
     <Box sx={{ width: "100%", height: "100%", bgcolor: "#f5efe5", position: "relative" }}>
@@ -187,7 +173,7 @@ export default function YiJingEmbed() {
             <Box sx={{ fontSize: 36, mb: 1 }}>📱</Box>
             <Box sx={{ fontWeight: 800, mb: .75 }}>Cho phép lắc để gieo quẻ</Box>
             <Box sx={{ fontSize: 14, color: "text.secondary", mb: 2 }}>
-              Sau khi cho phép, chỉ cần lắc nhẹ hoặc xoay cổ tay. Mỗi cử chỉ gieo 1 hào.
+              Sau khi cho phép, hãy xoay/nghiêng cổ tay nhẹ. Không cần lắc điện thoại. Mỗi cử chỉ gieo 1 hào.
             </Box>
             <Button
               type="button"
