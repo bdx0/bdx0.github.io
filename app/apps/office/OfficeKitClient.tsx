@@ -1231,6 +1231,42 @@ export default function OfficeKitClient() {
         bgcolor: "background.paper",
         borderWidth: { xs: 0, lg: 1 },
         borderRadius: { xs: 0, lg: 1 },
+
+        // Keep floating labels readable: the label sits above the outline
+        // and paints its own background instead of letting the border cross it.
+        "& .MuiInputLabel-root": {
+          zIndex: 1,
+          maxWidth: "calc(100% - 28px)",
+        },
+        "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+          bgcolor: "background.paper",
+          px: 0.5,
+          ml: -0.25,
+          borderRadius: 0.5,
+        },
+        "& .MuiOutlinedInput-root": {
+          borderRadius: 2,
+          bgcolor: "background.paper",
+          transition: "background-color 120ms ease, box-shadow 120ms ease",
+          "& fieldset": {
+            transition: "border-color 120ms ease, border-width 120ms ease",
+          },
+          "&:hover fieldset": {
+            borderColor: "text.secondary",
+          },
+          "&.Mui-focused": {
+            boxShadow: (theme) => `0 0 0 3px ${theme.palette.primary.main}14`,
+          },
+          "&.Mui-focused fieldset": {
+            borderWidth: 1.5,
+          },
+        },
+        "& .MuiInputBase-input, & .MuiInputBase-inputMultiline": {
+          fontSize: { xs: 16, sm: "inherit" },
+        },
+        "& .MuiFormHelperText-root": {
+          mx: 0.5,
+        },
       }}
     >
       <Box
