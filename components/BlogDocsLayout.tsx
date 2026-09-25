@@ -30,7 +30,28 @@ export default function BlogDocsLayout({
   children,
 }: BlogDocsLayoutProps) {
   const theme = useTheme();
-  const { blog, surfaces } = theme.site;
+  const { blog, surfaces, navigation: navTheme, density, mobile, typography } = theme.site;
+  const docsMode = blog.variant === "docs-three-column";
+  const mobilePanelSx = {
+    mb: 2.5,
+    border: surfaces.showBorders ? 1 : 0,
+    borderColor: "divider",
+    borderRadius: surfaces.radius,
+    boxShadow: surfaces.style === "elevated" ? 2 : "none",
+    bgcolor: "background.paper",
+    "& summary": {
+      cursor: "pointer",
+      px: density.mobilePanelPaddingX,
+      py: density.mobilePanelPaddingY,
+      fontSize: navTheme.itemFontSize,
+      fontWeight: 700,
+    },
+  } as const;
+  const selectedSx = {
+    bgcolor: navTheme.selectedStyle === "filled" ? "action.selected" : "transparent",
+    border: navTheme.selectedStyle === "outlined" ? 1 : undefined,
+    borderColor: "divider",
+  } as const;
 
   const navigation = (
     <>
@@ -40,7 +61,7 @@ export default function BlogDocsLayout({
             px: 1.25,
             py: 1,
             borderRadius: surfaces.compactRadius,
-            bgcolor: currentSlug ? "transparent" : "action.selected",
+            ...(currentSlug ? {} : selectedSx),
             "&:hover": { bgcolor: "action.hover" },
           }}
         >
@@ -60,6 +81,7 @@ export default function BlogDocsLayout({
               px: 1.25,
               pb: 0.65,
               fontWeight: 700,
+              fontSize: navTheme.sectionFontSize,
               letterSpacing: "0.055em",
               textTransform: "uppercase",
             }}
@@ -86,7 +108,7 @@ export default function BlogDocsLayout({
                         px: 1.25,
                         py: 0.85,
                         borderRadius: surfaces.compactRadius,
-                        bgcolor: selected ? "action.selected" : "transparent",
+                        ...(selected ? selectedSx : {}),
                         "&:hover": { bgcolor: "action.hover" },
                       }}
                     >
@@ -94,6 +116,7 @@ export default function BlogDocsLayout({
                         variant="body2"
                         sx={{
                           fontWeight: selected ? 700 : 500,
+                          fontSize: navTheme.itemFontSize,
                           lineHeight: 1.35,
                         }}
                       >
@@ -123,7 +146,7 @@ export default function BlogDocsLayout({
             color="text.secondary"
             sx={{
               display: "block",
-              py: 0.6,
+              py: density.tocItemPaddingY,
               pl: item.level === 3 ? 1.5 : 0,
               lineHeight: 1.4,
               "&:hover": { color: "text.primary" },
@@ -137,23 +160,23 @@ export default function BlogDocsLayout({
   );
 
   return (
-    <Box>
+    <Box
+      sx={{
+        "--blog-body-size": `${typography.blogBodySize}px`,
+        "--blog-body-line-height": typography.blogBodyLineHeight,
+        "--blog-h2-xs-size": `${typography.blogHeading2.xs}px`,
+        "--blog-h2-md-size": `${typography.blogHeading2.md}px`,
+        "--blog-h3-xs-size": `${typography.blogHeading3.xs}px`,
+        "--blog-h3-md-size": `${typography.blogHeading3.md}px`,
+        "--blog-code-size": `${typography.blogCodeSize}px`,
+        "--blog-block-spacing": density.articleBlockSpacing,
+      }}
+    >
       <Box
         component="details"
         sx={{
+          ...mobilePanelSx,
           display: { xs: "block", lg: "none" },
-          mb: 2.5,
-          border: 1,
-          borderColor: "divider",
-          borderRadius: surfaces.radius,
-          bgcolor: "background.paper",
-          "& summary": {
-            cursor: "pointer",
-            px: 1.75,
-            py: 1.25,
-            fontSize: 14,
-            fontWeight: 700,
-          },
         }}
       >
         <Box component="summary">Browse blog</Box>
@@ -162,29 +185,33 @@ export default function BlogDocsLayout({
       </Box>
 
       {toc.length > 0 && (
-        <Box
-          component="details"
-          open
-          sx={{
-            display: { xs: "block", lg: "none" },
-            mb: 2.5,
-            border: 1,
-            borderColor: "divider",
-            borderRadius: surfaces.radius,
-            bgcolor: "background.paper",
-            "& summary": {
-              cursor: "pointer",
-              px: 1.75,
-              py: 1.25,
-              fontSize: 14,
+        mobile.toc === "collapsible" ? (
+          <Box
+            component="details"
+            open={mobile.tocDefaultOpen}
+            sx={{ ...mobilePanelSx, display: { xs: "block", lg: "none" } }}
+          >
+            <Box component="summary">On this page</Box>
+            <Divider />
+            <Box sx={{ px: density.mobilePanelPaddingX, py: 1 }}>{tocLinks}</Box>
+          </Box>
+        ) : (
+          <Box
+            component="section"
+            aria-label="On this page"
+            sx={{ ...mobilePanelSx, display: { xs: "block", lg: "none" } }}
+          >
+            <Typography variant="subtitle2" sx={{
+              px: density.mobilePanelPaddingX,
+              py: density.mobilePanelPaddingY,
               fontWeight: 700,
-            },
-          }}
-        >
-          <Box component="summary">On this page</Box>
-          <Divider />
-          <Box sx={{ px: 1.75, py: 1 }}>{tocLinks}</Box>
-        </Box>
+            }}>
+              On this page
+            </Typography>
+            <Divider />
+            <Box sx={{ px: density.mobilePanelPaddingX, py: 1 }}>{tocLinks}</Box>
+          </Box>
+        )
       )}
 
       <Box
@@ -192,8 +219,12 @@ export default function BlogDocsLayout({
           display: "grid",
           gridTemplateColumns: {
             xs: "minmax(0, 1fr)",
-            lg: `${blog.navWidthLg}px minmax(0, 1fr) ${blog.tocWidthLg}px`,
-            xl: `${blog.navWidthXl}px minmax(0, ${blog.articleMaxWidth}px) ${blog.tocWidthXl}px`,
+            lg: docsMode
+              ? `${blog.navWidthLg}px minmax(0, 1fr) ${blog.tocWidthLg}px`
+              : "minmax(0, 1fr)",
+            xl: docsMode
+              ? `${blog.navWidthXl}px minmax(0, ${blog.articleMaxWidth}px) ${blog.tocWidthXl}px`
+              : `minmax(0, ${blog.articleMaxWidth}px)`,
           },
           gap: { xs: 0, lg: blog.gapLg, xl: blog.gapXl },
           alignItems: "start",
@@ -203,7 +234,7 @@ export default function BlogDocsLayout({
         <Box
           component="aside"
           sx={{
-            display: { xs: "none", lg: "block" },
+            display: { xs: "none", lg: docsMode ? "block" : "none" },
             position: "sticky",
             top: blog.stickyTop,
             maxHeight: `calc(100vh - ${blog.stickyTop + blog.stickyBottomGap}px)`,
@@ -229,7 +260,7 @@ export default function BlogDocsLayout({
         <Box
           component="aside"
           sx={{
-            display: { xs: "none", lg: toc.length ? "block" : "none" },
+            display: { xs: "none", lg: docsMode && toc.length ? "block" : "none" },
             position: "sticky",
             top: blog.stickyTop,
             maxHeight: `calc(100vh - ${blog.stickyTop + blog.stickyBottomGap}px)`,
@@ -256,7 +287,7 @@ export default function BlogDocsLayout({
               borderColor: "divider",
               pl: 1.5,
               "& .MuiTypography-root": {
-                fontSize: 13,
+                fontSize: navTheme.itemFontSize - 1,
                 lineHeight: 1.35,
               },
             }}
