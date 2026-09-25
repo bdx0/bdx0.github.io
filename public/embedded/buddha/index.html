@@ -287,16 +287,16 @@ function addHaloToModel(root){
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
 
-  // Place the halo behind the upper head area, then convert that
-  // world-space anchor back into the model's local coordinates.
+  // Float the halo clearly behind the statue while keeping its center
+  // aimed toward the head / upper-back area.
   const haloWorld = new THREE.Vector3(
     center.x,
-    box.min.y + size.y * .79,
-    center.z - size.z * .22
+    box.min.y + size.y * .83,
+    center.z - size.z * .68
   );
   const haloLocal = root.worldToLocal(haloWorld.clone());
 
-  const worldRadius = size.y * .215;
+  const worldRadius = size.y * .255;
   const localRadius = worldRadius / Math.max(root.scale.x, 1e-6);
 
   haloGroup = new THREE.Group();
@@ -458,7 +458,3 @@ function animate(){
   controls.update();
   renderer.render(scene,camera);
 }
-animate();
-</script>
-</body>
-</html>
