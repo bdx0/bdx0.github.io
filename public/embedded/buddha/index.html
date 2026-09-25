@@ -68,6 +68,14 @@
     border:3px solid rgba(255,229,168,.14);border-top-color:#eac977;animation:spin 1s linear infinite
   }
   #progress{margin-top:7px;color:#aa9d89;font-size:12px;text-align:center}
+  #diagnostics{
+    position:fixed;z-index:40;right:12px;bottom:12px;width:min(520px,calc(100vw - 24px));
+    background:rgba(27,24,19,.97);border:1px solid rgba(255,233,175,.35);
+    color:#f5efe5;border-radius:12px;padding:10px;box-shadow:0 12px 36px rgba(0,0,0,.4)
+  }
+  #diagnostics summary{cursor:pointer;font:600 13px system-ui,sans-serif}
+  #diagnostics pre{white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;max-height:36vh;font:12px/1.5 monospace;color:#dfd1b7}
+  #diagnostics[hidden]{display:none}
   @keyframes spin{to{transform:rotate(360deg)}}
 
   @media(max-width:760px){
@@ -112,34 +120,73 @@
 <div id="loading">
   <div><div class="spinner"></div><div>Đang khởi tạo bộ dựng 3D nội bộ…</div><div id="progress">0%</div></div>
 </div>
-<div id="errorBox"><div class="inner"><h2>Không thể tải model 3D</h2><p id="errorText"></p></div></div>
+<div id="errorBox"><div class="inner"><h2>Không thể tải model 3D</h2><p id="errorText"></p><p>Nhật ký kỹ thuật nằm ở góc dưới màn hình.</p></div></div>
+<details id="diagnostics" hidden>
+  <summary>Nhật ký tải Buddha 3D</summary>
+  <pre id="diagnosticLog" aria-live="polite"></pre>
+</details>
 
 <script>
 (function(){
-  function showBootError(message){
-    const loading=document.getElementById("loading");
-    const box=document.getElementById("errorBox");
-    const text=document.getElementById("errorText");
-    if(loading) loading.classList.add("hide");
-    if(text) text.textContent=message;
-    if(box) box.classList.add("show");
-  }
+  const loading=document.getElementById("loading");
+  const box=document.getElementById("errorBox");
+  const errorText=document.getElementById("errorText");
+  const diagnostics=document.getElementById("diagnostics");
+  const logEl=document.getElementById("diagnosticLog");
+  const logs=[];
+  const start=Date.now();
+
+  if(new URLSearchParams(location.search).has("debug")) diagnostics.hidden=false;
+  window.__buddhaLog=function(step,detail){
+    const line=((Date.now()-start)/1000).toFixed(1)+"s | "+step+(detail?" | "+detail:"");
+    logs.push(line);
+    if(logs.length>60) logs.shift();
+    logEl.textContent=logs.join("\n");
+    console.info("[Buddha]",line);
+  };
+  window.__buddhaFail=function(message){
+    window.__buddhaLog("ERROR",message);
+    loading.classList.add("hide");
+    errorText.textContent=message;
+    box.classList.add("show");
+    diagnostics.hidden=false;
+    diagnostics.open=true;
+  };
+  window.__buddhaModuleStarted=false;
+  window.__buddhaModuleReady=function(){
+    window.__buddhaModuleStarted=true;
+    clearTimeout(bootstrapTimer);
+    window.__buddhaLog("ES modules loaded","Three.js and dependencies available");
+  };
   window.addEventListener("error",function(e){
-    showBootError("JavaScript: "+(e.message||"unknown error")+" @ "+(e.filename||"")+" :"+(e.lineno||""));
-  });
+    const target=e.target;
+    if(target && target!==window && target.src){
+      window.__buddhaFail("Resource failed: "+target.src);
+    }else{
+      window.__buddhaFail("JavaScript: "+(e.message||"unknown")+" @ "+(e.filename||"")+":"+(e.lineno||0));
+    }
+  },true);
   window.addEventListener("unhandledrejection",function(e){
-    showBootError("Promise: "+String(e.reason?.message||e.reason||"unknown rejection"));
+    window.__buddhaFail("Promise: "+String(e.reason?.message||e.reason||"unknown"));
   });
+  const bootstrapTimer=setTimeout(function(){
+    if(!window.__buddhaModuleStarted){
+      window.__buddhaFail("Module khởi tạo quá 15 giây. Kiểm tra đường dẫn JS trong nhật ký/Network.");
+    }
+  },15000);
+  window.__buddhaLog("HTML ready","Waiting for local ES modules");
 })();
 </script>
 
 <script type="module">
 import * as THREE from "three";
-import { GLTFLoader } from "./vendor/GLTFLoader.js";
-import { OrbitControls } from "./vendor/OrbitControls.js";
-import { DRACOLoader } from "./vendor/DRACOLoader.js";
-import { MeshoptDecoder } from "./vendor/meshopt_decoder.module.js";
+import { GLTFLoader } from "./vendor/loaders/GLTFLoader.js";
+import { OrbitControls } from "./vendor/controls/OrbitControls.js";
+import { DRACOLoader } from "./vendor/loaders/DRACOLoader.js";
+import { MeshoptDecoder } from "./vendor/libs/meshopt_decoder.module.js";
 
+window.__buddhaModuleReady();
+const logStep = window.__buddhaLog;
 const host = document.getElementById("canvasHost");
 const loading = document.getElementById("loading");
 const progress = document.getElementById("progress");
@@ -222,9 +269,7 @@ let homeCamera = null;
 const originalMaterials = new Map();
 
 function fail(message){
-  loading.classList.add("hide");
-  errorText.textContent = message;
-  errorBox.classList.add("show");
+  window.__buddhaFail(message);
 }
 
 function ivoryFrom(source){
@@ -381,7 +426,7 @@ function frameModel(root){
 
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("./vendor/draco/");
+dracoLoader.setDecoderPath("./vendor/libs/draco/");
 loader.setDRACOLoader(dracoLoader);
 loader.setMeshoptDecoder(MeshoptDecoder);
 async function loadBuddhaModel(){
@@ -389,7 +434,9 @@ async function loadBuddhaModel(){
   const timeout = setTimeout(()=>controller.abort(), 20000);
 
   try{
-    const response = await fetch("/embedded/buddha/buddha.glb?v=20260925-3", {
+    logStep("GLB request","/embedded/buddha/buddha.glb");
+    progress.textContent = "Đang tải GLB…";
+    const response = await fetch("/embedded/buddha/buddha.glb?v=20260925-4", {
       cache:"no-store",
       signal:controller.signal
     });
@@ -399,6 +446,7 @@ async function loadBuddhaModel(){
     }
 
     const total = Number(response.headers.get("content-length")) || 0;
+    logStep("GLB response","HTTP "+response.status+", bytes="+(total||"unknown"));
     let buffer;
 
     if(response.body && response.body.getReader){
@@ -432,11 +480,16 @@ async function loadBuddhaModel(){
     }
 
     clearTimeout(timeout);
+    logStep("GLB received","bytes="+buffer.byteLength);
+    progress.textContent="Đang giải mã 3D…";
+    const parseTimer = setTimeout(()=>fail("Giải mã model quá 30 giây."),30000);
 
     loader.parse(
       buffer,
       "/embedded/buddha/",
       gltf=>{
+        clearTimeout(parseTimer);
+        logStep("GLB parsed","scene ready");
         model = gltf.scene;
         scene.add(model);
 
@@ -457,8 +510,10 @@ async function loadBuddhaModel(){
         renderer.render(scene,camera);
         progress.textContent = "100%";
         loading.classList.add("hide");
+        logStep("Render ready","Buddha and halo visible");
       },
       err=>{
+        clearTimeout(parseTimer);
         console.error(err);
         fail("Không đọc được buddha.glb: " + (err?.message || String(err)));
       }
