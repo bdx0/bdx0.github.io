@@ -146,7 +146,7 @@ export default function YiJingEmbed() {
             : "📱 Bật cảm biến";
 
   return (
-    <Box sx={{ width: "100%", height: "100%", bgcolor: "#f5efe5", position: "relative" }}>
+    <Box sx={{ width: "100%", height: "100%", minHeight: 0, maxHeight: "100%", overflow: "hidden", bgcolor: "#f5efe5", position: "relative" }}>
       {motionPromptOpen ? (
         <Box
           sx={{
@@ -212,6 +212,7 @@ export default function YiJingEmbed() {
           display: "block",
           width: "100%",
           height: "100%",
+          minHeight: 0,
           border: 0,
           bgcolor: "#f5efe5",
         }}
