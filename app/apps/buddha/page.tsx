@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function AppPage() {
   return (
-    <Box sx={{ width: "100%", height: "100%", bgcolor: "#15130f" }}>
+    <Box sx={{ width: "100%", height: "100%", minHeight: 0, maxHeight: "100%", overflow: "hidden", bgcolor: "#15130f" }}>
       <Box
         component="iframe"
         src="/embedded/buddha/"
@@ -16,6 +16,7 @@ export default function AppPage() {
           display: "block",
           width: "100%",
           height: "100%",
+          minHeight: 0,
           border: 0,
           bgcolor: "#15130f",
         }}
