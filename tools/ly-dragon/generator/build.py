@@ -177,6 +177,66 @@ def cone_between(start, end, radius, name="Cone", sections=10) -> trimesh.Trimes
     return align_z_to_vector(mesh, start, end)
 
 
+def flame_leaf_between(
+    start: Iterable[float],
+    end: Iterable[float],
+    width: float,
+    name: str,
+    lean: Iterable[float] = (0.0, 0.0, 0.0),
+) -> trimesh.Trimesh:
+    """Create a curved, tapered solid leaf/flame instead of a straight cone.
+
+    Each ring has a broad blade axis and a thin depth axis. Its center bends
+    toward `lean` near the tip; all geometry is generated from the spec.
+    """
+    start = np.asarray(start, dtype=float)
+    end = np.asarray(end, dtype=float)
+    lean = np.asarray(lean, dtype=float)
+    direction = end - start
+    length = np.linalg.norm(direction)
+    direction /= max(length, 1e-9)
+    blade = np.cross(direction, np.array([0.0, 0.0, 1.0]))
+    if np.linalg.norm(blade) < 1e-6:
+        blade = np.cross(direction, np.array([1.0, 0.0, 0.0]))
+    blade /= max(np.linalg.norm(blade), 1e-9)
+    depth = np.cross(direction, blade)
+    depth /= max(np.linalg.norm(depth), 1e-9)
+    heights = [0.0, 0.14, 0.36, 0.60, 0.81, 1.0]
+    widths = [0.31, 0.78, 1.0, 0.78, 0.36, 0.015]
+    depths = [0.50, 0.65, 0.61, 0.45, 0.25, 0.015]
+    sides = 8
+    vertices = []
+    for t, w, d in zip(heights, widths, depths):
+        center = start + (end - start) * t + lean * (t ** 1.6)
+        for j in range(sides):
+            theta = j * 2 * math.pi / sides
+            vertices.append(
+                center
+                + blade * (width * w * math.cos(theta))
+                + depth * (width * 0.23 * d * math.sin(theta))
+            )
+    faces = []
+    for ring in range(len(heights) - 1):
+        for j in range(sides):
+            a = ring * sides + j
+            b = ring * sides + (j + 1) % sides
+            c = (ring + 1) * sides + (j + 1) % sides
+            d = (ring + 1) * sides + j
+            faces.extend([[a, b, d], [b, c, d]])
+    base = np.mean(np.asarray(vertices[:sides]), axis=0)
+    tip = np.mean(np.asarray(vertices[-sides:]), axis=0)
+    bi = len(vertices)
+    ti = bi + 1
+    vertices.extend([base, tip])
+    for j in range(sides):
+        faces.append([bi, (j + 1) % sides, j])
+        offset = (len(heights) - 1) * sides
+        faces.append([ti, offset + j, offset + (j + 1) % sides])
+    mesh = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
+    mesh.metadata["name"] = name
+    return mesh
+
+
 def radius_profile(spec: dict, t: np.ndarray) -> np.ndarray:
     p = spec["silhouette"]["radius_profile"]
     anchors_t = np.array([
@@ -340,6 +400,18 @@ def build(spec: dict) -> trimesh.Scene:
             node_name=f"Nostril.{side}",
         )
 
+    # Refined slim brows make the smaller head read from a distance.
+    brows = spec["head"].get("brows")
+    if brows:
+        for side in ("left", "right"):
+            points = smooth_curve(brows[f"{side}_curve_points"], 24)
+            brow = tube_mesh(points, brows["radius"], 7, f"Brow.{side}")
+            transform_local(brow, head_transform_matrix)
+            scene.add_geometry(
+                materialize(brow, materials["mane"]),
+                node_name=f"Brow.{side}",
+            )
+
     # Horns and whiskers: tapered curve tubes in head-local space.
     for side in ("left", "right"):
         horn_points = smooth_curve(spec["horns"][f"{side}_curve_points"], 48)
@@ -383,12 +455,12 @@ def build(spec: dict) -> trimesh.Scene:
         start = np.array([x, 0.30, z])
         end = np.array([x - 0.12, 0.76 + 0.025 * i, z])
 
-        leaf = cone_between(
+        leaf = flame_leaf_between(
             start,
             end,
-            0.11 + 0.012 * i,
+            0.10 + 0.008 * i,
             f"HeadMane.{i}",
-            6,
+            lean=[-0.16, 0.04, 0.0],
         )
         transform_local(leaf, head_transform_matrix)
         scene.add_geometry(
@@ -418,12 +490,12 @@ def build(spec: dict) -> trimesh.Scene:
 
         start = point + normal * (radius * 0.88)
         end = start + normal * height
-        leaf = cone_between(
+        leaf = flame_leaf_between(
             start,
             end,
-            max(0.045, height * 0.22),
+            max(0.055, height * spec["mane"].get("leaf_width_ratio", 0.31)),
             f"SpineMane.{index}",
-            6,
+            lean=-body_frame(curve, t)[1] * height * 0.28,
         )
         scene.add_geometry(
             materialize(leaf, materials["mane"]),
@@ -545,6 +617,8 @@ def main() -> None:
     output = args.out or Path(spec["export"]["filename"])
     output.parent.mkdir(parents=True, exist_ok=True)
 
+    # Versioned spec is the source of truth. The browser loads the new export
+    # by its versioned filename to avoid serving a cached older mesh.
     scene = build(spec)
     glb = scene.export(file_type="glb")
     output.write_bytes(glb)
