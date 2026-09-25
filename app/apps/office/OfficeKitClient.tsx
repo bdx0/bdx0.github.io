@@ -11,6 +11,7 @@ import {
   GridOnOutlined,
   LinkOutlined,
   ListAltOutlined,
+  MenuOutlined,
   PercentOutlined,
   QrCode2Outlined,
   StraightenOutlined,
@@ -23,7 +24,9 @@ import {
   Button,
   Chip,
   Divider,
+  Drawer,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Paper,
@@ -321,6 +324,7 @@ function CopyButton({ value }: { value: string }) {
 
 export default function OfficeKitClient() {
   const [tool, setTool] = useState<ToolId>("text");
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
 
   const [textInput, setTextInput] = useState("");
   const [textOutput, setTextOutput] = useState("");
@@ -1225,6 +1229,8 @@ export default function OfficeKitClient() {
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "248px minmax(0,1fr)" },
         bgcolor: "background.paper",
+        borderWidth: { xs: 0, lg: 1 },
+        borderRadius: { xs: 0, lg: 1 },
       }}
     >
       <Box
@@ -1312,43 +1318,128 @@ export default function OfficeKitClient() {
         <Box
           sx={{
             display: { xs: "flex", lg: "none" },
-            p: 1.5,
-            gap: 1.25,
+            minHeight: 56,
+            px: 1,
+            gap: 0.75,
             alignItems: "center",
             borderBottom: 1,
             borderColor: "divider",
-            bgcolor: "background.default",
+            bgcolor: "background.paper",
           }}
         >
+          <IconButton
+            aria-label="Mở danh sách công cụ"
+            onClick={() => setMobileToolsOpen(true)}
+            edge="start"
+          >
+            <MenuOutlined />
+          </IconButton>
+
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
-              Office Kit
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 750,
+                lineHeight: 1.2,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {activeTool.label}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
-              13 local utilities
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                display: "block",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {activeTool.detail}
             </Typography>
           </Box>
-          <FormControl size="small" sx={{ minWidth: 168, maxWidth: "58%" }}>
-            <InputLabel id="office-tool-label">Công cụ</InputLabel>
-            <Select
-              labelId="office-tool-label"
-              label="Công cụ"
-              value={tool}
-              onChange={(event) => setTool(event.target.value as ToolId)}
-              renderValue={() => activeTool.label}
-            >
-              {tools.map(({ id, label, detail, icon: Icon }) => (
-                <MenuItem key={id} value={id}>
-                  <Icon fontSize="small" sx={{ mr: 1.25, color: "text.secondary" }} />
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 650 }}>{label}</Typography>
-                    <Typography variant="caption" color="text.secondary">{detail}</Typography>
-                  </Box>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+
+          <Chip label="Local" size="small" variant="outlined" />
         </Box>
+
+        <Drawer
+          anchor="left"
+          open={mobileToolsOpen}
+          onClose={() => setMobileToolsOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          PaperProps={{
+            sx: {
+              width: "min(82vw, 320px)",
+              bgcolor: "background.paper",
+            },
+          }}
+        >
+          <Box sx={{ px: 2, pt: 2, pb: 1.5 }}>
+            <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: "0.12em" }}>
+              Workspace
+            </Typography>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+              <Typography variant="h6" sx={{ fontWeight: 800 }}>
+                Office Kit
+              </Typography>
+              <Chip label="13" size="small" variant="outlined" />
+            </Stack>
+            <Typography variant="caption" color="text.secondary">
+              Local-first utilities
+            </Typography>
+          </Box>
+
+          <Divider />
+
+          <Box sx={{ p: 1, overflowY: "auto", flex: 1 }}>
+            <Stack spacing={0.5}>
+              {tools.map(({ id, label, detail, icon: Icon }) => {
+                const selected = tool === id;
+                return (
+                  <Button
+                    key={id}
+                    onClick={() => {
+                      setTool(id);
+                      setMobileToolsOpen(false);
+                    }}
+                    variant={selected ? "contained" : "text"}
+                    color={selected ? "primary" : "inherit"}
+                    startIcon={<Icon fontSize="small" />}
+                    sx={{
+                      justifyContent: "flex-start",
+                      textAlign: "left",
+                      width: "100%",
+                      px: 1.25,
+                      py: 0.85,
+                      minHeight: 46,
+                    }}
+                  >
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700, lineHeight: 1.25 }}>
+                        {label}
+                      </Typography>
+                      <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.65, lineHeight: 1.3 }}>
+                        {detail}
+                      </Typography>
+                    </Box>
+                  </Button>
+                );
+              })}
+            </Stack>
+          </Box>
+
+          <Box sx={{ p: 1.5, borderTop: 1, borderColor: "divider" }}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "success.main" }} />
+              <Typography variant="caption" color="text.secondary">
+                Xử lý trên thiết bị
+              </Typography>
+            </Stack>
+          </Box>
+        </Drawer>
 
         <Box
           sx={{
