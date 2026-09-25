@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install self-hosted Three.js runtime
+        run: npm install --no-save --package-lock=false three@0.169.0
+
       - name: Build with Next.js
         run: npm run build
 
@@ -71,6 +74,33 @@ jobs:
           echo "f938a7e1973767b1004931ec86a5e8e5  ${MODEL_FILE}" | md5sum -c -
           test "$(head -c 4 "${MODEL_FILE}")" = "glTF"
           echo "Buddha GLB ready: $(du -h "${MODEL_FILE}" | cut -f1)"
+
+      - name: Add self-hosted Three.js runtime for Buddha
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUNTIME_DIR="out/embedded/buddha/vendor"
+          DRACO_DIR="${RUNTIME_DIR}/draco"
+
+          mkdir -p "${DRACO_DIR}"
+
+          cp node_modules/three/build/three.module.js "${RUNTIME_DIR}/three.module.js"
+          cp node_modules/three/examples/jsm/loaders/GLTFLoader.js "${RUNTIME_DIR}/GLTFLoader.js"
+          cp node_modules/three/examples/jsm/controls/OrbitControls.js "${RUNTIME_DIR}/OrbitControls.js"
+          cp node_modules/three/examples/jsm/loaders/DRACOLoader.js "${RUNTIME_DIR}/DRACOLoader.js"
+          cp node_modules/three/examples/jsm/libs/meshopt_decoder.module.js "${RUNTIME_DIR}/meshopt_decoder.module.js"
+          cp node_modules/three/examples/jsm/libs/draco/draco_decoder.js "${DRACO_DIR}/draco_decoder.js"
+          cp node_modules/three/examples/jsm/libs/draco/draco_decoder.wasm "${DRACO_DIR}/draco_decoder.wasm"
+          cp node_modules/three/examples/jsm/libs/draco/draco_wasm_wrapper.js "${DRACO_DIR}/draco_wasm_wrapper.js"
+
+          test -s "${RUNTIME_DIR}/three.module.js"
+          test -s "${RUNTIME_DIR}/GLTFLoader.js"
+          test -s "${RUNTIME_DIR}/OrbitControls.js"
+          test -s "${RUNTIME_DIR}/DRACOLoader.js"
+          test -s "${RUNTIME_DIR}/meshopt_decoder.module.js"
+          test -s "${DRACO_DIR}/draco_decoder.wasm"
+
+          echo "Buddha runtime self-hosted under /embedded/buddha/vendor/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
