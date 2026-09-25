@@ -19,7 +19,8 @@ Keep changes small, preserve static-export compatibility, and prefer simplifying
 - Lockfile: `package-lock.json` is authoritative
 - Main UI system: Material UI 7 + Emotion
 - Theme switching: UI-theme registry + `next-themes` color schemes
-- Content: Markdown and MDX
+- Blog content authority: Notion `notion-cms → Content`; local Markdown under `content/blog/` is legacy/migration material only and must not receive new canonical posts.
+- Project/route content: Markdown and MDX where still applicable
 - CI runtime: Node.js 20
 
 Because this is the special `bdx0.github.io` user-site repository, production is served from the domain root. Do not add a `basePath` for `/bdx0.github.io`.
@@ -45,7 +46,7 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 - `components/` — MUI-based shared UI.
 - `mdx-components.tsx` — canonical MDX element-to-MUI component mapping.
 - `lib/markdown.ts` — filesystem content discovery/front matter parsing and build-time resume fetch.
-- `content/blog/` — blog posts.
+- `content/blog/` — legacy blog material during CMS migration; do not add or edit canonical blog body here unless the user explicitly requests an export/snapshot.
 - `content/projects/` — project content.
 - `public/` — static assets and standalone demos such as `public/lab/ly-dragon/index.html`.
 - `.github/workflows/gh-pages.yaml` — GitHub Pages build/deploy workflow.
@@ -103,7 +104,11 @@ Do not remove the Next MDX integration while route-level `.mdx` files remain und
 
 ### 2. Blog and project content
 
-Files in `content/blog/` and `content/projects/` are discovered by `lib/markdown.ts`, parsed with `gray-matter`, and rendered with `next-mdx-remote/rsc` in dynamic routes.
+**Target architecture:** Notion `notion-cms → Content` is the single source of truth for Blog content. This repository is a presentation layer. Do not create a second editable blog copy in `content/blog/` unless the user explicitly requests an export/snapshot.
+
+The current implementation still discovers legacy `content/blog/` files through `lib/markdown.ts` while the reader is being migrated. Treat that path as transitional, not canonical.
+
+Project content in `content/projects/` continues to be discovered by `lib/markdown.ts`, parsed with `gray-matter`, and rendered with `next-mdx-remote/rsc`.
 
 Blog front matter currently follows this shape:
 
@@ -128,7 +133,10 @@ description: Short description
 
 Rules:
 
-- The filename without `.md` or `.mdx` becomes the route slug.
+- Do not add new canonical blog posts to Git. Create/edit them in Notion `Content`.
+- Do not duplicate Blog/Knowledge body into Notes or another store unless explicitly requested.
+- Any generated cache/export must be rebuildable from Notion and must not be hand-edited as a source.
+- For remaining legacy filesystem content, the filename without `.md` or `.mdx` becomes the route slug.
 - Do not silently rename content files because that changes public URLs.
 - Preserve `publish_date` and `tags` behavior used by the homepage and tag routes.
 - `content/projects/page.mdx` is intentionally excluded by `getAllContent("projects")`.
