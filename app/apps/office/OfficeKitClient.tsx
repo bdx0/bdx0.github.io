@@ -1325,6 +1325,7 @@ export default function OfficeKitClient() {
             borderBottom: 1,
             borderColor: "divider",
             bgcolor: "background.paper",
+            flexShrink: 0,
           }}
         >
           <IconButton
@@ -1469,11 +1470,23 @@ export default function OfficeKitClient() {
             minWidth: 0,
             minHeight: 0,
             flex: 1,
-            overflow: "hidden",
+            overflowX: "hidden",
+            overflowY: { xs: "auto", lg: "hidden" },
+            WebkitOverflowScrolling: "touch",
+            overscrollBehaviorY: "contain",
             p: { xs: 1.5, sm: 2, md: 2 },
           }}
         >
-          <Box sx={{ width: "100%", maxWidth: 1040, height: "100%", minHeight: 0, mx: "auto", overflow: "hidden" }}>
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 1040,
+              height: { xs: "auto", lg: "100%" },
+              minHeight: 0,
+              mx: "auto",
+              overflow: { xs: "visible", lg: "hidden" },
+            }}
+          >
             {renderTool()}
           </Box>
         </Box>
