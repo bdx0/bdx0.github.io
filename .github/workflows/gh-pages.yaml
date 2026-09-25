@@ -80,27 +80,30 @@ jobs:
         run: |
           set -euo pipefail
           RUNTIME_DIR="out/embedded/buddha/vendor"
-          DRACO_DIR="${RUNTIME_DIR}/draco"
+          THREE_SOURCE="node_modules/three"
 
-          mkdir -p "${DRACO_DIR}"
+          mkdir -p "${RUNTIME_DIR}/loaders" "${RUNTIME_DIR}/controls" "${RUNTIME_DIR}/libs/draco" "${RUNTIME_DIR}/utils"
 
-          cp node_modules/three/build/three.module.js "${RUNTIME_DIR}/three.module.js"
-          cp node_modules/three/examples/jsm/loaders/GLTFLoader.js "${RUNTIME_DIR}/GLTFLoader.js"
-          cp node_modules/three/examples/jsm/controls/OrbitControls.js "${RUNTIME_DIR}/OrbitControls.js"
-          cp node_modules/three/examples/jsm/loaders/DRACOLoader.js "${RUNTIME_DIR}/DRACOLoader.js"
-          cp node_modules/three/examples/jsm/libs/meshopt_decoder.module.js "${RUNTIME_DIR}/meshopt_decoder.module.js"
-          cp node_modules/three/examples/jsm/libs/draco/draco_decoder.js "${DRACO_DIR}/draco_decoder.js"
-          cp node_modules/three/examples/jsm/libs/draco/draco_decoder.wasm "${DRACO_DIR}/draco_decoder.wasm"
-          cp node_modules/three/examples/jsm/libs/draco/draco_wasm_wrapper.js "${DRACO_DIR}/draco_wasm_wrapper.js"
+          cp "${THREE_SOURCE}/build/three.module.js" "${RUNTIME_DIR}/three.module.js"
+          cp "${THREE_SOURCE}/examples/jsm/loaders/GLTFLoader.js" "${RUNTIME_DIR}/loaders/GLTFLoader.js"
+          cp "${THREE_SOURCE}/examples/jsm/controls/OrbitControls.js" "${RUNTIME_DIR}/controls/OrbitControls.js"
+          cp "${THREE_SOURCE}/examples/jsm/loaders/DRACOLoader.js" "${RUNTIME_DIR}/loaders/DRACOLoader.js"
+          cp "${THREE_SOURCE}/examples/jsm/utils/BufferGeometryUtils.js" "${RUNTIME_DIR}/utils/BufferGeometryUtils.js"
+          cp "${THREE_SOURCE}/examples/jsm/libs/meshopt_decoder.module.js" "${RUNTIME_DIR}/libs/meshopt_decoder.module.js"
+          cp "${THREE_SOURCE}/examples/jsm/libs/draco/draco_decoder.js" "${RUNTIME_DIR}/libs/draco/draco_decoder.js"
+          cp "${THREE_SOURCE}/examples/jsm/libs/draco/draco_decoder.wasm" "${RUNTIME_DIR}/libs/draco/draco_decoder.wasm"
+          cp "${THREE_SOURCE}/examples/jsm/libs/draco/draco_wasm_wrapper.js" "${RUNTIME_DIR}/libs/draco/draco_wasm_wrapper.js"
 
           test -s "${RUNTIME_DIR}/three.module.js"
-          test -s "${RUNTIME_DIR}/GLTFLoader.js"
-          test -s "${RUNTIME_DIR}/OrbitControls.js"
-          test -s "${RUNTIME_DIR}/DRACOLoader.js"
-          test -s "${RUNTIME_DIR}/meshopt_decoder.module.js"
-          test -s "${DRACO_DIR}/draco_decoder.wasm"
+          test -s "${RUNTIME_DIR}/loaders/GLTFLoader.js"
+          test -s "${RUNTIME_DIR}/controls/OrbitControls.js"
+          test -s "${RUNTIME_DIR}/loaders/DRACOLoader.js"
+          test -s "${RUNTIME_DIR}/utils/BufferGeometryUtils.js"
+          test -s "${RUNTIME_DIR}/libs/meshopt_decoder.module.js"
+          test -s "${RUNTIME_DIR}/libs/draco/draco_decoder.wasm"
 
-          echo "Buddha runtime self-hosted under /embedded/buddha/vendor/"
+          node scripts/check-buddha-runtime.cjs "${RUNTIME_DIR}"
+          echo "Buddha runtime and all imported modules verified"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
