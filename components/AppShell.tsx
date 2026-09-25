@@ -39,7 +39,7 @@ import {
 import { useTheme as useMuiTheme } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Logo from "./Logo";
 import SettingsPanel from "./SettingsPanel";
@@ -157,6 +157,24 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     : "";
   const isMiniAppRoute = currentMiniApp !== null;
   const isImmersiveAppRoute = isMiniAppRoute;
+
+  // Lock document-level scrolling only while an immersive mini app is open.
+  // Do not modify body styles: fixed body positioning can persist across iOS back navigation.
+  useEffect(() => {
+    if (!isImmersiveAppRoute) return;
+
+    const html = document.documentElement;
+    const previousOverflow = html.style.overflow;
+    const previousOverscroll = html.style.overscrollBehavior;
+
+    html.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+
+    return () => {
+      html.style.overflow = previousOverflow;
+      html.style.overscrollBehavior = previousOverscroll;
+    };
+  }, [isImmersiveAppRoute]);
 
 
   const isBlogRoute =
