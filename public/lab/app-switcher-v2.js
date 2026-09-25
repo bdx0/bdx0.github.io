@@ -37,8 +37,8 @@
       id: "ly-dragon",
       name: "Rồng thời Lý 3D",
       description: "Mô hình 3D tương tác",
-      href: "https://bdx0.github.io/lab/ly-dragon/",
-      match: (location) => location.hostname === "bdx0.github.io" && location.pathname.startsWith("/lab/ly-dragon"),
+      href: "https://bdx0.github.io/apps/ly-dragon",
+      match: (location) => location.hostname === "bdx0.github.io" && location.pathname.startsWith("/apps/ly-dragon"),
       preview: `
         <span class="mas-preview mas-preview-dragon">
           <svg class="mas-dragon-art" viewBox="0 0 220 120" aria-hidden="true">
