@@ -566,3 +566,6 @@ Chúng ta đang học một trong những ngôn ngữ toán học cơ bản nh�
 > **biểu diễn thế giới và biến đổi thông tin.**
 
 Và đó là lý do một thứ tưởng như chỉ là một bảng số nhỏ lại xuất hiện ở phía sau từ một con rồng 3D cho đến một mô hình trí tuệ nhân tạo có hàng tỷ tham số.
+
+
+**Bài tiếp theo:** [Tensor: từ ma trận nhiều chiều đến cấu trúc dữ liệu cốt lõi của AI](/blog/tensor-cau-truc-du-lieu-cot-loi-cua-ai/)
