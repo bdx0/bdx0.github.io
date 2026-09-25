@@ -5,8 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const APP_URL = "https://yi-jing-khaki.vercel.app/";
 const APP_ORIGIN = "https://yi-jing-khaki.vercel.app";
-const SHAKE_THRESHOLD = 18;
-const SHAKE_COOLDOWN_MS = 900;
+const SHAKE_THRESHOLD = 10;
+const ROTATION_THRESHOLD = 75;
+const SHAKE_COOLDOWN_MS = 1000;
 
 type MotionStatus = "idle" | "requesting" | "active" | "denied" | "unavailable";
 
@@ -83,12 +84,24 @@ export default function YiJingEmbed() {
         Math.abs(current.x - previous.x) +
         Math.abs(current.y - previous.y) +
         Math.abs(current.z - previous.z);
+      const rotation = event.rotationRate;
+      const rotationMagnitude = rotation
+        ? Math.abs(rotation.alpha ?? 0) +
+          Math.abs(rotation.beta ?? 0) +
+          Math.abs(rotation.gamma ?? 0)
+        : 0;
       const now = Date.now();
 
-      if (delta < SHAKE_THRESHOLD || now - lastShakeAtRef.current < SHAKE_COOLDOWN_MS) return;
+      const gentleMotionDetected =
+        delta >= SHAKE_THRESHOLD || rotationMagnitude >= ROTATION_THRESHOLD;
+
+      if (!gentleMotionDetected || now - lastShakeAtRef.current < SHAKE_COOLDOWN_MS) return;
 
       lastShakeAtRef.current = now;
-      postToApp({ type: "yi-jing:shake" });
+      postToApp({
+        type: "yi-jing:shake",
+        motion: rotationMagnitude >= ROTATION_THRESHOLD ? "wrist" : "acceleration",
+      });
     };
 
     window.addEventListener("devicemotion", handleMotion);
@@ -124,14 +137,14 @@ export default function YiJingEmbed() {
 
   const label =
     motionStatus === "active"
-      ? "📱 Lắc: bật"
+      ? "📱 Lắc nhẹ: bật"
       : motionStatus === "requesting"
         ? "Đang bật cảm biến…"
         : motionStatus === "denied"
           ? "Lắc: chưa cấp quyền"
           : motionStatus === "unavailable"
             ? "Lắc: không khả dụng"
-            : "📱 Bật lắc";
+            : "📱 Bật lắc nhẹ";
 
   return (
     <Box sx={{ width: "100%", height: "100%", bgcolor: "#f5efe5", position: "relative" }}>
