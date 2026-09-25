@@ -79,14 +79,29 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          MODEL_FILE="out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb"
+          MODEL_FILE="out/embedded/ly-dragon/models/rong-thoi-ly-v2.1.glb"
           mkdir -p "$(dirname "$MODEL_FILE")"
           python tools/ly-dragon/generator/build.py \
-            --spec tools/ly-dragon/spec/ly-dragon.spec.v2.json \
+            --spec tools/ly-dragon/spec/ly-dragon.spec.v2.1.json \
             --out "$MODEL_FILE"
           test -s "$MODEL_FILE"
           test "$(head -c 4 "$MODEL_FILE")" = "glTF"
-          echo "Ly dragon GLB ready for /apps/ly-dragon"
+          # Keep the original v2 asset only as an intentional A/B comparison baseline.
+          # Fail fast if a supposed new version is identical to the old mesh.
+          test -s out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb
+          if cmp -s out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb "$MODEL_FILE"; then
+            echo "v2.1 output is identical to v2; refusing a fake visual update."
+            exit 1
+          fi
+          python - "$MODEL_FILE" <<'PY'
+          import sys, trimesh
+          scene = trimesh.load(sys.argv[1], force="scene")
+          triangles = sum(len(mesh.faces) for mesh in scene.geometry.values())
+          assert len(scene.geometry) >= 60, "Missing dragon geometry"
+          assert triangles >= 10000, "Dragon geometry unexpectedly small"
+          print(f"Ly dragon v2.1 validated: {len(scene.geometry)} meshes, {triangles} triangles")
+          PY
+          echo "Ly dragon v2.1 ready for /apps/ly-dragon"
 
       - name: Add self-hosted Gautama Buddha model
         shell: bash
