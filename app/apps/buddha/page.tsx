@@ -10,7 +10,7 @@ export default function AppPage() {
     <Box sx={{ width: "100%", height: "100%", minHeight: 0, maxHeight: "100%", overflow: "hidden", bgcolor: "#15130f" }}>
       <Box
         component="iframe"
-        src="/embedded/buddha/?v=20260925-5"
+        src="/embedded/buddha/?rev=1.0.0"
         title="Phật Thích Ca 3D"
         sx={{
           display: "block",
