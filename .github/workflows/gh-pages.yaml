@@ -32,6 +32,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Validate Buddha HTML bootstrap
+        run: node scripts/check-buddha-html.cjs public/embedded/buddha/index.html
+
       - name: Install dependencies
         run: npm install
 
