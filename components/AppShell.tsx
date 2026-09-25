@@ -156,11 +156,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     ? `https://bdx0.github.io${normalizedPathname}`
     : "";
   const isMiniAppRoute = currentMiniApp !== null;
-  const isMobileMiniAppRoute = isMiniAppRoute && !desktop;
-  const isImmersiveAppRoute = isMiniAppRoute && desktop;
+  const isImmersiveAppRoute = isMiniAppRoute;
 
   useEffect(() => {
-    if (!isMiniAppRoute) return;
+    if (!isImmersiveAppRoute) return;
 
     const html = document.documentElement;
     const body = document.body;
@@ -195,7 +194,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       body.style.width = previousBodyWidth;
       body.style.overscrollBehavior = previousOverscroll;
     };
-  }, [isMiniAppRoute]);
+  }, [isImmersiveAppRoute]);
 
   const isBlogRoute =
     pathname === "/writing" ||
@@ -348,10 +347,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <Box
       sx={{
         minHeight: "100vh",
-        height: isMiniAppRoute ? "100dvh" : "auto",
-        overflow: isMiniAppRoute ? "hidden" : "visible",
+        height: isImmersiveAppRoute ? "100dvh" : "auto",
+        overflow: isImmersiveAppRoute ? "hidden" : "visible",
         bgcolor: "background.default",
-        ...(isMiniAppRoute && {
+        ...(isImmersiveAppRoute && {
           position: "fixed",
           inset: 0,
           width: "100%",
@@ -361,7 +360,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         }),
       }}
     >
-      {(!isMiniAppRoute || isMobileMiniAppRoute) && (
+      {!isMiniAppRoute && (
         <AppBar
           position="fixed"
           color="inherit"
@@ -400,11 +399,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="subtitle1"
-            sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-          >
-            {miniAppTitle ?? sectionTitle}
+          <Typography variant="subtitle1" sx={{ fontWeight: 700, flexGrow: 1 }}>
+            {sectionTitle}
           </Typography>
           {isMiniAppRoute && (
             <Tooltip title="App menu">
@@ -423,7 +419,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </AppBar>
       )}
 
-      {isMiniAppRoute && desktop && (
+      {isMiniAppRoute && (
         <Tooltip title="App menu">
           <IconButton
             onClick={() => {
@@ -456,25 +452,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Tooltip>
       )}
 
-      <Box component="nav" aria-label="Primary navigation">
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              bgcolor: "background.paper",
-            },
-          }}
-        >
-          {nav}
-        </Drawer>
+      {!isMiniAppRoute && (
+        <Box component="nav" aria-label="Primary navigation">
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            ModalProps={{ keepMounted: true }}
+            sx={{
+              display: { xs: "block", md: "none" },
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                boxSizing: "border-box",
+                bgcolor: "background.paper",
+              },
+            }}
+          >
+            {nav}
+          </Drawer>
 
-        {!isMiniAppRoute && (
           <Drawer
             variant="permanent"
             open={desktop}
@@ -491,40 +487,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           >
             {nav}
           </Drawer>
-        )}
-      </Box>
+        </Box>
+      )}
 
       <Box
         component="main"
         sx={{
-          minHeight: isMiniAppRoute ? 0 : "100vh",
-          height: isMiniAppRoute ? "100dvh" : "auto",
+          minHeight: isImmersiveAppRoute ? "100dvh" : "100vh",
           pt: isImmersiveAppRoute ? 0 : `${shell.topBarHeight}px`,
           ml: isImmersiveAppRoute ? 0 : { xs: 0, md: `${drawerWidth}px` },
           width: isImmersiveAppRoute
             ? "100%"
             : { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
-          overflow: isMiniAppRoute ? "hidden" : "visible",
-          boxSizing: "border-box",
+          overflow: isImmersiveAppRoute ? "hidden" : "visible",
         }}
       >
         <Box
           sx={{
             width: "100%",
-            maxWidth: isMiniAppRoute
+            maxWidth: isImmersiveAppRoute
               ? "none"
               : isBlogRoute
                 ? shell.blogMaxWidth
                 : shell.contentMaxWidth,
-            height: isImmersiveAppRoute
-              ? "100dvh"
-              : isMobileMiniAppRoute
-                ? `calc(100dvh - ${shell.topBarHeight}px)`
-                : "auto",
+            height: isImmersiveAppRoute ? "100dvh" : "auto",
             mx: "auto",
-            px: isMiniAppRoute ? 0 : shell.paddingX,
-            py: isMiniAppRoute ? 0 : shell.paddingY,
-            overflow: isMiniAppRoute ? "hidden" : "visible",
+            px: isImmersiveAppRoute ? 0 : shell.paddingX,
+            py: isImmersiveAppRoute ? 0 : shell.paddingY,
+            overflow: isImmersiveAppRoute ? "hidden" : "visible",
           }}
         >
           {children}
