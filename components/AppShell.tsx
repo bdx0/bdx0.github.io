@@ -158,11 +158,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const isMiniAppRoute = currentMiniApp !== null;
   const isImmersiveAppRoute = isMiniAppRoute;
 
-  // Lock document-level scrolling only while an immersive mini app is open.
-  // Do not modify body styles: fixed body positioning can persist across iOS back navigation.
+  // The SuperApp viewport stays fixed on every route. Pages and mini apps own
+  // scrolling inside their respective content areas; the document never scrolls.
+  // Do not lock or position body: it breaks scrolling after iOS back navigation.
   useEffect(() => {
-    if (!isImmersiveAppRoute) return;
-
     const html = document.documentElement;
     const previousOverflow = html.style.overflow;
     const previousOverscroll = html.style.overscrollBehavior;
@@ -174,7 +173,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       html.style.overflow = previousOverflow;
       html.style.overscrollBehavior = previousOverscroll;
     };
-  }, [isImmersiveAppRoute]);
+  }, []);
 
 
   const isBlogRoute =
@@ -327,18 +326,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
-        height: isImmersiveAppRoute ? "100dvh" : "auto",
-        overflow: isImmersiveAppRoute ? "hidden" : "visible",
+        position: "fixed",
+        inset: 0,
+        width: "100%",
+        maxWidth: "100vw",
+        height: "100dvh",
+        minHeight: 0,
+        overflow: "hidden",
+        overscrollBehavior: "none",
         bgcolor: "background.default",
-        ...(isImmersiveAppRoute && {
-          position: "fixed",
-          inset: 0,
-          width: "100%",
-          maxWidth: "100vw",
-          overscrollBehavior: "none",
-          touchAction: "manipulation",
-        }),
       }}
     >
       {!isMiniAppRoute && (
@@ -474,13 +470,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <Box
         component="main"
         sx={{
-          minHeight: isImmersiveAppRoute ? "100dvh" : "100vh",
+          height: "100%",
+          minHeight: 0,
+          boxSizing: "border-box",
           pt: isImmersiveAppRoute ? 0 : `${shell.topBarHeight}px`,
           ml: isImmersiveAppRoute ? 0 : { xs: 0, md: `${drawerWidth}px` },
           width: isImmersiveAppRoute
             ? "100%"
             : { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
-          overflow: isImmersiveAppRoute ? "hidden" : "visible",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
         }}
       >
         <Box
@@ -491,11 +491,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               : isBlogRoute
                 ? shell.blogMaxWidth
                 : shell.contentMaxWidth,
-            height: isImmersiveAppRoute ? "100dvh" : "auto",
+            height: "100%",
+            minHeight: 0,
+            flex: "1 1 auto",
             mx: "auto",
             px: isImmersiveAppRoute ? 0 : shell.paddingX,
             py: isImmersiveAppRoute ? 0 : shell.paddingY,
-            overflow: isImmersiveAppRoute ? "hidden" : "visible",
+            overflowX: "hidden",
+            overflowY: isImmersiveAppRoute ? "hidden" : "auto",
+            overscrollBehaviorY: isImmersiveAppRoute ? "none" : "contain",
+            WebkitOverflowScrolling: isImmersiveAppRoute ? undefined : "touch",
           }}
         >
           {children}
