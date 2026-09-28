@@ -46,6 +46,13 @@ const apps = [
     kind: "3D",
   },
   {
+    href: "/apps/tianjia",
+    mark: "TJ",
+    title: "TIANJIA-01",
+    description: "Phòng nghiên cứu cơ giáp 3D, xem và kiểm tra mô hình GLB/glTF từ API.",
+    kind: "3D",
+  },
+  {
     href: "/apps/ly-dragon",
     mark: "龍",
     title: "Rồng thời Lý 3D",

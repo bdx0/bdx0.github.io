@@ -107,6 +107,15 @@ const miniApps: Record<string, MiniAppMeta> = {
     mark: "佛",
     standaloneUrl: "https://bdx0.github.io/embedded/buddha/",
   },
+  "/apps/tianjia": {
+    name: "TIANJIA-01",
+    version: "0.1.0",
+    category: "3D / Mecha Research",
+    publisher: "BDX0 Apps",
+    description: "Xem mô hình cơ giáp 3D, kiểm tra mesh và tải trang bị từ API.",
+    mark: "TJ",
+    standaloneUrl: "https://tianjia-01.vercel.app/",
+  },
   "/apps/ly-dragon": {
     name: "Rồng thời Lý 3D",
     version: "0.1.0",
