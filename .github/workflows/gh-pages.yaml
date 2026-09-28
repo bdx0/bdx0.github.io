@@ -48,7 +48,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          MINI_APPS=(knowledge dau-thau yi-jing office buddha ly-dragon)
+          MINI_APPS=(knowledge dau-thau yi-jing office buddha ly-dragon tianjia)
 
           for app in "${MINI_APPS[@]}"; do
             source="out/apps/${app}.html"
