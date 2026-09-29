@@ -86,3 +86,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ly Dragon: generated locally; production is regenerated from .scad in Pages
+/tools/ly-dragon/export/_generated/
+/public/embedded/ly-dragon/models/rong-thoi-ly-v3-cad.glb
+/public/embedded/ly-dragon/v3-cad-orthographic.png

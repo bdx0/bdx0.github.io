@@ -63,45 +63,47 @@ jobs:
             echo "Mini app route ready: /apps/${app} and /apps/${app}/"
           done
 
-      # Generate from the checked-out JSON in this deployment itself. Commits made by
-      # GITHUB_TOKEN in the separate model workflow do not trigger another Pages run.
-      - name: Setup Python for Ly dragon
+      # V3 CAD: OpenSCAD is the sole active geometry source.
+      # Keep this step in Pages itself, not in a second model-commit workflow.
+      - name: Install OpenSCAD CLI
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y openscad
+
+      - name: Setup Python for Ly dragon CAD packaging
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
           cache-dependency-path: tools/ly-dragon/requirements.txt
 
-      - name: Install Ly dragon generator dependencies
+      - name: Install CAD packaging dependencies
         run: pip install -r tools/ly-dragon/requirements.txt
 
-      - name: Generate Ly dragon GLB for Pages
+      - name: Generate and verify Ly dragon V3 CAD model
         shell: bash
         run: |
           set -euo pipefail
-          MODEL_FILE="out/embedded/ly-dragon/models/rong-thoi-ly-v2.1.glb"
+          MODEL_FILE="out/embedded/ly-dragon/models/rong-thoi-ly-v3-cad.glb"
+          PREVIEW="out/embedded/ly-dragon/v3-cad-orthographic.png"
           mkdir -p "$(dirname "$MODEL_FILE")"
-          python tools/ly-dragon/generator/build.py \
-            --spec tools/ly-dragon/spec/ly-dragon.spec.v2.1.json \
-            --out "$MODEL_FILE"
+          python tools/ly-dragon/export/build_glb.py --out "$MODEL_FILE"
+          python tools/ly-dragon/export/preview_blueprint.py \
+            --glb "$MODEL_FILE" --out "$PREVIEW"
           test -s "$MODEL_FILE"
+          test -s "$PREVIEW"
           test "$(head -c 4 "$MODEL_FILE")" = "glTF"
-          # Keep the original v2 asset only as an intentional A/B comparison baseline.
-          # Fail fast if a supposed new version is identical to the old mesh.
-          test -s out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb
-          if cmp -s out/embedded/ly-dragon/models/rong-thoi-ly-v2.glb "$MODEL_FILE"; then
-            echo "v2.1 output is identical to v2; refusing a fake visual update."
-            exit 1
-          fi
           python - "$MODEL_FILE" <<'PY'
           import sys, trimesh
           scene = trimesh.load(sys.argv[1], force="scene")
-          triangles = sum(len(mesh.faces) for mesh in scene.geometry.values())
-          assert len(scene.geometry) >= 60, "Missing dragon geometry"
-          assert triangles >= 10000, "Dragon geometry unexpectedly small"
-          print(f"Ly dragon v2.1 validated: {len(scene.geometry)} meshes, {triangles} triangles")
+          faces = sum(len(mesh.faces) for mesh in scene.geometry.values())
+          assert len(scene.geometry) == 10, "CAD assembly must export 10 named parts"
+          assert faces >= 20000, "CAD mesh unexpectedly incomplete"
+          assert all(mesh.is_watertight for mesh in scene.geometry.values()), "Open CAD surface"
+          assert "CAD.tail" in scene.geometry and "CAD.scales" in scene.geometry
+          print(f"Ly Dragon V3 OpenSCAD validated: {len(scene.geometry)} parts; {faces} triangles")
           PY
-          echo "Ly dragon v2.1 ready for /apps/ly-dragon"
+          echo "Ly Dragon V3 CAD and XY blueprint exported"
 
       - name: Add self-hosted Gautama Buddha model
         shell: bash

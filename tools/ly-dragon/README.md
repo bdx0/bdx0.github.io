@@ -1,38 +1,48 @@
-# Rồng thời Lý — JSON → GLB
+# Ly Dragon CAD V3 — Blueprint → OpenSCAD → GLB
 
-The **canonical page** is `/apps/ly-dragon`. Its Next.js wrapper is
-`app/apps/ly-dragon/page.tsx`, which embeds `public/embedded/ly-dragon/index.html`.
+**Canonical page:** /apps/ly-dragon
+**Active CAD source of truth:** cad/*.scad, assembled by cad/main.scad.
+**Design reference:** blueprint/README.md and the approved 1448×1086 Lý dragon side-view drawing.
 
-## Model versions
+Geometry control points, cross-sections, body widths, head/leg/crest geometry are
+editable **only in OpenSCAD**. Do not create a second JSON geometry specification.
+The image-side XY coordinates in cad/parameters.scad are traced from the blueprint.
+They are mapped to CAD model units by image_point() in cad/geometry.scad.
 
-- `spec/ly-dragon.spec.v2.1.json`: current editable source of truth (slimmer, more curved silhouette, flame-leaf crest).
-- `spec/ly-dragon.spec.v2.json`: frozen original v2 reference.
-- `public/embedded/ly-dragon/models/rong-thoi-ly-v2.glb`: frozen comparison asset.
-- `rong-thoi-ly-v2.1.glb`: generated during the GitHub Pages build at `out/embedded/ly-dragon/models/`. Do not manually edit `out/`.
+The current V3 is a **CAD blockout** to compare against the reference, not a
+finished sculpt. It has a new silhouette and separate tail flames, head, mane,
+segmented belly, near-side scales, four legs, horns and whiskers.
 
-Only `.github/workflows/gh-pages.yaml` generates the production v2.1 GLB,
-validates it and publishes it with the static site. The obsolete second
-generator/commit workflow was removed to avoid duplicate work and races.
+## Build
 
-## Build v2.1 locally
+Requirements: OpenSCAD CLI, Python 3.12+, pip install -r tools/ly-dragon/requirements.txt
 
-From the repository root:
+From repository root:
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r tools/ly-dragon/requirements.txt
-python tools/ly-dragon/generator/build.py \
-  --spec tools/ly-dragon/spec/ly-dragon.spec.v2.1.json \
-  --out public/embedded/ly-dragon/models/rong-thoi-ly-v2.1.glb
-npm run dev
-```
+    python tools/ly-dragon/export/build_glb.py \
+      --out public/embedded/ly-dragon/models/rong-thoi-ly-v3-cad.glb \
+      --keep-stl /tmp/ly-dragon-stl
 
-The generated local v2.1 binary is a disposable build artifact. In production,
-GitHub Actions regenerates from JSON, so a spec change directly changes the
-published 3D mesh. The web page has an explicit v2 ↔ v2.1 comparison control.
-The older `/lab/ly-dragon/` route remains only as a redirect to `/apps/ly-dragon`.
+    python tools/ly-dragon/export/preview_blueprint.py \
+      --glb public/embedded/ly-dragon/models/rong-thoi-ly-v3-cad.glb \
+      --out public/embedded/ly-dragon/v3-cad-orthographic.png
 
-For future revisions: update the JSON and generator, then update the current
-versioned loader URL and Pages output together. Keep the preceding version only
-when intentionally used as a comparison baseline.
+OpenSCAD modules: parameters.scad (reference coordinates, dimensions),
+geometry.scad (spline/solid helpers), body.scad, head.scad, mane.scad,
+tail.scad, legs.scad. main.scad is the single assembly entry point. STL
+is intermediary; export/build_glb.py only packages CAD-generated STL into GLB,
+applying named PBR materials. It does NOT generate geometry or read JSON.
+
+GitHub Pages builds the active V3 GLB and XY orthographic preview directly
+from these .scad files and publishes both from out/; do not hand-edit out/.
+
+## Historical material
+
+legacy/ contains the frozen v2/v2.1 JSON and old Python procedural generator.
+It is not imported or run by the V3 build. The original v2 GLB is retained as
+a comparison asset under public/embedded/ly-dragon/models/.
+The /lab/ly-dragon URL remains a redirect.
+
+When refining the 3D dragon, revise the reference traces and solid modules in
+cad/*.scad, then regenerate GLB + XY preview. Do not judge progress from
+parameters alone: inspect the actual orthographic render.

@@ -49,7 +49,10 @@ Because this is the special `bdx0.github.io` user-site repository, production is
 - `content/blog/` — legacy blog material during CMS migration; do not add or edit canonical blog body here unless the user explicitly requests an export/snapshot.
 - `content/projects/` — project content.
 - `public/embedded/ly-dragon/index.html` — canonical standalone dragon viewer, embedded from `app/apps/ly-dragon/page.tsx`.
-- `tools/ly-dragon/spec/ly-dragon.spec.v2.1.json` and `generator/build.py` — editable model and procedural GLB generator. The Pages workflow builds the current GLB into `out/embedded/ly-dragon/models/`.
+- `tools/ly-dragon/blueprint/README.md` — Ly Dragon 3D Blueprint and side-view reference provenance.
+- `tools/ly-dragon/cad/main.scad` plus its `.scad` modules — the sole editable V3 CAD geometry source. No parallel JSON geometry spec.
+- `tools/ly-dragon/export/build_glb.py` — OpenSCAD STL to GLB material packaging only, no geometry generation. The Pages workflow builds and validates V3 GLB and XY projection under `out/embedded/ly-dragon/`.
+- `tools/ly-dragon/legacy/` — frozen V2/V2.1 JSON and old generator for historical reference; not part of the active build.
 - `public/lab/ly-dragon/index.html` — redirect only; do not edit it as the active viewer.
 - `.github/workflows/gh-pages.yaml` — GitHub Pages build/deploy workflow.
 - `Dockerfile`, `docker-compose.yml`, `justfile` — optional development tooling; GitHub Pages remains the production target.
