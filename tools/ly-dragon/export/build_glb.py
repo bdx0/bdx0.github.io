@@ -51,7 +51,10 @@ def main():
             if result.returncode:
                 raise RuntimeError(f"OpenSCAD failed for {part}:\n{result.stdout}\n{result.stderr}")
             mesh = trimesh.load(stl, force="mesh", process=True)
-            if mesh.is_empty or not mesh.is_watertight:
+            # Correct STL face normals without editing any CAD vertex positions.
+            if not mesh.is_winding_consistent:
+                mesh.fix_normals()
+            if mesh.is_empty or not mesh.is_watertight or not mesh.is_winding_consistent:
                 raise ValueError(f"Empty or nonwatertight CAD part: {part}")
             material = PBRMaterial(
                 name=material_name,

@@ -100,6 +100,7 @@ jobs:
           assert len(scene.geometry) == 10, "CAD assembly must export 10 named parts"
           assert faces >= 20000, "CAD mesh unexpectedly incomplete"
           assert all(mesh.is_watertight for mesh in scene.geometry.values()), "Open CAD surface"
+          assert all(mesh.is_winding_consistent for mesh in scene.geometry.values()), "Inverted CAD facets"
           assert "CAD.tail" in scene.geometry and "CAD.scales" in scene.geometry
           print(f"Ly Dragon V3 OpenSCAD validated: {len(scene.geometry)} parts; {faces} triangles")
           PY

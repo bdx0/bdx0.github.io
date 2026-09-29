@@ -2,7 +2,7 @@
 
 **Canonical page:** /apps/ly-dragon
 **Active CAD source of truth:** cad/*.scad, assembled by cad/main.scad.
-**Design reference:** blueprint/README.md and the approved 1448×1086 Lý dragon side-view drawing.
+**Design reference:** ../../ly-dragon-blueprint/README.md and the approved 1448×1086 Lý dragon side-view drawing.
 
 Geometry control points, cross-sections, body widths, head/leg/crest geometry are
 editable **only in OpenSCAD**. Do not create a second JSON geometry specification.
