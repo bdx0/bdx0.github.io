@@ -177,7 +177,7 @@ function moneyWords(input: string) {
   if (amount === BigInt(0)) return "Không đồng";
   const scale = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"];
   const groups: number[] = [];
-  while (amount > 0n) {
+  while (amount > BigInt(0)) {
     groups.push(Number(amount % BigInt(1000)));
     amount /= BigInt(1000);
   }
