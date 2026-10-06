@@ -37,7 +37,9 @@ import {
 } from "@mui/material";
 import { useMemo, useRef, useState } from "react";
 
-type ToolId =
+import OfficeExtraTool, { EXTRA_TOOL_IDS, type ExtraToolId } from "./OfficeExtraTools";
+
+type CoreToolId =
   | "text"
   | "list"
   | "extract"
@@ -51,6 +53,19 @@ type ToolId =
   | "qr"
   | "encode"
   | "json";
+
+type ToolId = CoreToolId | ExtraToolId;
+
+type ToolGroupId = "text" | "documents" | "data" | "calculate" | "generate" | "developer";
+
+const TOOL_GROUPS: Array<{ id: ToolGroupId; label: string }> = [
+  { id: "text", label: "Text" },
+  { id: "documents", label: "Documents" },
+  { id: "data", label: "Data" },
+  { id: "calculate", label: "Calculate" },
+  { id: "generate", label: "Generate" },
+  { id: "developer", label: "Developer" },
+];
 
 type PdfDocument = {
   getPageCount(): number;
@@ -233,23 +248,48 @@ const tools: Array<{
   id: ToolId;
   label: string;
   detail: string;
+  group: ToolGroupId;
   icon: typeof TextFieldsOutlined;
 }> = [
-  { id: "text", label: "Text", detail: "Clean & case", icon: TextFieldsOutlined },
-  { id: "list", label: "Lists", detail: "Sort & dedupe", icon: ListAltOutlined },
-  { id: "extract", label: "Extract", detail: "Email · URL · phone", icon: LinkOutlined },
-  { id: "date", label: "Dates", detail: "Workdays", icon: EventOutlined },
-  { id: "percent", label: "Percent", detail: "VAT & changes", icon: PercentOutlined },
-  { id: "unit", label: "Units", detail: "Metric · imperial", icon: StraightenOutlined },
-  { id: "timestamp", label: "Timestamp", detail: "Unix · ISO · local", icon: AccessTimeOutlined },
-  { id: "identity", label: "UUID / Hash", detail: "UUID v4 · SHA", icon: FingerprintOutlined },
-  { id: "pdf", label: "PDF", detail: "Merge & extract", icon: DescriptionOutlined },
-  { id: "sheet", label: "Excel / CSV", detail: "Preview & convert", icon: GridOnOutlined },
-  { id: "qr", label: "QR", detail: "Create PNG", icon: QrCode2Outlined },
-  { id: "encode", label: "Encode", detail: "Slug · URL · Base64", icon: DataObjectOutlined },
-  { id: "json", label: "JSON", detail: "Format & validate", icon: DataObjectOutlined },
+  { id: "text", label: "Text Cleaner", detail: "Clean & case", group: "text", icon: TextFieldsOutlined },
+  { id: "list", label: "Lists", detail: "Sort & dedupe", group: "text", icon: ListAltOutlined },
+  { id: "extract", label: "Extract", detail: "Email · URL · phone", group: "text", icon: LinkOutlined },
+  { id: "diff", label: "Text Compare", detail: "Diff 2 versions", group: "text", icon: TextFieldsOutlined },
+  { id: "pdfcopy", label: "PDF Copy Cleaner", detail: "Fix copied text", group: "text", icon: DescriptionOutlined },
+  { id: "regex", label: "Regex Replace", detail: "Search & replace", group: "text", icon: DataObjectOutlined },
+  { id: "markdown", label: "Markdown / Plain", detail: "Convert text", group: "text", icon: TextFieldsOutlined },
+
+  { id: "pdf", label: "PDF", detail: "Merge & extract", group: "documents", icon: DescriptionOutlined },
+  { id: "image", label: "Image Tools", detail: "Resize · compress", group: "documents", icon: DescriptionOutlined },
+  { id: "filename", label: "Filename Cleaner", detail: "Rename batches", group: "documents", icon: DescriptionOutlined },
+
+  { id: "sheet", label: "Excel / CSV", detail: "Preview & convert", group: "data", icon: GridOnOutlined },
+  { id: "sheetclean", label: "Excel Cleanup", detail: "Clean tabular data", group: "data", icon: GridOnOutlined },
+  { id: "csvmerge", label: "Merge / Split CSV", detail: "Join & split files", group: "data", icon: GridOnOutlined },
+  { id: "htmltable", label: "HTML Table / CSV", detail: "Convert tables", group: "data", icon: GridOnOutlined },
+  { id: "json", label: "JSON", detail: "Format & validate", group: "data", icon: DataObjectOutlined },
+
+  { id: "date", label: "Dates", detail: "Workdays", group: "calculate", icon: EventOutlined },
+  { id: "percent", label: "Percent", detail: "VAT & changes", group: "calculate", icon: PercentOutlined },
+  { id: "unit", label: "Units", detail: "Metric · imperial", group: "calculate", icon: StraightenOutlined },
+  { id: "moneywords", label: "Money → Words", detail: "Vietnamese VND", group: "calculate", icon: PercentOutlined },
+  { id: "datewords", label: "Admin Date", detail: "Vietnamese formal date", group: "calculate", icon: EventOutlined },
+
+  { id: "qr", label: "QR", detail: "Create PNG", group: "generate", icon: QrCode2Outlined },
+  { id: "qrpresets", label: "QR Presets", detail: "Wi-Fi · vCard · SMS", group: "generate", icon: QrCode2Outlined },
+  { id: "batchqr", label: "Batch QR", detail: "Many QR codes", group: "generate", icon: QrCode2Outlined },
+  { id: "timestamp", label: "Timestamp", detail: "Unix · ISO · local", group: "generate", icon: AccessTimeOutlined },
+
+  { id: "identity", label: "UUID / Hash", detail: "UUID v4 · SHA", group: "developer", icon: FingerprintOutlined },
+  { id: "encode", label: "Encode", detail: "Slug · URL · Base64", group: "developer", icon: DataObjectOutlined },
+  { id: "checksum", label: "File Checksum", detail: "SHA file digest", group: "developer", icon: FingerprintOutlined },
+  { id: "filebase64", label: "File / Base64", detail: "Encode & decode file", group: "developer", icon: DataObjectOutlined },
 ];
 
+const groupedTools = TOOL_GROUPS.map((group) => ({
+  ...group,
+  tools: tools.filter((item) => item.group === group.id),
+}))
 function downloadBlob(data: BlobPart, filename: string, type: string) {
   const url = URL.createObjectURL(new Blob([data], { type }));
   const a = document.createElement("a");
@@ -713,6 +753,10 @@ export default function OfficeKitClient() {
   };
 
   const renderTool = () => {
+    if (EXTRA_TOOL_IDS.has(tool as ExtraToolId)) {
+      return <OfficeExtraTool tool={tool as ExtraToolId} />;
+    }
+
     if (tool === "text") {
       return (
         <>
@@ -1288,7 +1332,7 @@ export default function OfficeKitClient() {
             <Typography variant="h6" component="h1" sx={{ fontWeight: 800 }}>
               Office Kit
             </Typography>
-            <Chip label="13" size="small" variant="outlined" />
+            <Chip label={tools.length} size="small" variant="outlined" />
           </Stack>
           <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5, lineHeight: 1.55 }}>
             Local-first utilities
@@ -1298,37 +1342,50 @@ export default function OfficeKitClient() {
         <Divider />
 
         <Box sx={{ p: 1, overflowY: "auto", minHeight: 0, flex: 1 }}>
-          <Stack spacing={0.5}>
-            {tools.map(({ id, label, detail, icon: Icon }) => {
-              const selected = tool === id;
-              return (
-                <Button
-                  key={id}
-                  onClick={() => setTool(id)}
-                  variant={selected ? "contained" : "text"}
-                  color={selected ? "primary" : "inherit"}
-                  startIcon={<Icon fontSize="small" />}
-                  sx={{
-                    justifyContent: "flex-start",
-                    textAlign: "left",
-                    px: 1.25,
-                    py: 0.6,
-                    minHeight: 40,
-                    width: "100%",
-                    "& .MuiButton-startIcon": { alignSelf: "flex-start", mt: 0.3 },
-                  }}
+          <Stack spacing={1.25}>
+            {groupedTools.map((group) => (
+              <Box key={group.id}>
+                <Typography
+                  variant="caption"
+                  color="text.disabled"
+                  sx={{ display: "block", px: 1.25, pb: 0.45, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
                 >
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700, lineHeight: 1.25 }}>
-                      {label}
-                    </Typography>
-                    <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.65, lineHeight: 1.3 }}>
-                      {detail}
-                    </Typography>
-                  </Box>
-                </Button>
-              );
-            })}
+                  {group.label}
+                </Typography>
+                <Stack spacing={0.35}>
+                  {group.tools.map(({ id, label, detail, icon: Icon }) => {
+                    const selected = tool === id;
+                    return (
+                      <Button
+                        key={id}
+                        onClick={() => setTool(id)}
+                        variant={selected ? "contained" : "text"}
+                        color={selected ? "primary" : "inherit"}
+                        startIcon={<Icon fontSize="small" />}
+                        sx={{
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          px: 1.25,
+                          py: 0.55,
+                          minHeight: 40,
+                          width: "100%",
+                          "& .MuiButton-startIcon": { alignSelf: "flex-start", mt: 0.3 },
+                        }}
+                      >
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700, lineHeight: 1.25 }}>
+                            {label}
+                          </Typography>
+                          <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.65, lineHeight: 1.3 }}>
+                            {detail}
+                          </Typography>
+                        </Box>
+                      </Button>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            ))}
           </Stack>
         </Box>
 
@@ -1422,7 +1479,7 @@ export default function OfficeKitClient() {
               <Typography variant="h6" sx={{ fontWeight: 800 }}>
                 Office Kit
               </Typography>
-              <Chip label="13" size="small" variant="outlined" />
+              <Chip label={tools.length} size="small" variant="outlined" />
             </Stack>
             <Typography variant="caption" color="text.secondary">
               Local-first utilities
@@ -1432,39 +1489,52 @@ export default function OfficeKitClient() {
           <Divider />
 
           <Box sx={{ p: 1, overflowY: "auto", flex: 1 }}>
-            <Stack spacing={0.5}>
-              {tools.map(({ id, label, detail, icon: Icon }) => {
-                const selected = tool === id;
-                return (
-                  <Button
-                    key={id}
-                    onClick={() => {
-                      setTool(id);
-                      setMobileToolsOpen(false);
-                    }}
-                    variant={selected ? "contained" : "text"}
-                    color={selected ? "primary" : "inherit"}
-                    startIcon={<Icon fontSize="small" />}
-                    sx={{
-                      justifyContent: "flex-start",
-                      textAlign: "left",
-                      width: "100%",
-                      px: 1.25,
-                      py: 0.85,
-                      minHeight: 46,
-                    }}
+            <Stack spacing={1.5}>
+              {groupedTools.map((group) => (
+                <Box key={group.id}>
+                  <Typography
+                    variant="caption"
+                    color="text.disabled"
+                    sx={{ display: "block", px: 1.25, pb: 0.5, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
                   >
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700, lineHeight: 1.25 }}>
-                        {label}
-                      </Typography>
-                      <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.65, lineHeight: 1.3 }}>
-                        {detail}
-                      </Typography>
-                    </Box>
-                  </Button>
-                );
-              })}
+                    {group.label}
+                  </Typography>
+                  <Stack spacing={0.4}>
+                    {group.tools.map(({ id, label, detail, icon: Icon }) => {
+                      const selected = tool === id;
+                      return (
+                        <Button
+                          key={id}
+                          onClick={() => {
+                            setTool(id);
+                            setMobileToolsOpen(false);
+                          }}
+                          variant={selected ? "contained" : "text"}
+                          color={selected ? "primary" : "inherit"}
+                          startIcon={<Icon fontSize="small" />}
+                          sx={{
+                            justifyContent: "flex-start",
+                            textAlign: "left",
+                            width: "100%",
+                            px: 1.25,
+                            py: 0.75,
+                            minHeight: 44,
+                          }}
+                        >
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography component="span" variant="body2" sx={{ display: "block", fontWeight: 700, lineHeight: 1.25 }}>
+                              {label}
+                            </Typography>
+                            <Typography component="span" variant="caption" sx={{ display: "block", opacity: 0.65, lineHeight: 1.3 }}>
+                              {detail}
+                            </Typography>
+                          </Box>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
+                </Box>
+              ))}
             </Stack>
           </Box>
 
