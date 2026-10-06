@@ -5,7 +5,7 @@ import OfficeKitClient from "./OfficeKitClient";
 export const metadata: Metadata = {
   title: "Office Kit",
   description:
-    "Local-first office utilities for text, lists, dates, units, timestamps, UUID/hash, PDF, Excel/CSV, QR codes, encoding, and JSON.",
+    "Local-first Office Kit with 28 grouped utilities for text, documents, data, calculations, QR generation, images, files, PDF, Excel/CSV, encoding, and developer workflows.",
 };
 
 export default function OfficeKitPage() {
