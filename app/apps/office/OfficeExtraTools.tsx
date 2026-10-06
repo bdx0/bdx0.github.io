@@ -172,14 +172,14 @@ function moneyWords(input: string) {
   const normalized = input.replace(/[.,\s]/g, "").replace(/[^0-9-]/g, "");
   if (!/^-?\d+$/.test(normalized)) throw new Error("Số tiền không hợp lệ.");
   let amount = BigInt(normalized);
-  const negative = amount < 0n;
+  const negative = amount < BigInt(0);
   if (negative) amount = -amount;
-  if (amount === 0n) return "Không đồng";
+  if (amount === BigInt(0)) return "Không đồng";
   const scale = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"];
   const groups: number[] = [];
   while (amount > 0n) {
-    groups.push(Number(amount % 1000n));
-    amount /= 1000n;
+    groups.push(Number(amount % BigInt(1000)));
+    amount /= BigInt(1000);
   }
   if (groups.length > scale.length) throw new Error("Số quá lớn.");
   const parts: string[] = [];
