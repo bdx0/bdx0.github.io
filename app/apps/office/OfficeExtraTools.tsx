@@ -562,17 +562,42 @@ function QrPresetTool() {
 function BatchQrTool() {
   const [input, setInput] = useState("");
   const [items, setItems] = useState<Array<{ text: string; url: string }>>([]);
+  const [status, setStatus] = useState("");
   const make = async () => {
     const lines = input.split("\n").map((line) => line.trim()).filter(Boolean).slice(0, 50);
     const next: Array<{ text: string; url: string }> = [];
     for (const line of lines) next.push({ text: line, url: await qrPng(line, 220) });
     setItems(next);
+    setStatus("Đã tạo " + next.length + " QR.");
+  };
+  const downloadZip = async () => {
+    await loadScript("office-extra-jszip", "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
+    const scope = window as unknown as {
+      JSZip?: new () => {
+        file(name: string, data: string, options: { base64: boolean }): void;
+        generateAsync(options: { type: "blob" }): Promise<Blob>;
+      };
+    };
+    if (!scope.JSZip) throw new Error("JSZip chưa sẵn sàng.");
+    const zip = new scope.JSZip();
+    items.forEach((item, i) => {
+      const comma = item.url.indexOf(",");
+      const raw = comma >= 0 ? item.url.slice(comma + 1) : item.url;
+      zip.file("qr-" + String(i + 1).padStart(3, "0") + ".png", raw, { base64: true });
+    });
+    const blob = await zip.generateAsync({ type: "blob" });
+    downloadBlob(blob, "batch-qr.zip", "application/zip");
+    setStatus("Đã tạo batch-qr.zip.");
   };
   return <>
-    <ToolHeader title="Batch QR" description="Tạo tối đa 50 QR từ danh sách, mỗi dòng một mã." />
+    <ToolHeader title="Batch QR" description="Tạo tối đa 50 QR từ danh sách, tải từng PNG hoặc gom thành ZIP." />
     <Stack spacing={2}>
       <TextField multiline minRows={8} label="Mỗi dòng một nội dung" value={input} onChange={(e) => setInput(e.target.value)} />
-      <Button variant="contained" disabled={!input.trim()} onClick={() => void make()}>Tạo QR</Button>
+      <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+        <Button variant="contained" disabled={!input.trim()} onClick={() => void make()}>Tạo QR</Button>
+        <Button variant="outlined" disabled={!items.length} onClick={() => void downloadZip()}>Tải ZIP</Button>
+      </Stack>
+      {status && <Alert severity="info">{status}</Alert>}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4,1fr)" }, gap: 1 }}>
         {items.map((item, i) => <Paper key={i} variant="outlined" sx={{ p: 1, minWidth: 0 }}><Box component="img" src={item.url} alt="" sx={{ width: "100%" }} /><Typography variant="caption" noWrap>{item.text}</Typography><Button size="small" component="a" href={item.url} download={"qr-" + String(i + 1).padStart(3, "0") + ".png"}>PNG</Button></Paper>)}
       </Box>
