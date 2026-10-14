@@ -59,6 +59,13 @@ const apps = [
     description: "Interactive 3D study inspired by Vietnamese Lý dynasty dragon forms.",
     kind: "3D",
   },
+  {
+    href: "/apps/vietlott",
+    mark: "VL",
+    title: "Vietlott",
+    description: "Kết quả Mega 6/45, Power 6/55, thống kê và đánh giá bộ số.",
+    kind: "Statistics",
+  },
 ] as const;
 
 export default function AppsPage() {

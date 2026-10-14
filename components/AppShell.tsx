@@ -125,6 +125,15 @@ const miniApps: Record<string, MiniAppMeta> = {
     mark: "龍",
     standaloneUrl: "https://bdx0.github.io/embedded/ly-dragon/",
   },
+  "/apps/vietlott": {
+    name: "Vietlott",
+    version: "0.1.0",
+    category: "Lottery dashboard",
+    publisher: "BDX0 Apps",
+    description: "Kết quả Mega 6/45, Power 6/55, thống kê và đánh giá bộ số.",
+    mark: "VL",
+    standaloneUrl: "https://bdx0.github.io/embedded/vietlott/",
+  },
 };
 
 function isActive(pathname: string, href: string) {
