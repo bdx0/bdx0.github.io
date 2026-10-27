@@ -1,0 +1,49 @@
+name: Check live Vietlott integration
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - app/apps/vietlott/page.tsx
+      - public/embedded/vietlott/index.html
+      - .github/workflows/check-vietlott-embed.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify SuperApp points to canonical Vietlott
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          page = Path("app/apps/vietlott/page.tsx").read_text()
+          legacy = Path("public/embedded/vietlott/index.html").read_text()
+          assert 'src="https://vietlott-phi.vercel.app/"' in page
+          assert 'src="/embedded/vietlott/"' not in page
+          assert 'window.location.replace("https://vietlott-phi.vercel.app/")' in legacy
+          assert "vietlott_results.ndjson" not in legacy
+          print("The SuperApp route and legacy link use the same live production app.")
+          PY
+      - name: Check live Vietlott is accessible and iframe-embeddable
+        run: |
+          curl -fsSL --retry 2 --retry-delay 2 -D /tmp/vietlott-headers.txt \
+            --max-time 25 https://vietlott-phi.vercel.app/ -o /tmp/vietlott.html
+          python3 - <<'PY'
+          from pathlib import Path
+          headers = Path("/tmp/vietlott-headers.txt").read_text().lower()
+          for block in headers.split("\r\n\r\n"):
+              if "http/" not in block:
+                  continue
+          assert "vietlott kết quả" in Path("/tmp/vietlott.html").read_text().lower()
+          # Check the final HTTP header block, not an earlier redirect.
+          final = headers.strip().split("\n\n")[-1]
+          assert not any(f"x-frame-options: {option}" in final for option in ("deny","sameorigin")), final
+          assert "frame-ancestors 'none'" not in final, final
+          assert "frame-ancestors 'self'" not in final, final
+          print("Live Vietlott returned its dashboard without restrictive iframe headers.")
+          PY

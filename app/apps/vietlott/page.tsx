@@ -20,7 +20,8 @@ export default function VietlottAppPage() {
     >
       <Box
         component="iframe"
-        src="/embedded/vietlott/"
+        src="https://vietlott-phi.vercel.app/"
+        loading="eager"
         title="Vietlott Mega 6/45 và Power 6/55"
         sx={{
           display: "block",
