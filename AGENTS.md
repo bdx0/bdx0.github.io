@@ -6,6 +6,20 @@ This repository is the source for the personal GitHub Pages site at `https://bdx
 
 Keep changes small, preserve static-export compatibility, and prefer simplifying the existing architecture over adding another framework, rendering pipeline, or UI system.
 
+## Evidence-first reasoning and hypothesis building
+
+When investigating real-world phenomena or analyzing user-provided data, prefer empirical reasoning over invented examples or unconstrained theory.
+
+- **Start from what was actually observed.** Read the user's evidence, measurements, records, logs, and relevant context before choosing a model. Preserve the source, timeframe, sample size, and observation conditions when known.
+- **Never present imagined data as evidence.** Do not invent frequencies, measurements, trends, or numerical examples to support a claim about the real system. A clearly labeled toy example may explain a method, but it must not replace analysis of actual observations.
+- **Reason proactively from limited evidence.** A small observation can justify a plausible, testable hypothesis about a larger hidden mechanism; exhaustive observation is not a prerequisite for proposing one. State explicitly what was observed, what is inferred, and what remains unknown.
+- **Let observations constrain theory, not the reverse.** Use mathematics, statistics, and physical mechanisms to explain and challenge observed patterns, rather than forcing observations into a preferred textbook model.
+- **Separate estimates from assumptions.** When building a model (for example, a ball-draw bias matrix conditioned on machine configuration and time), estimate identifiable parameters from real records first. Identify unobserved conditions, uncertainty, confounding factors, and limits of inference instead of silently filling gaps.
+- **Make useful predictions and try to falsify them.** Favor hypotheses that suggest additional observations or out-of-sample tests; compare them against simpler explanations, including chance. Avoid declaring a pattern systematic solely because it appears in a small sample.
+- **When evidence is missing, be constructive.** Explain the best provisional inference supported by what is available and the smallest next observation that would discriminate between competing hypotheses. Do not stop at “insufficient data” when a reasoned, clearly qualified hypothesis can still be developed.
+
+Working order: **real observation → contextual interpretation → candidate mechanism → explicit hypothesis → measurable prediction → test and revision**.
+
 ## Project snapshot
 
 - Framework: Next.js 16.0.8
